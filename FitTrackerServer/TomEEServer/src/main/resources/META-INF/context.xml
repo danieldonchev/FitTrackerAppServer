@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- Default set of monitored resources. If one of these changes, the    -->
+    <!-- web application will be reloaded.                                   -->
+    <!--<WatchedResource>conf/web.xml</WatchedResource>-->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname="" />
+    -->
+
+    <ResourceLink name="jdbc/MySQL_Database"
+                  global="jdbc/MySQL_Database"
+                  type="javax.sql.DataSource"
+    />
+
+</Context>

@@ -1,7 +1,4 @@
 # User-specific
 .idea/
 
-# IntelliJ
-out/
-
 *.iml
