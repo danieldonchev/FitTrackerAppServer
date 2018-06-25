@@ -9,10 +9,10 @@
 
     <!--<servlet>-->
         <!--<servlet-name>main.java.tracker.AppConfig</servlet-name>-->
-        <!--&lt;!&ndash;<init-param>&ndash;&gt;-->
-            <!--&lt;!&ndash;<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>&ndash;&gt;-->
-            <!--&lt;!&ndash;<param-value>true</param-value>&ndash;&gt;-->
-        <!--&lt;!&ndash;</init-param>&ndash;&gt;-->
+        <!--<init-param>-->
+        <!--<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>-->
+        <!--<param-value>true</param-value>-->
+        <!--</init-param>-->
         <!--<init-param>-->
             <!--<param-name>development</param-name>-->
             <!--<param-value>true</param-value>-->

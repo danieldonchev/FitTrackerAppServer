@@ -1,8 +1,8 @@
 package tracker.DAO;
 
-import com.tracker.shared.LatLng;
-import com.tracker.shared.SportActivityMap;
-import com.tracker.shared.SportActivityWithOwner;
+import com.tracker.shared.Entities.LatLng;
+import com.tracker.shared.Entities.SportActivityMap;
+import com.tracker.shared.Entities.SportActivityWithOwner;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import org.json.JSONObject;
@@ -46,7 +46,8 @@ public class SharedActivitiesDAOImpl implements SharedActivitiesDAO {
                 bounds.getDouble("bottomLeftLat") + " " + bounds.getDouble("bottomLeftLong") + "," +
                 bounds.getDouble("topLeftLat") + " " + bounds.getDouble("topLeftLong") + "))";
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int i = 1;
                 preparedStatement.setString(i++, polygon);
@@ -109,7 +110,8 @@ public class SharedActivitiesDAOImpl implements SharedActivitiesDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int paramIndex = 1;
                 preparedStatement.setString(paramIndex++, activityID);

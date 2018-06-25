@@ -1,12 +1,15 @@
-package com.tracker.shared;
+package com.tracker.shared.Entities;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import com.tracker.shared.flatbuf.MarkersFlat;
+import com.tracker.shared.flatbuf.PolylineFlat;
+import com.tracker.shared.flatbuf.SportActivityMapFlat;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class SportActivityMap implements FlatBufferSerializable
+public class SportActivityMap
 {
     private ArrayList<LatLng> polyline;
     private ArrayList<LatLng> markers;
@@ -33,7 +36,7 @@ public class SportActivityMap implements FlatBufferSerializable
         this.markers = markers;
     }
 
-    @Override
+
     public byte[] serialize()
     {
         FlatBufferBuilder builder = new FlatBufferBuilder(0);
@@ -46,13 +49,13 @@ public class SportActivityMap implements FlatBufferSerializable
         return array;
     }
 
-    @Override
+
     public SportActivityMap deserialize(byte[] bytesRead)
     {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        flatbuf.SportActivityMap sportActivityMap = flatbuf.SportActivityMap.getRootAsSportActivityMap(buf);
+        SportActivityMapFlat sportActivityMapFlat = SportActivityMapFlat.getRootAsSportActivityMap(buf);
 
-        return deserializeFromFlatBuffMap(sportActivityMap);
+        return deserializeFromFlatBuffMap(sportActivityMapFlat);
     }
 
     public int getBufferInt(FlatBufferBuilder builder)
@@ -60,43 +63,43 @@ public class SportActivityMap implements FlatBufferSerializable
         ListIterator<LatLng> polyLineIterator = this.polyline.listIterator(this.polyline.size());
         ListIterator<LatLng> markerIterator = this.markers.listIterator(this.markers.size());
 
-        flatbuf.SportActivityMap.startMarkersVector(builder, this.markers.size());
+        SportActivityMapFlat.startMarkersVector(builder, this.markers.size());
 
         while(markerIterator.hasPrevious())
         {
             LatLng latLng = markerIterator.previous();
-            flatbuf.Markers.createMarkers(builder, latLng.latitude, latLng.longitude, 0);
+            MarkersFlat.createMarkers(builder, latLng.latitude, latLng.longitude, 0);
         }
 
         int markers = builder.endVector();
 
-        flatbuf.SportActivityMap.startPolylineVector(builder, this.polyline.size());
+        SportActivityMapFlat.startPolylineVector(builder, this.polyline.size());
 
         while(polyLineIterator.hasPrevious())
         {
             LatLng latLng = polyLineIterator.previous();
-            flatbuf.Polyline.createPolyline(builder, latLng.latitude, latLng.longitude);
+            PolylineFlat.createPolyline(builder, latLng.latitude, latLng.longitude);
         }
 
         int polyline = builder.endVector();
 
-        flatbuf.SportActivityMap.startSportActivityMap(builder);
-        flatbuf.SportActivityMap.addMarkers(builder, markers);
-        flatbuf.SportActivityMap.addPolyline(builder, polyline);
+        SportActivityMapFlat.startSportActivityMap(builder);
+        SportActivityMapFlat.addMarkers(builder, markers);
+        SportActivityMapFlat.addPolyline(builder, polyline);
 
-        return flatbuf.SportActivityMap.endSportActivityMap(builder);
+        return SportActivityMapFlat.endSportActivityMap(builder);
     }
 
-    public SportActivityMap deserializeFromFlatBuffMap(flatbuf.SportActivityMap map){
+    public SportActivityMap deserializeFromFlatBuffMap(SportActivityMapFlat map){
         for(int i = 0; i < map.markersLength(); i++)
         {
-            flatbuf.Markers marker = map.markers(i);
+            MarkersFlat marker = map.markers(i);
             this.markers.add(new LatLng(marker.lat(), marker.lon()));
         }
         for(int i = 0; i < map.polylineLength(); i++)
         {
-            flatbuf.Polyline polyline = map.polyline(i);
-            this.polyline.add(new LatLng(polyline.lat(), polyline.lon()));
+            PolylineFlat polylineFlat = map.polyline(i);
+            this.polyline.add(new LatLng(polylineFlat.lat(), polylineFlat.lon()));
         }
 
         return this;

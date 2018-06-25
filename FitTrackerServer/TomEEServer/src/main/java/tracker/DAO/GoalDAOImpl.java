@@ -1,6 +1,6 @@
 package tracker.DAO;
 
-import com.tracker.shared.Goal;
+import com.tracker.shared.Entities.GoalWeb;
 import org.json.JSONArray;
 import tracker.SQLBuilderHelper.SQLBuilder;
 
@@ -12,9 +12,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+
 public class GoalDAOImpl implements GoalDAO {
     @Override
-    public int insertGoal(Goal goal, String userID, long timestamp) {
+    public GoalWeb insertGoal(GoalWeb goalWeb, String userID, long timestamp) throws SQLException, NamingException {
         SQLBuilder builder = new SQLBuilder();
         String[] columns = {Constants.ID,
                 Constants.USERID,
@@ -38,33 +39,30 @@ public class GoalDAOImpl implements GoalDAO {
                 .updateOnDuplicate(true)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int i = 1;
-                preparedStatement.setString(i++, goal.getId().toString());
+                preparedStatement.setString(i++, goalWeb.getId().toString());
                 preparedStatement.setString(i++, userID);
-                preparedStatement.setInt(i++, goal.getType());
-                preparedStatement.setDouble(i++, goal.getDistance());
-                preparedStatement.setLong(i++, goal.getDuration());
-                preparedStatement.setLong(i++, goal.getCalories());
-                preparedStatement.setLong(i++, goal.getSteps());
-                preparedStatement.setLong(i++, goal.getFromDate());
-                preparedStatement.setLong(i++, goal.getToDate());
-                preparedStatement.setLong(i++, goal.getLastModified());
+                preparedStatement.setInt(i++, goalWeb.getType());
+                preparedStatement.setDouble(i++, goalWeb.getDistance());
+                preparedStatement.setLong(i++, goalWeb.getDuration());
+                preparedStatement.setLong(i++, goalWeb.getCalories());
+                preparedStatement.setLong(i++, goalWeb.getSteps());
+                preparedStatement.setLong(i++, goalWeb.getFromDate());
+                preparedStatement.setLong(i++, goalWeb.getToDate());
+                preparedStatement.setLong(i++, goalWeb.getLastModified());
                 preparedStatement.setLong(i++, timestamp);
                 preparedStatement.execute();
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
-            ex.printStackTrace();
         }
 
-        return 0;
+        return goalWeb;
     }
 
     @Override
-    public boolean deleteGoal(String userID, String id, long timestamp) {
+    public void deleteGoal(String userID, String id, long timestamp) throws SQLException, NamingException {
 
         SQLBuilder builder = new SQLBuilder();
         String where = Constants.ID + "=? AND " + Constants.USERID + "=?";
@@ -75,26 +73,20 @@ public class GoalDAOImpl implements GoalDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int i = 1;
                 preparedStatement.setLong(i++, timestamp);
                 preparedStatement.setString(i++, id);
                 preparedStatement.setString(i++, userID);
-                return preparedStatement.execute();
+                preparedStatement.execute();
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NamingException e) {
-            e.printStackTrace();
         }
-
-        return false;
     }
 
     @Override
-    public int updateGoal(Goal goal, String userID, long timestamp) {
+    public GoalWeb updateGoal(GoalWeb goalWeb, String userID, long timestamp) throws SQLException, NamingException {
         String where = Constants.ID + "=? AND " + Constants.USERID + "=?";
         SQLBuilder builder = new SQLBuilder();
 
@@ -117,34 +109,31 @@ public class GoalDAOImpl implements GoalDAO {
                 .update(columns, values)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int i = 1;
-                preparedStatement.setInt(i++, goal.getType());
-                preparedStatement.setDouble(i++, goal.getDistance());
-                preparedStatement.setLong(i++, goal.getDuration());
-                preparedStatement.setLong(i++, goal.getCalories());
-                preparedStatement.setLong(i++, goal.getSteps());
-                preparedStatement.setLong(i++, goal.getFromDate());
-                preparedStatement.setLong(i++, goal.getToDate());
-                preparedStatement.setLong(i++, goal.getLastModified());
+                preparedStatement.setInt(i++, goalWeb.getType());
+                preparedStatement.setDouble(i++, goalWeb.getDistance());
+                preparedStatement.setLong(i++, goalWeb.getDuration());
+                preparedStatement.setLong(i++, goalWeb.getCalories());
+                preparedStatement.setLong(i++, goalWeb.getSteps());
+                preparedStatement.setLong(i++, goalWeb.getFromDate());
+                preparedStatement.setLong(i++, goalWeb.getToDate());
+                preparedStatement.setLong(i++, goalWeb.getLastModified());
                 preparedStatement.setLong(i++, timestamp);
-                preparedStatement.setString(i++, goal.getId().toString());
+                preparedStatement.setString(i++, goalWeb.getId().toString());
                 preparedStatement.setString(i++, userID);
                 preparedStatement.execute();
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
-            ex.printStackTrace();
         }
 
-        return 0;
+        return goalWeb;
     }
 
     @Override
-    public ArrayList<Goal> getGoals(String userID, String where, Object[] selectionArgs, String[] orderBy, int limit) {
-        ArrayList<Goal> goals = new ArrayList<>();
+    public ArrayList<GoalWeb> getGoals(String userID, String where, Object[] selectionArgs, String[] orderBy, int limit) {
+        ArrayList<GoalWeb> goalWebs = new ArrayList<>();
 
         SQLBuilder builder = new SQLBuilder();
         String statement = builder.table(Constants.TABLE)
@@ -152,7 +141,8 @@ public class GoalDAOImpl implements GoalDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 parameterIndex = DatabaseUtils.setPreparedStatement(preparedStatement, parameterIndex, selectionArgs);
@@ -160,7 +150,7 @@ public class GoalDAOImpl implements GoalDAO {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
-                    Goal goal = new Goal(UUID.fromString(rs.getString(Constants.ID)),
+                    GoalWeb goalWeb = new GoalWeb(UUID.fromString(rs.getString(Constants.ID)),
                             rs.getInt(Constants.TYPE),
                             rs.getDouble(Constants.DISTANCE),
                             rs.getLong(Constants.DURATION),
@@ -169,7 +159,7 @@ public class GoalDAOImpl implements GoalDAO {
                             rs.getLong(Constants.FROM_DATE),
                             rs.getLong(Constants.TO_DATE),
                             rs.getLong(Constants.LAST_MODIFIED));
-                    goals.add(goal);
+                    goalWebs.add(goalWeb);
                 }
             }
         } catch (SQLException e) {
@@ -178,7 +168,7 @@ public class GoalDAOImpl implements GoalDAO {
             e.printStackTrace();
         }
 
-        return goals;
+        return goalWebs;
     }
 
     @Override
@@ -192,7 +182,8 @@ public class GoalDAOImpl implements GoalDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.setString(1, userID);
                 ResultSet rs = preparedStatement.executeQuery();
@@ -219,9 +210,9 @@ public class GoalDAOImpl implements GoalDAO {
         public static final String DURATION = "duration";
         public static final String CALORIES = "calories";
         public static final String STEPS = "steps";
-        public static final String FROM_DATE = "from_date";
-        public static final String TO_DATE = "to_date";
-        public static final String LAST_MODIFIED = "last_modified";
+        public static final String FROM_DATE = "fromDate";
+        public static final String TO_DATE = "toDate";
+        public static final String LAST_MODIFIED = "lastModified";
         public static final String LAST_SYNC = "last_sync";
         public static final String DELETED = "deleted";
     }

@@ -1,5 +1,6 @@
 package tracker;
 
+import org.hibernate.Hibernate;
 import tracker.Markers.Sync;
 import tracker.filters.JWTAuthFilter;
 import tracker.filters.SyncFilter;
@@ -14,6 +15,7 @@ public class AppConfig extends Application {
 
     public AppConfig() {
         super();
+
     }
 
     @Override
@@ -34,6 +36,7 @@ public class AppConfig extends Application {
         resources.add(PeopleActivities.class);
         resources.add(Weights.class);
         resources.add(tracker.rest.Settings.class);
+
         return resources;
     }
 

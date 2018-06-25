@@ -1,11 +1,12 @@
-package com.tracker.shared;
+package com.tracker.shared.Entities;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import com.tracker.shared.flatbuf.WeightFlat;
 
 import java.nio.ByteBuffer;
 
 
-public class Weight implements FlatBufferSerializable {
+public class Weight {
 
     public double weight;
     public long date;
@@ -23,7 +24,7 @@ public class Weight implements FlatBufferSerializable {
         this.lastModified = lastModified;
     }
 
-    @Override
+
     public byte[] serialize() {
         FlatBufferBuilder builder = new FlatBufferBuilder(0);
 
@@ -36,24 +37,24 @@ public class Weight implements FlatBufferSerializable {
         return array;
     }
 
-    @Override
+
     public Weight deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        flatbuf.Weight weightBufferer = flatbuf.Weight.getRootAsWeight(buf);
+        WeightFlat weightFlatBufferer = WeightFlat.getRootAsWeight(buf);
 
-        weight = weightBufferer.weight();
-        date = weightBufferer.date();
-        lastModified = weightBufferer.lastModified();
+        weight = weightFlatBufferer.weight();
+        date = weightFlatBufferer.date();
+        lastModified = weightFlatBufferer.lastModified();
 
         return this;
     }
 
     public int weightInt(FlatBufferBuilder builder){
 
-        flatbuf.Weight.startWeight(builder);
-        flatbuf.Weight.addWeight(builder, weight);
-        flatbuf.Weight.addDate(builder, date);
-        flatbuf.Weight.addLastModified(builder, lastModified);
-        return flatbuf.Weight.endWeight(builder);
+        WeightFlat.startWeight(builder);
+        WeightFlat.addWeight(builder, weight);
+        WeightFlat.addDate(builder, date);
+        WeightFlat.addLastModified(builder, lastModified);
+        return WeightFlat.endWeight(builder);
     }
 }

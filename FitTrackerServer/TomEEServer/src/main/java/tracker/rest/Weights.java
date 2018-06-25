@@ -1,6 +1,6 @@
 package tracker.rest;
 
-import com.tracker.shared.Weight;
+import com.tracker.shared.Entities.Weight;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
 import tracker.DAO.DAOFactory;

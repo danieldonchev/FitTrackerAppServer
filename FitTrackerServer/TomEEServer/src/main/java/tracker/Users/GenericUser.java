@@ -3,18 +3,21 @@ package tracker.Users;
 import java.util.UUID;
 
 public class GenericUser extends User {
+
     private long clientSyncTimestamp;
     private long oldServerSyncTimestamp;
     private long newServerTimestamp;
     private boolean isWriting;
     private boolean isNew;
 
-    public GenericUser(UUID id, String email) {
+    public GenericUser(){}
+
+    public GenericUser(String id, String email) {
         super(id);
         this.email = email;
     }
 
-    public GenericUser(UUID id, String email, long syncVersion) {
+    public GenericUser(String id, String email, long syncVersion) {
         this(id, email);
         this.clientSyncTimestamp = syncVersion;
     }

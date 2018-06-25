@@ -55,7 +55,7 @@ public class JWTAuthFilter implements ContainerRequestFilter {
             long serverVersion = userSyncDAO.getLastModifiedTime(id);
 
             // Create GenericUser from access token information and server information
-            GenericUser user = new GenericUser(UUID.fromString(id), username, Long.parseLong(syncVersion));
+            GenericUser user = new GenericUser(id, username, Long.parseLong(syncVersion));
             user.setOldServerSyncTimestamp(serverVersion);
             long timestamp = Instant.now().toEpochMilli();
             user.setNewServerTimestamp(timestamp);
@@ -64,7 +64,6 @@ public class JWTAuthFilter implements ContainerRequestFilter {
             requestContext.setSecurityContext(new SecurityContext() {
                 @Override
                 public Principal getUserPrincipal() {
-
                     return user;
                 }
 

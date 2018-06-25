@@ -1,11 +1,12 @@
-package com.tracker.shared;
+package com.tracker.shared.Entities;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import flatbuf.Polyline;
+import com.tracker.shared.flatbuf.PolylineFlat;
+import com.tracker.shared.flatbuf.SportActivityFlat;
 
 import java.nio.ByteBuffer;
 
-public class SportActivityWithOwner extends AbstractWorkout implements FlatBufferSerializable{
+public class SportActivityWithOwner extends AbstractWorkout{
 
     private String activityID;
     private String userID;
@@ -20,7 +21,7 @@ public class SportActivityWithOwner extends AbstractWorkout implements FlatBuffe
     public SportActivityWithOwner(){}
 
 
-    @Override
+
     public byte[] serialize() {
         FlatBufferBuilder builder = new FlatBufferBuilder(0);
 
@@ -34,10 +35,10 @@ public class SportActivityWithOwner extends AbstractWorkout implements FlatBuffe
         return array;
     }
 
-    @Override
+
     public Object deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        flatbuf.SportActivityWithOwner sportActivityWithOwner = flatbuf.SportActivityWithOwner.getRootAsSportActivityWithOwner(buf);
+        com.tracker.shared.flatbuf.SportActivityWithOwner sportActivityWithOwner = com.tracker.shared.flatbuf.SportActivityWithOwner.getRootAsSportActivityWithOwner(buf);
 
         this.name = sportActivityWithOwner.name();
         this.userID = sportActivityWithOwner.userId();
@@ -48,8 +49,8 @@ public class SportActivityWithOwner extends AbstractWorkout implements FlatBuffe
         this.distance = sportActivityWithOwner.distance();
         this.duration = sportActivityWithOwner.duration();
         this.steps = sportActivityWithOwner.steps();
-        Polyline polyline = sportActivityWithOwner.startPoint();
-        latLng = new LatLng(polyline.lat(), polyline.lon());
+        PolylineFlat polylineFlat = sportActivityWithOwner.startPoint();
+        latLng = new LatLng(polylineFlat.lat(), polylineFlat.lon());
         ByteBuffer imgBuffer = sportActivityWithOwner.profilePicAsByteBuffer();
         if(imgBuffer != null){
             byte[] b = new byte[imgBuffer.remaining()];
@@ -70,20 +71,20 @@ public class SportActivityWithOwner extends AbstractWorkout implements FlatBuffe
             profPic = builder.createByteVector(profilePic);
         }
 
-        flatbuf.SportActivity.startSportActivity(builder);
+        SportActivityFlat.startSportActivity(builder);
 
-        flatbuf.SportActivityWithOwner.addActivity(builder, activityString);
-        flatbuf.SportActivityWithOwner.addName(builder, nameString);
-        flatbuf.SportActivityWithOwner.addActivityId(builder, activityIDString);
-        flatbuf.SportActivityWithOwner.addUserId(builder, idString);
-        flatbuf.SportActivityWithOwner.addStartTimestamp(builder, startTimestamp);
-        flatbuf.SportActivityWithOwner.addEndTimestamp(builder, endTimestamp);
-        flatbuf.SportActivityWithOwner.addDuration(builder, duration);
-        flatbuf.SportActivityWithOwner.addDistance(builder, distance);
-        flatbuf.SportActivityWithOwner.addStartPoint(builder, Polyline.createPolyline(builder, latLng.latitude, latLng.longitude));
-        flatbuf.SportActivityWithOwner.addProfilePic(builder, profPic);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addActivity(builder, activityString);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addName(builder, nameString);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addActivityId(builder, activityIDString);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addUserId(builder, idString);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addStartTimestamp(builder, startTimestamp);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addEndTimestamp(builder, endTimestamp);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addDuration(builder, duration);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addDistance(builder, distance);
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addStartPoint(builder, PolylineFlat.createPolyline(builder, latLng.latitude, latLng.longitude));
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addProfilePic(builder, profPic);
 
-        return flatbuf.SportActivityWithOwner.endSportActivityWithOwner(builder);
+        return com.tracker.shared.flatbuf.SportActivityWithOwner.endSportActivityWithOwner(builder);
     }
 
     public String getName() {

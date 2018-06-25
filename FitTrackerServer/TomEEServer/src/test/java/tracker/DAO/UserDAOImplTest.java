@@ -1,10 +1,10 @@
 package tracker.DAO;
 
-import org.junit.Before;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.Fields;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -20,7 +20,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+
 public class UserDAOImplTest {
 
     @Mock

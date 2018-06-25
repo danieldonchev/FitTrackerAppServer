@@ -1,7 +1,7 @@
 package tracker.DAO;
 
 
-import com.tracker.shared.Weight;
+import com.tracker.shared.Entities.Weight;
 import tracker.SQLBuilderHelper.SQLBuilder;
 
 import javax.naming.NamingException;
@@ -32,7 +32,8 @@ public class WeightsDAOImpl implements WeightDAO {
                 .updateOnDuplicate(true)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 preparedStatement.setLong(parameterIndex++, weight.date);
@@ -71,7 +72,8 @@ public class WeightsDAOImpl implements WeightDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 parameterIndex = DatabaseUtils.setPreparedStatement(preparedStatement, parameterIndex, selectionArgs);

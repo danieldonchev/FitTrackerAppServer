@@ -1,13 +1,10 @@
-package tracker.Markers;
+package com.tracker.shared.Entities;
 
-import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@NameBinding
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface Sync {
-}
+@Target({ElementType.TYPE})
+public @interface FlatBufferSerializable { }

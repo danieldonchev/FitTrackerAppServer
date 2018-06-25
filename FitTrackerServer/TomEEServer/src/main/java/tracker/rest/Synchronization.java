@@ -1,9 +1,9 @@
 package tracker.rest;
 
-import com.tracker.shared.Goal;
-import com.tracker.shared.SerializeHelper;
-import com.tracker.shared.SportActivity;
-import com.tracker.shared.Weight;
+import com.tracker.shared.Entities.GoalWeb;
+import com.tracker.shared.Entities.SerializeHelper;
+import com.tracker.shared.Entities.SportActivity;
+import com.tracker.shared.Entities.Weight;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
@@ -12,6 +12,7 @@ import tracker.Markers.Secured;
 import tracker.Markers.Sync;
 import tracker.Users.GenericUser;
 
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,10 +130,10 @@ public class Synchronization {
                 GoalDAOImpl.Constants.DELETED + "=0;";
         Object[] args = {user.getClientSyncTimestamp()};
 
-        ArrayList<Goal> goals = goalDAO.getGoals(user.getId().toString(), where, args, null, 0);
+        ArrayList<GoalWeb> goalWebs = goalDAO.getGoals(user.getId().toString(), where, args, null, 0);
 
         response.addHeader("Data-Type", SportActivity.class.getSimpleName());
-        return Response.ok().entity(SerializeHelper.serializeGoals(goals)).build();
+        return Response.ok().entity(SerializeHelper.serializeGoals(goalWebs)).build();
     }
 
     @POST
@@ -146,9 +148,15 @@ public class Synchronization {
         DAOFactory daoFactory = new DAOFactory();
         GoalDAO goalDAO = daoFactory.getGoalDAO();
         try {
-            ArrayList<Goal> goals = SerializeHelper.deserializeGoals(IOUtils.readFully(inputStream, -1, true));
-            for (Goal goal : goals) {
-                goalDAO.insertGoal(goal, user.getId().toString(), timestamp);
+            ArrayList<GoalWeb> goalWebs = SerializeHelper.deserializeGoals(IOUtils.readFully(inputStream, -1, true));
+            for (GoalWeb goalWeb : goalWebs) {
+                try {
+                    goalDAO.insertGoal(goalWeb, user.getId().toString(), timestamp);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (NamingException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -181,7 +189,13 @@ public class Synchronization {
         GoalDAO goalDAO = daoFactory.getGoalDAO();
 
         for (int i = 0; i < jsonArray.length(); i++) {
-            goalDAO.deleteGoal(user.getId().toString(), jsonArray.getString(i), user.getNewServerTimestamp());
+            try {
+                goalDAO.deleteGoal(user.getId().toString(), jsonArray.getString(i), user.getNewServerTimestamp());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (NamingException e) {
+                e.printStackTrace();
+            }
         }
 
         return Response.ok().build();

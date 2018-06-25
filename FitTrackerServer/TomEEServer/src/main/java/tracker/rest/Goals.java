@@ -1,91 +1,81 @@
 package tracker.rest;
 
-import com.tracker.shared.Goal;
+import com.tracker.shared.Entities.GoalWeb;
 import org.json.JSONObject;
-import sun.misc.IOUtils;
-import tracker.DAO.DAOFactory;
-import tracker.DAO.GoalDAO;
+import tracker.DAO.DAOServices.GoalService;
+import tracker.Entities.Goal;
+import tracker.Markers.GoalInterceptor;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
+import tracker.Markers.UserWriting;
 import tracker.Users.GenericUser;
-
-import javax.servlet.http.HttpServletResponse;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.io.IOException;
-import java.io.InputStream;
 
+@Stateless
 @Secured
 @Sync
 @Path("goals")
 public class Goals {
 
+    private GoalService goalService;
+
+    public Goals() { }
+
+    @Inject
+    public Goals(GoalService goalService) {
+       this.goalService = goalService;
+    }
+
     @POST
     @Path("goal")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response insertGoal(InputStream inputStream, @Context SecurityContext context) {
+    @UserWriting
+    @GoalInterceptor
+    public Response insertGoal(Goal goal) {
 
-        GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(true);
-
-        DAOFactory daoFactory = new DAOFactory();
-        GoalDAO goalDAO = daoFactory.getGoalDAO();
-        Goal goal = null;
-        try {
-            goal = new Goal().deserialize(IOUtils.readFully(inputStream, -1, true));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        goalDAO.insertGoal(goal, user.getId().toString(), user.getNewServerTimestamp());
+        goal = this.goalService.insertGoal(goal);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("data", Goal.class.getSimpleName());
-        jsonObject.put("id", goal.getId());
+        jsonObject.put("data", GoalWeb.class.getSimpleName());
+        jsonObject.put("id", goal.getGoalKey().getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
 
     @DELETE
     @Path("goal/{id}")
-    public Response deleteGoal(@PathParam("id") String id, @Context SecurityContext context, @Context HttpServletResponse response) {
-        GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(true);
+    @UserWriting
+    @GoalInterceptor
+    public Response deleteGoal(@PathParam("id") String id, @Context SecurityContext context) {
 
+        goalService.deleteGoal(id, ((GenericUser) context.getUserPrincipal()).getId().toString());
 
-        DAOFactory factory = new DAOFactory();
-        GoalDAO goalDAO = factory.getGoalDAO();
-        response.addHeader("Data-Type", Goal.class.getSimpleName());
-
-        goalDAO.deleteGoal(user.getId().toString(), id, user.getNewServerTimestamp());
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data", GoalWeb.class.getSimpleName());
         jsonObject.put("id", id);
-        return Response.ok().entity(jsonObject.toString()).build();
 
+        return Response.ok().entity(jsonObject.toString()).build();
     }
 
     @PUT
     @Path("goal")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editGoal(InputStream inputStream, @Context SecurityContext context) throws IOException {
-        GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(true);
+    @UserWriting
+    @GoalInterceptor
+    public Response editGoal(Goal goal) {
 
-        Goal goal = new Goal().deserialize(IOUtils.readFully(inputStream, -1, true));
-        DAOFactory factory = new DAOFactory();
-        GoalDAO goalDAO = factory.getGoalDAO();
-        int result = goalDAO.updateGoal(goal, user.getId().toString(), user.getNewServerTimestamp());
-        if (result == -1) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        this.goalService.updateGoal(goal);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("data", Goal.class.getSimpleName());
-        jsonObject.put("id", goal.getId());
+        jsonObject.put("data", GoalWeb.class.getSimpleName());
+        jsonObject.put("id", goal.getGoalKey().getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }

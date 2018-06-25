@@ -1,6 +1,6 @@
 package tracker.rest;
 
-import com.tracker.shared.SportActivity;
+import com.tracker.shared.Entities.SportActivity;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
 import tracker.DAO.DAOFactory;
@@ -81,9 +81,11 @@ public class UserActivity {
         SportActivityDAO sportActivityDAO = factory.getSportActivityDAO();
         response.addHeader("Data-Type", SportActivity.class.getSimpleName());
 
+
         if (sportActivityDAO.deleteSportActivity(user.getId().toString(), id, user.getNewServerTimestamp())) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", id);
+
             return Response.ok().entity(jsonObject.toString()).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

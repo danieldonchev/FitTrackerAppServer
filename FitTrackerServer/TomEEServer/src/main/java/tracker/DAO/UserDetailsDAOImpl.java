@@ -42,7 +42,8 @@ public class UserDetailsDAOImpl implements UserDetailsDAO {
             builder.append(" WHERE " + Constants.COLUMN_ID + " = ?");
 
 
-            try (Connection connection = DAOFactory.getConnection()) {
+            DAOFactory daoFactory = new DAOFactory();
+            try (Connection connection = daoFactory.getConnection()) {
                 try (PreparedStatement preparedStatement = connection.prepareStatement(builder.toString())) {
                     Iterator<String> it = data.keys();
                     int preparedStatementIndex = 1;
@@ -102,7 +103,8 @@ public class UserDetailsDAOImpl implements UserDetailsDAO {
                 .select(projection)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 parameterIndex = DatabaseUtils.setPreparedStatement(preparedStatement, parameterIndex, selectionArgs);
@@ -134,7 +136,8 @@ public class UserDetailsDAOImpl implements UserDetailsDAO {
                 .select(projection)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 preparedStatement.setString(parameterIndex++, userID);

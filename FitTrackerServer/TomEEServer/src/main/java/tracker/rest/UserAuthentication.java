@@ -6,12 +6,14 @@ import io.jsonwebtoken.Jws;
 import org.json.JSONObject;
 import tracker.Authenticate.*;
 import tracker.DAO.DAOFactory;
+import tracker.DAO.DAOServices.UserService;
 import tracker.DAO.UserDAO;
 import tracker.DAO.UserDAOImpl;
-import tracker.Users.ExternalUser;
+import tracker.Users.OAuthUser;
 import tracker.Users.GenericUser;
 import tracker.Users.LocalUser;
 
+import javax.inject.Inject;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -26,8 +28,19 @@ import java.util.Properties;
 
 @Path("auth")
 public class UserAuthentication {
+
+    private UserService service;
+
+    public UserAuthentication(){}
+
+    @Inject
+    public UserAuthentication(UserService service){
+        this.service = service;
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("register")
     public Response register(LocalUser user) {
 
@@ -36,7 +49,8 @@ public class UserAuthentication {
 
         JsonResponseFactory responseFactory = new JsonResponseFactory();
 
-        GenericUser genericUser = userDAO.insertUser(user);
+        //GenericUser genericUser = userDAO.insertUser(user);
+        GenericUser genericUser = service.insertUser(user);
         if (genericUser.isNew()) {
             return Response.ok(responseFactory.authSuccessfulJson(genericUser).toString()).build();
         } else {
@@ -67,8 +81,9 @@ public class UserAuthentication {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("googlelogin")
-    public Response googlelogin(ExternalUser user) throws IOException, GeneralSecurityException {
+    public Response googlelogin(OAuthUser user) throws IOException, GeneralSecurityException {
         OauthVerifier verifier = new OauthVerifier();
         JsonResponseFactory jsonResponseFactory = new JsonResponseFactory();
         GoogleIdToken idToken = verifier.verifyGoogleIdToken(user.getAccessToken());
@@ -94,7 +109,7 @@ public class UserAuthentication {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("fblogin")
-    public Response fblogin(ExternalUser user) throws IOException {
+    public Response fblogin(OAuthUser user) throws IOException {
         OauthVerifier verifier = new OauthVerifier();
         JsonResponseFactory factory = new JsonResponseFactory();
 

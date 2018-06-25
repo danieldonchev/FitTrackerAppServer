@@ -1,4 +1,4 @@
-package com.tracker.shared;
+package com.tracker.shared.Entities;
 
 public abstract class AbstractWorkout
 {

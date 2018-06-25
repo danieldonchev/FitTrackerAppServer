@@ -19,7 +19,8 @@ public class UserSyncDAOImpl implements UserSyncDAO {
         builder.select(Constants.LAST_SYNC);
         String statement = builder.build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.setString(1, id);
                 ResultSet rs = preparedStatement.executeQuery();
@@ -51,7 +52,8 @@ public class UserSyncDAOImpl implements UserSyncDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.setString(1, id);
                 ResultSet rs = preparedStatement.executeQuery();

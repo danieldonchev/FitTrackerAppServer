@@ -3,14 +3,12 @@ package tracker.DAO;
 import org.json.JSONObject;
 import tracker.Authenticate.PasswordGenerator;
 import tracker.SQLBuilderHelper.SQLBuilder;
-import tracker.Users.ExternalUser;
+import tracker.Users.OAuthUser;
 import tracker.Users.GenericUser;
 import tracker.Users.LocalUser;
 import tracker.Users.User;
 
 import javax.naming.NamingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.UUID;
 
@@ -30,11 +28,12 @@ public class UserDAOImpl implements UserDAO {
 
         if (user instanceof LocalUser) {
             statement += ", " + UserConstants.USER_COLUMN_PASSWORD + ") VALUES (?, ?, ?, ?)";
-        } else if (user instanceof ExternalUser) {
+        } else if (user instanceof OAuthUser) {
             statement += ") VALUES (?, ?, ?); ";
         }
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.setString(1, user.getName());
                 preparedStatement.setString(2, user.getEmail());
@@ -55,7 +54,7 @@ public class UserDAOImpl implements UserDAO {
             ex.printStackTrace();
         }
 
-        if (user instanceof ExternalUser) {
+        if (user instanceof OAuthUser) {
             return new GenericUser(user.getId(), user.getEmail());
         } else {
             GenericUser genericUser = new GenericUser(user.getId(), user.getEmail());
@@ -86,7 +85,8 @@ public class UserDAOImpl implements UserDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int paramIndex = 1;
                 String email = data.getString("email");
@@ -122,14 +122,16 @@ public class UserDAOImpl implements UserDAO {
                     UserConstants.USER_COLUMN_ID +
                     " FROM " + UserConstants.USER_TABLE +
                     " WHERE " + UserConstants.USER_COLUMN_EMAIL + "= ?";
-            sqlStatement = DAOFactory.getConnection().prepareStatement(statement);
+
+            DAOFactory daoFactory = new DAOFactory();
+            sqlStatement = daoFactory.getConnection().prepareStatement(statement);
             sqlStatement.setString(1, email);
             ResultSet rs = sqlStatement.executeQuery();
 
             if (!rs.next()) {
                 return null;
             } else {
-                user = new LocalUser(UUID.fromString(rs.getString(UserConstants.USER_COLUMN_ID)),
+                user = new LocalUser(rs.getString(UserConstants.USER_COLUMN_ID),
                         email,
                         rs.getString(UserConstants.USER_COLUMN_NAME),
                         rs.getString(UserConstants.USER_COLUMN_PASSWORD));
@@ -157,16 +159,17 @@ public class UserDAOImpl implements UserDAO {
         return 0;
     }
 
-    private UUID findUserID(String email) {
+    private String findUserID(String email) {
         String query = "SELECT " + UserConstants.USER_COLUMN_ID + " FROM " + UserConstants.USER_TABLE + " WHERE " + UserConstants.USER_COLUMN_EMAIL + "=?";
 
-        try (PreparedStatement preparedStatement = DAOFactory.getConnection().prepareStatement(query)) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (PreparedStatement preparedStatement = daoFactory.getConnection().prepareStatement(query)) {
             preparedStatement.setString(1, email);
             ResultSet rs = preparedStatement.executeQuery();
             if (!rs.next()) {
                 return null;
             } else {
-                return UUID.fromString(rs.getString(UserConstants.USER_COLUMN_ID));
+                return rs.getString(UserConstants.USER_COLUMN_ID);
             }
         } catch (SQLException | NamingException ex) {
             ex.printStackTrace();
@@ -189,7 +192,8 @@ public class UserDAOImpl implements UserDAO {
                 .updateOnDuplicate(true)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 preparedStatement.setString(parameterIndex++, email);
@@ -224,7 +228,8 @@ public class UserDAOImpl implements UserDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 preparedStatement.setString(parameterIndex++, new PasswordGenerator().generatePasswordHash(password));
@@ -250,7 +255,8 @@ public class UserDAOImpl implements UserDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.setString(1, id);
                 ResultSet rs = preparedStatement.executeQuery();
@@ -284,7 +290,8 @@ public class UserDAOImpl implements UserDAO {
                 .insert(columns, values)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int paramIndex = 1;
                 preparedStatement.setString(paramIndex++, user.getId().toString());
@@ -319,7 +326,8 @@ public class UserDAOImpl implements UserDAO {
                 .select(projection)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int paramIndex = 1;
                 preparedStatement.setString(paramIndex++, userID);

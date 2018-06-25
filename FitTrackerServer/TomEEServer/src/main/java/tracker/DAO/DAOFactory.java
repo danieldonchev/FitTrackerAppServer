@@ -1,15 +1,23 @@
 package tracker.DAO;
 
 
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
+import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
+@Named
 public class DAOFactory implements DAOFactoryEntities {
-    public static Connection getConnection() throws SQLException, NamingException {
+
+    public DAOFactory(){ }
+
+    public Connection getConnection() throws SQLException, NamingException {
 
         DataSource dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/MySQL_Database");
         DatabaseConnection databaseConnection = new DatabaseConnection();

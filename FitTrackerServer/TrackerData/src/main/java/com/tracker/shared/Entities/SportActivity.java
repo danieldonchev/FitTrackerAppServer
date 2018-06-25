@@ -1,13 +1,15 @@
-package com.tracker.shared;
+package com.tracker.shared.Entities;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import com.tracker.shared.flatbuf.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.UUID;
 
-public class SportActivity extends AbstractWorkout implements FlatBufferSerializable
+@FlatBufferSerializable
+public class SportActivity extends AbstractWorkout
 {
     private UUID id;
     private double distance = 0;
@@ -63,7 +65,7 @@ public class SportActivity extends AbstractWorkout implements FlatBufferSerializ
         this.splits = splits;
     }
 
-    @Override
+
     public byte[] serialize() {
         FlatBufferBuilder builder = new FlatBufferBuilder(0);
 
@@ -77,40 +79,40 @@ public class SportActivity extends AbstractWorkout implements FlatBufferSerializ
         return array;
     }
 
-    @Override
+
     public SportActivity deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        flatbuf.SportActivity sportActivityBufferer = flatbuf.SportActivity.getRootAsSportActivity(buf);
+        SportActivityFlat sportActivityFlatBufferer = SportActivityFlat.getRootAsSportActivity(buf);
 
-        this.id = UUID.fromString(sportActivityBufferer.id());
-        this.workout = sportActivityBufferer.activity();
-        this.startTimestamp = sportActivityBufferer.startTimestamp();
-        this.endTimestamp = sportActivityBufferer.endTimestamp();
-        this.distance = sportActivityBufferer.distance();
-        this.duration = sportActivityBufferer.duration();
-        this.steps = sportActivityBufferer.steps();
-        this.calories = sportActivityBufferer.calories();
-        this.type = sportActivityBufferer.type();
-        this.lastModified = sportActivityBufferer.lastModified();
+        this.id = UUID.fromString(sportActivityFlatBufferer.id());
+        this.workout = sportActivityFlatBufferer.activity();
+        this.startTimestamp = sportActivityFlatBufferer.startTimestamp();
+        this.endTimestamp = sportActivityFlatBufferer.endTimestamp();
+        this.distance = sportActivityFlatBufferer.distance();
+        this.duration = sportActivityFlatBufferer.duration();
+        this.steps = sportActivityFlatBufferer.steps();
+        this.calories = sportActivityFlatBufferer.calories();
+        this.type = sportActivityFlatBufferer.type();
+        this.lastModified = sportActivityFlatBufferer.lastModified();
 
 
-        if(sportActivityBufferer.sportActivityMap() != null){
-            for(int i = 0; i < sportActivityBufferer.sportActivityMap().markersLength(); i++)
+        if(sportActivityFlatBufferer.sportActivityMap() != null){
+            for(int i = 0; i < sportActivityFlatBufferer.sportActivityMap().markersLength(); i++)
             {
-                flatbuf.Markers marker = sportActivityBufferer.sportActivityMap().markers(i);
+                MarkersFlat marker = sportActivityFlatBufferer.sportActivityMap().markers(i);
                 sportActivityMap.getMarkers().add(new LatLng(marker.lat(), marker.lon()));
             }
-            for(int i = 0; i < sportActivityBufferer.sportActivityMap().polylineLength(); i++)
+            for(int i = 0; i < sportActivityFlatBufferer.sportActivityMap().polylineLength(); i++)
             {
-                flatbuf.Polyline polyline = sportActivityBufferer.sportActivityMap().polyline(i);
-                sportActivityMap.getPolyline().add(new LatLng(polyline.lat(), polyline.lon()));
+                PolylineFlat polylineFlat = sportActivityFlatBufferer.sportActivityMap().polyline(i);
+                sportActivityMap.getPolyline().add(new LatLng(polylineFlat.lat(), polylineFlat.lon()));
             }
         }
-        if(sportActivityBufferer.splits() != null){
-            for(int i = 0; i < sportActivityBufferer.splits().splitsLength(); i++)
+        if(sportActivityFlatBufferer.splits() != null){
+            for(int i = 0; i < sportActivityFlatBufferer.splits().splitsLength(); i++)
             {
-                flatbuf.Split split = sportActivityBufferer.splits().splits(i);
-                splits.add(new Split(split.id(), split.duration(), split.distance()));
+                SplitFlat splitFlat = sportActivityFlatBufferer.splits().splits(i);
+                splits.add(new Split(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
             }
         }
 
@@ -127,21 +129,21 @@ public class SportActivity extends AbstractWorkout implements FlatBufferSerializ
         }
         int splits = getSplitsBufferInt(builder);
 
-        flatbuf.SportActivity.startSportActivity(builder);
-        flatbuf.SportActivity.addId(builder, idString);
-        flatbuf.SportActivity.addActivity(builder, activityString);
-        flatbuf.SportActivity.addSplits(builder, splits);
-        flatbuf.SportActivity.addSportActivityMap(builder, cardioMapInt);
-        flatbuf.SportActivity.addStartTimestamp(builder, startTimestamp);
-        flatbuf.SportActivity.addEndTimestamp(builder, endTimestamp);
-        flatbuf.SportActivity.addDuration(builder, duration);
-        flatbuf.SportActivity.addDistance(builder, distance);
-        flatbuf.SportActivity.addSteps(builder, steps);
-        flatbuf.SportActivity.addCalories(builder, calories);
-        flatbuf.SportActivity.addType(builder, type);
-        flatbuf.SportActivity.addLastModified(builder, lastModified);
+        SportActivityFlat.startSportActivity(builder);
+        SportActivityFlat.addId(builder, idString);
+        SportActivityFlat.addActivity(builder, activityString);
+        SportActivityFlat.addSplits(builder, splits);
+        SportActivityFlat.addSportActivityMap(builder, cardioMapInt);
+        SportActivityFlat.addStartTimestamp(builder, startTimestamp);
+        SportActivityFlat.addEndTimestamp(builder, endTimestamp);
+        SportActivityFlat.addDuration(builder, duration);
+        SportActivityFlat.addDistance(builder, distance);
+        SportActivityFlat.addSteps(builder, steps);
+        SportActivityFlat.addCalories(builder, calories);
+        SportActivityFlat.addType(builder, type);
+        SportActivityFlat.addLastModified(builder, lastModified);
 
-        return flatbuf.SportActivity.endSportActivity(builder);
+        return SportActivityFlat.endSportActivity(builder);
     }
 
     public int getSplitsBufferInt(FlatBufferBuilder builder)
@@ -149,31 +151,31 @@ public class SportActivity extends AbstractWorkout implements FlatBufferSerializ
         if(splits != null){
             ListIterator<Split> splitListIterator = splits.listIterator(splits.size());
 
-            flatbuf.Splits.startSplitsVector(builder, splits.size());
+            SplitsFlat.startSplitsVector(builder, splits.size());
 
             while(splitListIterator.hasPrevious())
             {
                 Split split = splitListIterator.previous();
-                flatbuf.Split.createSplit(builder, split.getId(), split.getDistance(), split.getDuration());
+                SplitFlat.createSplit(builder, split.getId(), split.getDistance(), split.getDuration());
             }
 
             int splits = builder.endVector();
 
-            flatbuf.Splits.startSplits(builder);
-            flatbuf.Splits.addSplits(builder, splits);
-            return flatbuf.Splits.endSplits(builder);
+            SplitsFlat.startSplits(builder);
+            SplitsFlat.addSplits(builder, splits);
+            return SplitsFlat.endSplits(builder);
         }
 
 
         return 0;
     }
 
-    public ArrayList<Split> getSplitsFromFlatBuffSplits(flatbuf.Splits flatBuffSplits){
-        if(flatBuffSplits != null){
-            for(int i = 0; i < flatBuffSplits.splitsLength(); i++)
+    public ArrayList<Split> getSplitsFromFlatBuffSplits(SplitsFlat flatBuffSplitsFlat){
+        if(flatBuffSplitsFlat != null){
+            for(int i = 0; i < flatBuffSplitsFlat.splitsLength(); i++)
             {
-                flatbuf.Split split = flatBuffSplits.splits(i);
-                this.splits.add(new Split(split.id(), split.duration(), split.distance()));
+                SplitFlat splitFlat = flatBuffSplitsFlat.splits(i);
+                this.splits.add(new Split(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
             }
         }
         return splits;

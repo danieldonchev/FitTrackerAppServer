@@ -1,9 +1,9 @@
 package tracker.DAO;
 
-import com.tracker.shared.LatLng;
-import com.tracker.shared.Split;
-import com.tracker.shared.SportActivity;
-import com.tracker.shared.SportActivityMap;
+import com.tracker.shared.Entities.LatLng;
+import com.tracker.shared.Entities.Split;
+import com.tracker.shared.Entities.SportActivity;
+import com.tracker.shared.Entities.SportActivityMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
@@ -68,7 +68,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
             polylineBuilder.append(")");
         }
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             connection.setAutoCommit(false);
             int parameterIndex = 1;
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
@@ -118,7 +119,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.setString(1, id);
                 preparedStatement.setString(2, userID);
@@ -147,7 +149,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
                 parameterIndex = DatabaseUtils.setPreparedStatement(preparedStatement, parameterIndex, selectionArgs);
@@ -179,7 +182,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
                 .update(columns, values)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int paramIndex = 1;
@@ -245,7 +249,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
         builder.update(columns.toArray(new String[0]), values.toArray(new String[0]));
         String statement = builder.build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
@@ -301,7 +306,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
                 .where(where)
                 .build();
 
-        try (Connection connection = DAOFactory.getConnection()) {
+        DAOFactory daoFactory = new DAOFactory();
+        try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 preparedStatement.setString(1, userID);
                 ResultSet rs = preparedStatement.executeQuery();

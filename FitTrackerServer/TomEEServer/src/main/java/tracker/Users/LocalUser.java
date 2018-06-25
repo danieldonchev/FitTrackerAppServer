@@ -1,16 +1,16 @@
 package tracker.Users;
 
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.UUID;
 
+@Entity
 public class LocalUser extends User {
     private String password;
-    private String responseToken;
 
-    public LocalUser() {
-    }
+    public LocalUser() {}
 
-    public LocalUser(UUID id, String email, String name, String password) {
+    public LocalUser(String id, String email, String name, String password) {
         super(id, email, name);
         this.password = password;
     }
@@ -22,14 +22,5 @@ public class LocalUser extends User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @XmlElement
-    public String getResponseToken() {
-        return responseToken;
-    }
-
-    public void setResponseToken(String responseToken) {
-        this.responseToken = responseToken;
     }
 }

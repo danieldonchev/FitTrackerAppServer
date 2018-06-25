@@ -1,8 +1,8 @@
 package tracker.rest;
 
-import com.tracker.shared.SerializeHelper;
-import com.tracker.shared.SportActivityMap;
-import com.tracker.shared.SportActivityWithOwner;
+import com.tracker.shared.Entities.SerializeHelper;
+import com.tracker.shared.Entities.SportActivityMap;
+import com.tracker.shared.Entities.SportActivityWithOwner;
 import org.json.JSONObject;
 import tracker.DAO.DAOFactory;
 import tracker.DAO.SharedActivitiesDAO;
