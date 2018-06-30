@@ -14,4 +14,14 @@
       userName = root
 
   </Resource>
+
+    <Resource id="tomee/mail/GMailSMTP" type="javax.mail.Session">
+        mail.smtp.host=smtp.gmail.com
+        mail.smtp.starttls.enable=true
+        mail.smtp.port=587
+        mail.transport.protocol=smtp
+        mail.smtp.auth=true
+        mail.smtp.user=testotestov666@gmail.com
+        password=testotestov
+    </Resource>
 </tomee>

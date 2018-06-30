@@ -80,6 +80,7 @@
                     <debug>false</debug>
                     <debugPort>5005</debugPort>
                     <context>ROOT</context>
+                    <deployOpenEjbApplication>true</deployOpenEjbApplication>
                     <libs>
                         <lib>mysql:mysql-connector-java:5.1.16</lib>
                     </libs>
@@ -174,7 +175,8 @@
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core</artifactId>
             <version>4.7.5</version>
-            <scope>test</scope>
+            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>

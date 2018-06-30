@@ -8,7 +8,7 @@ import tracker.Markers.GoalInterceptor;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
 import tracker.Markers.UserWriting;
-import tracker.Users.GenericUser;
+import tracker.Entities.Users.GenericUser;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -54,7 +54,7 @@ public class Goals {
     @GoalInterceptor
     public Response deleteGoal(@PathParam("id") String id, @Context SecurityContext context) {
 
-        goalService.deleteGoal(id, ((GenericUser) context.getUserPrincipal()).getId().toString());
+        goalService.deleteGoal(id, ((GenericUser) context.getUserPrincipal()).getId());
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());

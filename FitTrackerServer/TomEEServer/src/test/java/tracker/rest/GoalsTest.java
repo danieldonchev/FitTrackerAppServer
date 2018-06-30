@@ -13,7 +13,7 @@
 //import org.mockito.MockitoAnnotations;
 //import tracker.DAO.DAOFactory;
 //import tracker.DAO.GoalDAOImpl;
-//import tracker.Users.GenericUser;
+//import tracker.Entities.Users.GenericUser;
 //
 //import javax.naming.NamingException;
 //import javax.ws.rs.core.Response;

@@ -1,6 +1,4 @@
-package tracker.Users;
-
-import java.util.UUID;
+package tracker.Entities.Users;
 
 public class GenericUser extends User {
 
@@ -61,4 +59,5 @@ public class GenericUser extends User {
     public void setNew(boolean aNew) {
         isNew = aNew;
     }
+
 }

@@ -5,7 +5,7 @@ import tracker.DAO.DAOFactory;
 import tracker.DAO.UserDetailsDAO;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
-import tracker.Users.GenericUser;
+import tracker.Entities.Users.GenericUser;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;

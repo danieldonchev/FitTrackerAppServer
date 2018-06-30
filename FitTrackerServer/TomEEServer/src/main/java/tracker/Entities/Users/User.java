@@ -1,7 +1,5 @@
-package tracker.Users;
+package tracker.Entities.Users;
 
-import javax.enterprise.inject.Alternative;
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlElement;

@@ -7,7 +7,7 @@ import tracker.DAO.DAOFactory;
 import tracker.DAO.SportActivityDAO;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
-import tracker.Users.GenericUser;
+import tracker.Entities.Users.GenericUser;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;

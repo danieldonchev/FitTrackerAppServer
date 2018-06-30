@@ -7,7 +7,7 @@ import tracker.DAO.DAOFactory;
 import tracker.DAO.WeightDAO;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
-import tracker.Users.GenericUser;
+import tracker.Entities.Users.GenericUser;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

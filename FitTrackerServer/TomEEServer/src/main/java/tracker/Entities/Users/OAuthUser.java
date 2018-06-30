@@ -1,7 +1,6 @@
-package tracker.Users;
+package tracker.Entities.Users;
 
 import javax.xml.bind.annotation.XmlElement;
-
 
 public class OAuthUser extends User {
     private String accessToken;

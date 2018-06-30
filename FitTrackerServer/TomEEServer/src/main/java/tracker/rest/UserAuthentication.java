@@ -1,29 +1,29 @@
 package tracker.rest;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+import org.hibernate.HibernateException;
+import org.hibernate.JDBCException;
 import org.json.JSONObject;
 import tracker.Authenticate.*;
-import tracker.DAO.DAOFactory;
-import tracker.DAO.DAOServices.UserService;
-import tracker.DAO.UserDAO;
-import tracker.DAO.UserDAOImpl;
-import tracker.Users.OAuthUser;
-import tracker.Users.GenericUser;
-import tracker.Users.LocalUser;
 
+import tracker.DAO.DAOServices.UserService;
+
+import tracker.Entities.User;
+import tracker.Entities.UserTokens;
+
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Optional;
 import java.util.Properties;
 
 @Path("auth")
@@ -42,40 +42,42 @@ public class UserAuthentication {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("register")
-    public Response register(LocalUser user) {
+    public Response register(User user) {
 
-        DAOFactory daoFactory = new DAOFactory();
-        UserDAOImpl userDAO = daoFactory.getUserDAO();
+        JSONObject response = new JSONObject();
+        UserTokens userTokens = null;
+        userTokens = service.insertUser(user);
 
-        JsonResponseFactory responseFactory = new JsonResponseFactory();
-
-        //GenericUser genericUser = userDAO.insertUser(user);
-        GenericUser genericUser = service.insertUser(user);
-        if (genericUser.isNew()) {
-            return Response.ok(responseFactory.authSuccessfulJson(genericUser).toString()).build();
+        if (userTokens.isUserNew()) {
+            response.put("login", "success")
+            .put("refresh_token", userTokens.getRefreshToken())
+            .put("access_token", userTokens.getAccessToken())
+            .put("id", user.getId())
+            .put("new_user", true);
+            return Response.ok(response.toString()).build();
         } else {
-            return Response.status(Response.Status.CONFLICT).entity(responseFactory.accountAlreadyExistsJson().toString()).build();
+            return Response.status(Response.Status.CONFLICT).build();
         }
     }
-
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("login")
-    public Response login(LocalUser user) {
-        DAOFactory daoFactory = new DAOFactory();
-        UserDAOImpl userDAO = daoFactory.getUserDAO();
+    public Response login(User user) {
 
-        LocalUser localUser = userDAO.findUser(user.getEmail());
-        JsonResponseFactory factory = new JsonResponseFactory();
-        PasswordValidator validator = new PasswordValidator();
-
-        if (localUser.getPassword() == null || localUser.getPassword().equals("")) {
-            return Response.status(Response.Status.UNAUTHORIZED).type("application/json").entity(factory.accountNotExistJson().toString()).build();
-        } else if (validator.validatePassword(user.getPassword(), localUser.getPassword())) {
-            return Response.ok(factory.localAuthSuccessfulJson(localUser).toString()).build();
-        } else {
-            return Response.status(Response.Status.UNAUTHORIZED).type("application/json").entity(factory.authFailPasswordIncorrectJson().toString()).build();
+        UserTokens userTokens = this.service.loginUser(user);
+        JSONObject response = new JSONObject();
+        if(userTokens != null){
+            response.put("login", "success")
+                    .put("refresh_token", userTokens.getRefreshToken())
+                    .put("access_token", userTokens.getAccessToken())
+                    .put("id", user.getId())
+                    .put("new_user", false);
+            return Response.ok(response.toString()).build();
+        } else{
+            response.put("login", "fail")
+                    .put("message", "Account does not exist");
+            return Response.status(Response.Status.UNAUTHORIZED).type("application/json").entity(response.toString()).build();
         }
     }
 
@@ -83,90 +85,57 @@ public class UserAuthentication {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("googlelogin")
-    public Response googlelogin(OAuthUser user) throws IOException, GeneralSecurityException {
+    public Response googlelogin(User user) throws IOException, GeneralSecurityException {
         OauthVerifier verifier = new OauthVerifier();
-        JsonResponseFactory jsonResponseFactory = new JsonResponseFactory();
         GoogleIdToken idToken = verifier.verifyGoogleIdToken(user.getAccessToken());
+        JSONObject response = new JSONObject();
 
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
-            String email = payload.getEmail();
+//            String email = payload.getEmail();
 //          String name = (String) payload.get("name");
 
-            DAOFactory daoFactory = new DAOFactory();
-            UserDAOImpl rcvdUser = daoFactory.getUserDAO();
-            GenericUser genericUser = rcvdUser.insertUser(user);
-            genericUser.setName(user.getName());
-            genericUser.setAndroidId(user.getAndroidId());
-            genericUser.setDevice(user.getDevice());
-
-            return Response.ok(jsonResponseFactory.authSuccessfulJson(genericUser).toString()).build();
+            UserTokens userTokens = this.service.insertOAuthUser(user);
+            response.put("login", "success")
+                    .put("refresh_token", userTokens.getRefreshToken())
+                    .put("access_token", userTokens.getAccessToken())
+                    .put("id", user.getId())
+                    .put("new_user", false);
+            return Response.ok(response.toString()).build();
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED).type("application/json").entity(jsonResponseFactory.authFailPasswordIncorrectJson().toString()).build();
+            response.put("login", "fail")
+                    .put("message", "Invalid email or password");
+            return Response.status(Response.Status.UNAUTHORIZED).type("application/json").entity(response.toString()).build();
         }
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("fblogin")
-    public Response fblogin(OAuthUser user) throws IOException {
+    public Response fblogin(User user) throws IOException {
         OauthVerifier verifier = new OauthVerifier();
-        JsonResponseFactory factory = new JsonResponseFactory();
-
+        JSONObject response = new JSONObject();
         if (verifier.verifyFBToken(user.getAccessToken())) {
-            DAOFactory daoFactory = new DAOFactory();
-            UserDAOImpl rcvdUser = daoFactory.getUserDAO();
-            GenericUser genericUser = rcvdUser.insertUser(user);
-
-            return Response.ok(factory.authSuccessfulJson(genericUser).toString()).build();
+            UserTokens userTokens = this.service.insertOAuthUser(user);
+            response.put("login", "success")
+                    .put("refresh_token", userTokens.getRefreshToken())
+                    .put("access_token", userTokens.getAccessToken())
+                    .put("id", user.getId())
+                    .put("new_user", false);
+            return Response.ok(response.toString()).build();
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED).type("application/json").entity(factory.authFailPasswordIncorrectJson().toString()).build();
+            response.put("login", "fail")
+                    .put("message", "Invalid email or password");
+            return Response.status(Response.Status.UNAUTHORIZED).type("application/json").entity(response.toString()).build();
         }
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("forgotten-password")
-    public Response forgottenPassword(String email) throws IOException {
-        DAOFactory daoFactory = new DAOFactory();
-        UserDAO userDAO = daoFactory.getUserDAO();
-
-        LocalUser user = userDAO.findUser(email);
-        if (user != null) {
-            String token = PasswordGenerator.getRandomPasswordToken(8);
-            userDAO.saveUserToken(email, token);
-
-            final String username = "testotestov666@gmail.com";
-            final String password = "testotestov";
-
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587");
-
-            Session session = Session.getInstance(props,
-                    new javax.mail.Authenticator() {
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(username, password);
-                        }
-                    });
-
-            try {
-
-                Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress("testotestov666@gmail.com"));
-                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-                message.setSubject("PasswordGenerator code");
-                message.setText(token);
-
-                Transport.send(message);
-
-                System.out.println("Done");
-
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
+    public Response forgottenPassword(String email) {
+        boolean userExists = this.service.sendPasswordCodeToUser(email);
+        if(userExists){
             return Response.ok().build();
         }
 
@@ -178,35 +147,32 @@ public class UserAuthentication {
     @Path("access-token")
     public Response getAccessToken(String jsonObject) {
 
-        TokenAuthenticator authenticator = new TokenAuthenticator();
-        TokenFactory tokenFactory = new TokenFactory();
-
         JSONObject object = new JSONObject(jsonObject);
-        Jws<Claims> claimsJws = authenticator.validateRefreshJwt(object.getString("refresh_token"));
-        String userID = (String) claimsJws.getBody().get("userID");
-
-        String accessToken = tokenFactory.getAccessToken(userID,
-                object.getString("android_id"),
-                object.getString("device"),
-                object.getString("refresh_token"));
+        String refreshToken = object.getString("refresh_token");
+        String accessToken = this.service.getAccessTokenFromRefreshToken(refreshToken);
 
         return Response.ok().entity(accessToken).build();
     }
 
+    /*
+        REST endpoint for changing users password.
+        @param String JSONObject containing email as "email", password as "password"
+        @return Response ok() code 200
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("password")
     public Response changePassword(String data) {
         JSONObject jsonObject = new JSONObject(data);
+        String email = jsonObject.getString("email");
+        String code = jsonObject.getString("code");
+        String newPassword = jsonObject.getString("password");
 
-        DAOFactory daoFactory = new DAOFactory();
-        UserDAO userDAO = daoFactory.getUserDAO();
-        int result = userDAO.changePassword(jsonObject);
-        if (result == 0) {
+        boolean flag = this.service.changePassword(email, code, newPassword);
+        if(flag){
             return Response.ok().build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
         }
+            return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @GET

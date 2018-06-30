@@ -1,8 +1,8 @@
 package tracker.DAO;
 
 import org.json.JSONObject;
-import tracker.Users.LocalUser;
-import tracker.Users.User;
+import tracker.Entities.Users.LocalUser;
+import tracker.Entities.User;
 
 public interface UserDAO {
     Object insertUser(User user);
@@ -23,5 +23,5 @@ public interface UserDAO {
 
     int insertRefreshToken(User user, String token);
 
-    boolean isRefreshTokenValid(String userID, String device, String androidId, String token);
+    boolean isRefreshTokenValid(String userID, String refreshToken);
 }

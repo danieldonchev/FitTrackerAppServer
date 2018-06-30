@@ -1,8 +1,7 @@
-package tracker.Users;
+package tracker.Entities.Users;
 
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.UUID;
 
 @Entity
 public class LocalUser extends User {

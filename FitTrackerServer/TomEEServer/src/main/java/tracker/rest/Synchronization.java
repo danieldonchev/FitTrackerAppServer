@@ -10,7 +10,7 @@ import sun.misc.IOUtils;
 import tracker.DAO.*;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
-import tracker.Users.GenericUser;
+import tracker.Entities.Users.GenericUser;
 
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +30,8 @@ import java.util.List;
 @Sync
 @Path("sync")
 public class Synchronization {
+
+
 
     @GET
     @Path("should-sync")

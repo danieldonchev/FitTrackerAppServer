@@ -6,7 +6,7 @@ import tracker.Authenticate.TokenAuthenticator;
 import tracker.DAO.DAOFactory;
 import tracker.DAO.UserSyncDAO;
 import tracker.Markers.Secured;
-import tracker.Users.GenericUser;
+import tracker.Entities.Users.GenericUser;
 
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;
@@ -20,7 +20,6 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Instant;
-import java.util.UUID;
 
 @Provider
 @Secured
@@ -28,7 +27,7 @@ import java.util.UUID;
 public class JWTAuthFilter implements ContainerRequestFilter {
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
 
         // Get the HTTP Authorization header from the request
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
