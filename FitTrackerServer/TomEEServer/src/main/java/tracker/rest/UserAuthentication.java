@@ -1,30 +1,23 @@
 package tracker.rest;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
-import org.hibernate.HibernateException;
-import org.hibernate.JDBCException;
 import org.json.JSONObject;
 import tracker.Authenticate.*;
 
 import tracker.DAO.DAOServices.UserService;
+import tracker.DAO.DAOServices.UserServiceImpl;
 
 import tracker.Entities.User;
 import tracker.Entities.UserTokens;
 
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Optional;
-import java.util.Properties;
 
 @Path("auth")
 public class UserAuthentication {
@@ -38,6 +31,12 @@ public class UserAuthentication {
         this.service = service;
     }
 
+    /*
+        REST endpoint for users to register a local account.
+        @param user User details - email, password.
+        @return     Response ok(200) if the user doesn't exist in the database with new refresh and access token. Otherwise
+        Response UNAUTHORIZED(409).
+    */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,8 +44,7 @@ public class UserAuthentication {
     public Response register(User user) {
 
         JSONObject response = new JSONObject();
-        UserTokens userTokens = null;
-        userTokens = service.insertUser(user);
+        UserTokens userTokens = service.insertUser(user);
 
         if (userTokens.isUserNew()) {
             response.put("login", "success")
@@ -60,6 +58,13 @@ public class UserAuthentication {
         }
     }
 
+    /*
+        REST endpoint for users to login with local account. Verifies user password and creates
+        refresh and access tokens for the user.
+        @param user User details - email, password.
+        @return     Response ok(200) if the password is correct token with new refresh and access token. Otherwise
+        Response UNAUTHORIZED(409).
+    */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("login")
@@ -81,6 +86,13 @@ public class UserAuthentication {
         }
     }
 
+    /*
+        REST endpoint for users to login with google account. Verifies google access token and creates
+        refresh and access tokens for the user.
+        @param user User details - email.
+        @return     Response ok(200) if the access token is verified with new refresh and access token. Otherwise
+        Response UNAUTHORIZED(409).
+    */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -109,6 +121,13 @@ public class UserAuthentication {
         }
     }
 
+    /*
+        REST endpoint for users to login with facebook account. Verifies facebook access token and creates
+        refresh and access tokens for the user.
+        @param user User details - email.
+        @return     Response ok(200) if the access token is verified with new refresh and access token. Otherwise
+        Response UNAUTHORIZED(409).
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("fblogin")
@@ -130,6 +149,11 @@ public class UserAuthentication {
         }
     }
 
+    /*
+        REST endpoint for user forgotten password. Sends email with code to the user for password retrieval.
+        @param email User email.
+        @return     Response ok (200) if user is found in the database otherwise Response NOT_FOUND (404).
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("forgotten-password")
@@ -142,6 +166,11 @@ public class UserAuthentication {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    /*
+        REST endpoint for getting access token from an active refresh token.
+        @param jsonObject JSON object with refresh_token inside.
+        @return String New generated access token.
+     */
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("access-token")
@@ -156,7 +185,7 @@ public class UserAuthentication {
 
     /*
         REST endpoint for changing users password.
-        @param String JSONObject containing email as "email", password as "password"
+        @param data JSONObject containing email as "email", password as "password"
         @return Response ok() code 200
      */
     @POST
@@ -173,31 +202,6 @@ public class UserAuthentication {
             return Response.ok().build();
         }
             return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @GET
-    @Path("captcha")
-    @Produces(MediaType.TEXT_HTML)
-    public Response getCaptcha(@Context HttpServletResponse res) {
-
-        return Response.ok().entity("<html>" +
-                "  <head>" +
-                "    <title>reCAPTCHA demo: Simple page</title>" +
-                "     <script src=\"https://www.google.com/recaptcha/api.js\" async defer></script>" +
-                "  </head>" +
-                "  <body>" +
-                "    <div class=\"g-recaptcha\"" +
-                "          data-sitekey=\"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\"" +
-                "          data-callback=\"captchaResponse\"" +
-                "          data-size=\"invisible\">" +
-                "    </div>" +
-                " <script type=\"text/javascript\">" +
-                "function executeCaptcha(){grecaptcha.execute();}" +
-                "      function captchaResponse(token){" +
-                "BridgeWebViewClass.reCaptchaCallbackInAndroid(token)}" +
-                "</script>" +
-                "  </body>" +
-                "</html>").build();
     }
 
 }

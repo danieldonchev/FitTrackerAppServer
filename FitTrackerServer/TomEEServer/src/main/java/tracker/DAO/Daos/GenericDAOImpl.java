@@ -1,6 +1,5 @@
-package tracker.DAO.DAOServices;
+package tracker.DAO.Daos;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
@@ -34,6 +33,7 @@ public class GenericDAOImpl<T, PK extends Serializable> implements GenericDao<T,
         return this.entityManager.merge(t);
     }
 
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }

@@ -1,5 +1,6 @@
 package tracker.DAO.DAOServices;
 
+import tracker.DAO.Daos.GenericDao;
 import tracker.Entities.Goal;
 import tracker.Entities.GoalKey;
 

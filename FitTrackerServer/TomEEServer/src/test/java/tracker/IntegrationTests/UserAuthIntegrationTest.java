@@ -116,6 +116,31 @@ public class UserAuthIntegrationTest {
         }
     }
 
+    @Test
+    public void getAccessTokenFromRefreshToken(){
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("refresh_token", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaXNzIjoidHJhY2tlci5jb20iLCJpYXQiOjE1MzAzMTc3NDcsImV4cCI6MTUzODA5Mzc0NywiZW1haWwiOiJkaWRvbmU3QGFidi5iZyIsInVzZXJJRCI6ImI2OWY2MDM3LWU5NTktNGYzOS04OGU5LWJlY2RjOTNiMjk5NSJ9.FXGYXgUYY7wxl6f2447yH-gR_ZurybybiqVDNTHmYBU");
+
+            HttpsURLConnection connection;
+            HttpsClient httpsClient = new HttpsClient(API.accessToken);
+            connection = httpsClient.setUpHttpsConnection();
+            connection.setDoOutput(true);
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+            connection.getOutputStream().write(jsonObject.toString().getBytes(Charset.forName("UTF-8")));
+            InputStream in = new BufferedInputStream(connection.getInputStream());
+            String accessToken = readStream(in);
+
+            Assert.assertEquals(connection.getResponseCode(), 200);
+            Assert.assertNotNull(accessToken);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private JSONObject getAccDetails(){
         return new JSONObject()
         .put(HttpsConnection.Constants.EMAIL, "didone7@abv.bg")
