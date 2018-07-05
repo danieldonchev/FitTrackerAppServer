@@ -2,16 +2,19 @@ package tracker.rest;
 
 import com.tracker.shared.Entities.GoalWeb;
 import com.tracker.shared.Entities.SerializeHelper;
-import com.tracker.shared.Entities.SportActivity;
-import com.tracker.shared.Entities.Weight;
+import com.tracker.shared.Entities.SportActivityWeb;
+import com.tracker.shared.Entities.WeightWeb;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
 import tracker.DAO.*;
+import tracker.DAO.DAOServices.SynchronizationService;
+import tracker.Entities.SportActivity;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
 import tracker.Entities.Users.GenericUser;
 
+import javax.inject.Inject;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +34,15 @@ import java.util.List;
 @Path("sync")
 public class Synchronization {
 
+    private SynchronizationService service;
 
+    public Synchronization() {
+    }
+
+    @Inject
+    public Synchronization(SynchronizationService service) {
+        this.service = service;
+    }
 
     @GET
     @Path("should-sync")
@@ -49,6 +60,11 @@ public class Synchronization {
     public Response getSportActivities(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
 
+        List<Object> sportact = this.service.getMissingEntities(user, "user_sport_activity", SportActivity.class);
+//        for(Object sportActivity : sportact){
+//            ((SportActivity) sportActivity).
+//        }
+
         DAOFactory daoFactory = new DAOFactory();
         SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
 
@@ -57,10 +73,10 @@ public class Synchronization {
                 SportActivityDAOImpl.Constants.SPORT_ACTIVITY_DELETED + "=0;";
         Object[] args = {user.getClientSyncTimestamp()};
 
-        ArrayList<SportActivity> sportActivities = sportActivityDAO.getActivities(user.getId().toString(), where, args, null, 0);
+        ArrayList<SportActivityWeb> sportActivities = sportActivityDAO.getActivities(user.getId(), where, args, null, 0);
 
 
-        response.addHeader("Data-Type", SportActivity.class.getSimpleName());
+        response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().entity(SerializeHelper.serializeSportActivities(sportActivities)).build();
     }
 
@@ -76,9 +92,9 @@ public class Synchronization {
         DAOFactory daoFactory = new DAOFactory();
         SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
         try {
-            List<SportActivity> sportActivities = SerializeHelper.deserializeSportActivities(IOUtils.readFully(inputStream, -1, true));
-            for (SportActivity sportActivity : sportActivities) {
-                sportActivityDAO.insertSportActivity(sportActivity, user.getId().toString(), timestamp);
+            List<SportActivityWeb> sportActivities = SerializeHelper.deserializeSportActivities(IOUtils.readFully(inputStream, -1, true));
+            for (SportActivityWeb sportActivityWeb : sportActivities) {
+                sportActivityDAO.insertSportActivity(sportActivityWeb, user.getId().toString(), timestamp);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,9 +148,9 @@ public class Synchronization {
                 GoalDAOImpl.Constants.DELETED + "=0;";
         Object[] args = {user.getClientSyncTimestamp()};
 
-        ArrayList<GoalWeb> goalWebs = goalDAO.getGoals(user.getId().toString(), where, args, null, 0);
+        ArrayList<GoalWeb> goalWebs = goalDAO.getGoals(user.getId(), where, args, null, 0);
 
-        response.addHeader("Data-Type", SportActivity.class.getSimpleName());
+        response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().entity(SerializeHelper.serializeGoals(goalWebs)).build();
     }
 
@@ -215,9 +231,9 @@ public class Synchronization {
         DAOFactory daoFactory = new DAOFactory();
         WeightDAO weightDAO = daoFactory.getWeightsDAO();
         try {
-            ArrayList<Weight> weights = SerializeHelper.deserializeWeights(IOUtils.readFully(inputStream, -1, true));
-            for (Weight weight : weights) {
-                weightDAO.insertWeight(weight, user.getId().toString(), timestamp);
+            ArrayList<WeightWeb> weightWebs = SerializeHelper.deserializeWeights(IOUtils.readFully(inputStream, -1, true));
+            for (WeightWeb weightWeb : weightWebs) {
+                weightDAO.insertWeight(weightWeb, user.getId(), timestamp);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -239,10 +255,10 @@ public class Synchronization {
                 WeightsDAOImpl.Constants.USER_ID + "=?";
         Object[] args = {user.getClientSyncTimestamp()};
 
-        ArrayList<Weight> weights = weightDAO.getWeights(user.getId().toString(), where, args, null, 0);
+        ArrayList<WeightWeb> weightWebs = weightDAO.getWeights(user.getId(), where, args, null, 0);
 
-        response.addHeader("Data-Type", SportActivity.class.getSimpleName());
-        return Response.ok().entity(SerializeHelper.serializeWeights(weights)).build();
+        response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
+        return Response.ok().entity(SerializeHelper.serializeWeights(weightWebs)).build();
     }
 
     @GET
@@ -256,11 +272,11 @@ public class Synchronization {
 
         String where = UserDetailsDAOImpl.Constants.COLUMN_LAST_SYNC + ">? AND " +
                 UserDetailsDAOImpl.Constants.COLUMN_ID + "=?";
-        Object[] args = {user.getClientSyncTimestamp(), user.getId().toString()};
+        Object[] args = {user.getClientSyncTimestamp(), user.getId()};
 
-        JSONObject object = detailsDAO.getUserSettings(user.getId().toString(), where, args);
+        JSONObject object = detailsDAO.getUserSettings(user.getId(), where, args);
 
-        response.addHeader("Data-Type", SportActivity.class.getSimpleName());
+        response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().entity(object.toString()).build();
     }
 
@@ -276,7 +292,7 @@ public class Synchronization {
         detailsDAO.update(user.getId().toString(), new JSONObject(settings.getSettings()), settings.getLastModified(),
                 user.getNewServerTimestamp());
 
-        response.addHeader("Data-Type", SportActivity.class.getSimpleName());
+        response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().build();
     }
 

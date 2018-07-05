@@ -1,11 +1,16 @@
 package tracker.Entities;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 //@DynamicUpdate
 @Table(name = "goals")
+@Filter(name = "deletedFilter",
+            condition = "deleted > 0")
 public class Goal {
 
     @EmbeddedId

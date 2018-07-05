@@ -1,7 +1,7 @@
 package tracker.DAO;
 
 
-import com.tracker.shared.Entities.Weight;
+import com.tracker.shared.Entities.WeightWeb;
 import tracker.SQLBuilderHelper.SQLBuilder;
 
 import javax.naming.NamingException;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class WeightsDAOImpl implements WeightDAO {
     @Override
-    public int insertWeight(Weight weight, String userID, long timestamp) {
+    public int insertWeight(WeightWeb weightWeb, String userID, long timestamp) {
 
         SQLBuilder builder = new SQLBuilder();
 
@@ -36,10 +36,10 @@ public class WeightsDAOImpl implements WeightDAO {
         try (Connection connection = daoFactory.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
-                preparedStatement.setLong(parameterIndex++, weight.date);
+                preparedStatement.setLong(parameterIndex++, weightWeb.date);
                 preparedStatement.setString(parameterIndex++, userID);
-                preparedStatement.setDouble(parameterIndex++, weight.weight);
-                preparedStatement.setLong(parameterIndex++, weight.lastModified);
+                preparedStatement.setDouble(parameterIndex++, weightWeb.weight);
+                preparedStatement.setLong(parameterIndex++, weightWeb.lastModified);
                 preparedStatement.setLong(parameterIndex++, timestamp);
 
                 preparedStatement.execute();
@@ -54,13 +54,13 @@ public class WeightsDAOImpl implements WeightDAO {
     }
 
     @Override
-    public int updateWeight(Weight weight, String userID, long timestamp) {
+    public int updateWeight(WeightWeb weightWeb, String userID, long timestamp) {
         return 0;
     }
 
     @Override
-    public ArrayList<Weight> getWeights(String userID, String where, Object[] selectionArgs, String[] orderBy, int limit) {
-        ArrayList<Weight> weights = new ArrayList<>();
+    public ArrayList<WeightWeb> getWeights(String userID, String where, Object[] selectionArgs, String[] orderBy, int limit) {
+        ArrayList<WeightWeb> weightWebs = new ArrayList<>();
         String[] projection = {Constants.WEIGHT,
                 Constants.DATE,
                 Constants.LAST_MODIFIED};
@@ -81,10 +81,10 @@ public class WeightsDAOImpl implements WeightDAO {
 
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
-                    Weight weight = new Weight(rs.getDouble(Constants.WEIGHT),
+                    WeightWeb weightWeb = new WeightWeb(rs.getDouble(Constants.WEIGHT),
                             rs.getLong(Constants.DATE),
                             rs.getLong(Constants.LAST_MODIFIED));
-                    weights.add(weight);
+                    weightWebs.add(weightWeb);
                 }
             }
         } catch (SQLException ex) {
@@ -93,7 +93,7 @@ public class WeightsDAOImpl implements WeightDAO {
             ex.printStackTrace();
         }
 
-        return weights;
+        return weightWebs;
     }
 
     public final class Constants {

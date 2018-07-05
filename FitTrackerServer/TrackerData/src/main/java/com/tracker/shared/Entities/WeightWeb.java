@@ -6,20 +6,20 @@ import com.tracker.shared.flatbuf.WeightFlat;
 import java.nio.ByteBuffer;
 
 
-public class Weight {
+public class WeightWeb {
 
     public double weight;
     public long date;
     public long lastModified;
 
-    public Weight(){}
+    public WeightWeb(){}
 
-    public Weight(double weight, long date){
+    public WeightWeb(double weight, long date){
         this.weight = weight;
         this.date = date;
     }
 
-    public Weight(double weight, long date, long lastModified){
+    public WeightWeb(double weight, long date, long lastModified){
         this(weight, date);
         this.lastModified = lastModified;
     }
@@ -38,7 +38,7 @@ public class Weight {
     }
 
 
-    public Weight deserialize(byte[] bytesRead) {
+    public WeightWeb deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
         WeightFlat weightFlatBufferer = WeightFlat.getRootAsWeight(buf);
 

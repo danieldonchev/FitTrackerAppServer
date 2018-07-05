@@ -45,7 +45,7 @@ public class UserAuthentication {
 
         JSONObject response = new JSONObject();
         UserTokens userTokens = service.insertUser(user);
-
+        
         if (userTokens.isUserNew()) {
             response.put("login", "success")
             .put("refresh_token", userTokens.getRefreshToken())

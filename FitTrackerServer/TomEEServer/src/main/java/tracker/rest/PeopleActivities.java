@@ -36,11 +36,4 @@ public class PeopleActivities {
 
         return Response.ok().entity(map.serialize()).build();
     }
-
-    @Path("activities")
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response getTest() {
-        return Response.ok().entity("asdasd").build();
-    }
 }

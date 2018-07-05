@@ -43,6 +43,9 @@ public final class API {
     public static final String peopleActivities = basePeopleActivites + "activities";
     public static final String sharedMap = basePeopleActivites + "map";
 
+    //settings
+    public static final String settings = baseURLHttps + "settings/" + "setting";
+
     //synchronization
     public static final String checkSync = baseSync + "should-sync";
     public static final String syncActivities = baseSync + "sport-activities";
@@ -52,8 +55,7 @@ public final class API {
     public static final String deletedGoals = baseSync + "deleted-goals";
     public static final String goals = baseSync + "goals";
     public static final String weights = baseSync + "weights";
-    public static final String updateSettings = baseSync + "update-settings";
-    public static final String getSettings = baseSync + "settings";
+    public static final String syncSettings = baseSync + "settings";
     public static final String syncTimes = baseSync + "sync-times";
 
 }

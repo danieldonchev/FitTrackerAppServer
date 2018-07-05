@@ -1,14 +1,17 @@
 package tracker.rest;
 
-import com.tracker.shared.Entities.Weight;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
 import tracker.DAO.DAOFactory;
+import tracker.DAO.DAOServices.WeightService;
 import tracker.DAO.WeightDAO;
+import tracker.Entities.Weight;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
-import tracker.Entities.Users.GenericUser;
+import tracker.Markers.UserWriting;
+import tracker.Markers.WeightInterceptorReader;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,28 +27,28 @@ import java.io.InputStream;
 @Path("weights")
 public class Weights {
 
+    private WeightService service;
+
+    public Weights() {
+    }
+
+    @Inject
+    public Weights(WeightService service) {
+        this.service = service;
+    }
+
     @POST
     @Path("weight")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response insertWeight(InputStream inputStream, @Context SecurityContext context) {
+    @UserWriting
+    @WeightInterceptorReader
+    public Response insertWeight(Weight weight, @Context SecurityContext context) {
 
-        GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(true);
-
-        DAOFactory daoFactory = new DAOFactory();
-        WeightDAO weightDAO = daoFactory.getWeightsDAO();
-        Weight weight = null;
-        try {
-            weight = new Weight().deserialize(IOUtils.readFully(inputStream, -1, true));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        weightDAO.insertWeight(weight, user.getId().toString(), user.getNewServerTimestamp());
+        this.service.create(weight);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", Weight.class.getSimpleName());
-        jsonObject.put("id", weight.date);
+        jsonObject.put("id", weight.getWeightKey().getDate());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }

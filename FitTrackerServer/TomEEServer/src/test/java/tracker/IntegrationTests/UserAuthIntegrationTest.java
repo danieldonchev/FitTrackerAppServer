@@ -57,6 +57,8 @@ public class UserAuthIntegrationTest {
             JSONObject receivedObject = new JSONObject(receivedStr);
             String refreshToken = receivedObject.getString("refresh_token");
             String accessToken = receivedObject.getString("access_token");
+            writeTokens(receivedObject.getString("refresh_token"),
+                    receivedObject.getString("access_token"));
             int b = 5;
         } catch (IOException e) {
             e.printStackTrace();

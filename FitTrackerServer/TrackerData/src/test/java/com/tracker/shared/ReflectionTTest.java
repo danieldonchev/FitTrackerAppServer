@@ -19,7 +19,7 @@ public class ReflectionTTest {
         map.getPolyline().add(new LatLng(5, 6));
         map.getPolyline().add(new LatLng(5, 6));
 
-        Split split = new Split(1, 50, 50);
+        SplitWeb splitWeb = new SplitWeb(1, 50, 50);
 
         GoalWeb goalWeb = new GoalWeb(UUID.randomUUID(),
                             1,
@@ -32,7 +32,7 @@ public class ReflectionTTest {
                             1l);
         ReflectionT reflectionT = new ReflectionT(goalWeb);
 
-        byte[] array = reflectionT.serializeObject(split);
+        byte[] array = reflectionT.serializeObject(splitWeb);
 
 
         GoalWeb goalWeb1 = new GoalWeb().deserialize(Arrays.copyOfRange(array, 4, array.length));

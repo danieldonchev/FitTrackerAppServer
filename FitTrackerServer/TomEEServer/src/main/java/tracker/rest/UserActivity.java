@@ -1,15 +1,15 @@
 package tracker.rest;
 
-import com.tracker.shared.Entities.SportActivity;
+import com.tracker.shared.Entities.SportActivityWeb;
 import org.json.JSONObject;
-import sun.misc.IOUtils;
-import tracker.DAO.DAOFactory;
+import tracker.DAO.DAOServices.SportActivityService;
 import tracker.DAO.SportActivityDAO;
-import tracker.Markers.Secured;
-import tracker.Markers.Sync;
+import tracker.Entities.SportActivity;
+import tracker.Markers.*;
 import tracker.Entities.Users.GenericUser;
 
 import javax.imageio.ImageIO;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -19,33 +19,32 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 @Secured
 @Sync
 @Path("user")
 public class UserActivity {
 
+    private SportActivityService service;
+
+    public UserActivity(){}
+
+    @Inject
+    public UserActivity(SportActivityService service){
+        this.service = service;
+    }
+
     @Path("sport-activity")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @POST
-    public Response insertSportActivity(InputStream inputStream, @Context SecurityContext context, @Context HttpHeaders headers) {
-        GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(true);
+    @UserWriting
+    @SportActivityInterceptorReader
+    public Response insertSportActivity(SportActivity sportActivity, @Context SecurityContext context, @Context HttpHeaders headers) {
 
-        DAOFactory daoFactory = new DAOFactory();
-        SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
-        SportActivity sportActivity = null;
-        try {
-            sportActivity = new SportActivity().deserialize(IOUtils.readFully(inputStream, -1, true));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        sportActivityDAO.insertSportActivity(sportActivity, user.getId().toString(), user.getNewServerTimestamp());
+        this.service.create(sportActivity);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("data", SportActivity.class.getSimpleName());
-        jsonObject.put("id", sportActivity.getId());
+        jsonObject.put("data", SportActivityWeb.class.getSimpleName());
+        jsonObject.put("id", sportActivity.getSportActivityKey().getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
@@ -53,18 +52,16 @@ public class UserActivity {
     @GET
     @Path("sport-activity/{id}/{userID}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @SportActivityInterceptorWriter
     public Response getSportActivity(@PathParam("id") String id, @PathParam("userID") String userID, @Context SecurityContext context) {
         GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(false);
 
-        if (userID.equals(user.getId().toString())) {
-            DAOFactory daoFactory = new DAOFactory();
-            SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
-            SportActivity sportActivity = sportActivityDAO.getSportActivity(id, userID);
+        if (userID.equals(user.getId())) {
+            SportActivity sportActivity = this.service.read(id, userID);
             if (sportActivity == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             } else {
-                return Response.ok().entity(sportActivity.serialize()).build();
+                return Response.ok().entity(sportActivity).build();
             }
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -73,48 +70,33 @@ public class UserActivity {
 
     @DELETE
     @Path("sport-activity/{id}")
+    @UserWriting
     public Response deleteSportActivity(@PathParam("id") String id, @Context SecurityContext context, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(true);
 
-        DAOFactory factory = new DAOFactory();
-        SportActivityDAO sportActivityDAO = factory.getSportActivityDAO();
-        response.addHeader("Data-Type", SportActivity.class.getSimpleName());
+        response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
+        this.service.delete(id, user.getId());
 
-
-        if (sportActivityDAO.deleteSportActivity(user.getId().toString(), id, user.getNewServerTimestamp())) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("id", id);
-
-            return Response.ok().entity(jsonObject.toString()).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        return Response.ok().entity(jsonObject.toString()).build();
     }
 
     @PUT
     @Path("sport-activity")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editSportActivity(InputStream inputStream, @Context SecurityContext context) throws IOException {
-        GenericUser user = (GenericUser) context.getUserPrincipal();
-        user.setWriting(true);
+    @UserWriting
+    @SportActivityInterceptorReader
+    public Response editSportActivity(SportActivity sportActivity, @Context SecurityContext context) throws IOException {
 
-        SportActivity sportActivity = new SportActivity().deserialize(IOUtils.readFully(inputStream, -1, true));
-        DAOFactory factory = new DAOFactory();
-        SportActivityDAO sportActivityDAO = factory.getSportActivityDAO();
-        int result = sportActivityDAO.updateSportActivity(user.getId().toString(), sportActivity, user.getNewServerTimestamp());
-        if (result == -1) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
+        this.service.update(sportActivity);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("data", SportActivity.class.getSimpleName());
-        jsonObject.put("id", sportActivity.getId());
+        jsonObject.put("data", SportActivityWeb.class.getSimpleName());
+        jsonObject.put("id", sportActivity.getSportActivityKey().getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
-
 
     @POST
     @Path("profile-pic")

@@ -9,38 +9,38 @@ import java.util.ListIterator;
 import java.util.UUID;
 
 @FlatBufferSerializable
-public class SportActivity extends AbstractWorkout
+public class SportActivityWeb extends AbstractWorkout
 {
-    private UUID id;
+    private String id;
     private double distance = 0;
     private long steps;
     private long startTimestamp;
     private long endTimestamp;
-    private ArrayList<Split> splits;
+    private ArrayList<SplitWeb> splitWebs;
     private SportActivityMap sportActivityMap;
     private long lastModified;
 
-    public SportActivity()
+    public SportActivityWeb()
     {
-        splits = new ArrayList<>();
+        splitWebs = new ArrayList<>();
         sportActivityMap = new SportActivityMap();
     }
 
-    public SportActivity(UUID id)
+    public SportActivityWeb(String id)
     {
         this.id = id;
-        splits = new ArrayList<>();
+        splitWebs = new ArrayList<>();
         sportActivityMap = new SportActivityMap();
     }
 
-    private SportActivity(String workout, long duration, int calories, int type)
+    private SportActivityWeb(String workout, long duration, int calories, int type)
     {
         super(workout, duration, calories, type);
         sportActivityMap = new SportActivityMap();
-        splits = new ArrayList<>();
+        splitWebs = new ArrayList<>();
     }
 
-    public SportActivity(UUID id, String workout, long duration, double distance, long steps, int calories, long startTimestamp, long endTimestamp, int type, long lastModified)
+    public SportActivityWeb(String id, String workout, long duration, double distance, long steps, int calories, long startTimestamp, long endTimestamp, int type, long lastModified)
     {
         this(workout, duration, calories, type);
         this.id = id;
@@ -51,8 +51,8 @@ public class SportActivity extends AbstractWorkout
         this.lastModified = lastModified;
     }
 
-    public SportActivity(UUID id, String workout, long duration, double distance, long steps, int calories, SportActivityMap sportActivityMap, long startTimestamp,
-                         long endTimestamp, int type, long lastModified, ArrayList<Split> splits)
+    public SportActivityWeb(String id, String workout, long duration, double distance, long steps, int calories, SportActivityMap sportActivityMap, long startTimestamp,
+                            long endTimestamp, int type, long lastModified, ArrayList<SplitWeb> splitWebs)
     {
         this(workout, duration, calories, type);
         this.id = id;
@@ -62,7 +62,7 @@ public class SportActivity extends AbstractWorkout
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
         this.lastModified = lastModified;
-        this.splits = splits;
+        this.splitWebs = splitWebs;
     }
 
 
@@ -80,11 +80,11 @@ public class SportActivity extends AbstractWorkout
     }
 
 
-    public SportActivity deserialize(byte[] bytesRead) {
+    public SportActivityWeb deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
         SportActivityFlat sportActivityFlatBufferer = SportActivityFlat.getRootAsSportActivity(buf);
 
-        this.id = UUID.fromString(sportActivityFlatBufferer.id());
+        this.id = UUID.fromString(sportActivityFlatBufferer.id()).toString();
         this.workout = sportActivityFlatBufferer.activity();
         this.startTimestamp = sportActivityFlatBufferer.startTimestamp();
         this.endTimestamp = sportActivityFlatBufferer.endTimestamp();
@@ -112,7 +112,7 @@ public class SportActivity extends AbstractWorkout
             for(int i = 0; i < sportActivityFlatBufferer.splits().splitsLength(); i++)
             {
                 SplitFlat splitFlat = sportActivityFlatBufferer.splits().splits(i);
-                splits.add(new Split(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
+                splitWebs.add(new SplitWeb(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
             }
         }
 
@@ -148,15 +148,15 @@ public class SportActivity extends AbstractWorkout
 
     public int getSplitsBufferInt(FlatBufferBuilder builder)
     {
-        if(splits != null){
-            ListIterator<Split> splitListIterator = splits.listIterator(splits.size());
+        if(splitWebs != null){
+            ListIterator<SplitWeb> splitListIterator = splitWebs.listIterator(splitWebs.size());
 
-            SplitsFlat.startSplitsVector(builder, splits.size());
+            SplitsFlat.startSplitsVector(builder, splitWebs.size());
 
             while(splitListIterator.hasPrevious())
             {
-                Split split = splitListIterator.previous();
-                SplitFlat.createSplit(builder, split.getId(), split.getDistance(), split.getDuration());
+                SplitWeb splitWeb = splitListIterator.previous();
+                SplitFlat.createSplit(builder, splitWeb.getId(), splitWeb.getDistance(), splitWeb.getDuration());
             }
 
             int splits = builder.endVector();
@@ -170,15 +170,15 @@ public class SportActivity extends AbstractWorkout
         return 0;
     }
 
-    public ArrayList<Split> getSplitsFromFlatBuffSplits(SplitsFlat flatBuffSplitsFlat){
+    public ArrayList<SplitWeb> getSplitsFromFlatBuffSplits(SplitsFlat flatBuffSplitsFlat){
         if(flatBuffSplitsFlat != null){
             for(int i = 0; i < flatBuffSplitsFlat.splitsLength(); i++)
             {
                 SplitFlat splitFlat = flatBuffSplitsFlat.splits(i);
-                this.splits.add(new Split(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
+                this.splitWebs.add(new SplitWeb(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
             }
         }
-        return splits;
+        return splitWebs;
     }
 
 
@@ -238,12 +238,12 @@ public class SportActivity extends AbstractWorkout
         this.endTimestamp = endTimestamp;
     }
 
-    public ArrayList<Split> getSplits() {
-        return splits;
+    public ArrayList<SplitWeb> getSplitWebs() {
+        return splitWebs;
     }
 
-    public void setSplits(ArrayList<Split> splits) {
-        this.splits = splits;
+    public void setSplitWebs(ArrayList<SplitWeb> splitWebs) {
+        this.splitWebs = splitWebs;
     }
 
     public SportActivityMap getSportActivityMap() {
@@ -254,7 +254,7 @@ public class SportActivity extends AbstractWorkout
         this.sportActivityMap = sportActivityMap;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 

@@ -1,9 +1,9 @@
 package tracker.DAO;
 
 import com.tracker.shared.Entities.LatLng;
-import com.tracker.shared.Entities.Split;
-import com.tracker.shared.Entities.SportActivity;
+import com.tracker.shared.Entities.SplitWeb;
 import com.tracker.shared.Entities.SportActivityMap;
+import com.tracker.shared.Entities.SportActivityWeb;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
@@ -24,7 +24,7 @@ import java.util.UUID;
 public class SportActivityDAOImpl implements SportActivityDAO {
 
     @Override
-    public int insertSportActivity(SportActivity sportActivity, String userID, long timeStamp) {
+    public int insertSportActivity(SportActivityWeb sportActivityWeb, String userID, long timeStamp) {
         String[] columns = {Constants.SPORT_ACTIVITY_ID,
                 Constants.SPORT_ACTIVITY_USERID,
                 Constants.SPORT_ACTIVITY_ACTIVITY,
@@ -49,22 +49,22 @@ public class SportActivityDAOImpl implements SportActivityDAO {
                 .build();
 
         StringBuilder markerPointsBuilder = new StringBuilder();
-        if (sportActivity.getSportActivityMap().getMarkers().size() > 0) {
+        if (sportActivityWeb.getSportActivityMap().getMarkers().size() > 0) {
             markerPointsBuilder.append("MULTIPOINT(");
-            markerPointsBuilder = stringConcatinator(markerPointsBuilder, sportActivity.getSportActivityMap().getMarkers().iterator());
+            markerPointsBuilder = stringConcatinator(markerPointsBuilder, sportActivityWeb.getSportActivityMap().getMarkers().iterator());
             markerPointsBuilder.append(")");
         }
 
         StringBuilder polylineBuilder = new StringBuilder();
-        if (sportActivity.getSportActivityMap().getPolyline().size() == 1) {
+        if (sportActivityWeb.getSportActivityMap().getPolyline().size() == 1) {
             polylineBuilder.append("LINESTRING(");
-            polylineBuilder = stringConcatinator(polylineBuilder, sportActivity.getSportActivityMap().getPolyline().iterator());
+            polylineBuilder = stringConcatinator(polylineBuilder, sportActivityWeb.getSportActivityMap().getPolyline().iterator());
             polylineBuilder.append(",");
-            polylineBuilder = stringConcatinator(polylineBuilder, sportActivity.getSportActivityMap().getPolyline().iterator());
+            polylineBuilder = stringConcatinator(polylineBuilder, sportActivityWeb.getSportActivityMap().getPolyline().iterator());
             polylineBuilder.append(")");
-        } else if (sportActivity.getSportActivityMap().getPolyline().size() > 1) {
+        } else if (sportActivityWeb.getSportActivityMap().getPolyline().size() > 1) {
             polylineBuilder.append("LINESTRING(");
-            polylineBuilder = stringConcatinator(polylineBuilder, sportActivity.getSportActivityMap().getPolyline().iterator());
+            polylineBuilder = stringConcatinator(polylineBuilder, sportActivityWeb.getSportActivityMap().getPolyline().iterator());
             polylineBuilder.append(")");
         }
 
@@ -73,32 +73,32 @@ public class SportActivityDAOImpl implements SportActivityDAO {
             connection.setAutoCommit(false);
             int parameterIndex = 1;
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
-                preparedStatement.setString(parameterIndex++, sportActivity.getId().toString());
+                preparedStatement.setString(parameterIndex++, sportActivityWeb.getId().toString());
                 preparedStatement.setString(parameterIndex++, userID);
-                preparedStatement.setString(parameterIndex++, sportActivity.getWorkout());
-                preparedStatement.setLong(parameterIndex++, sportActivity.getStartTimestamp());
-                preparedStatement.setLong(parameterIndex++, sportActivity.getEndTimestamp());
-                preparedStatement.setDouble(parameterIndex++, sportActivity.getDistance());
-                preparedStatement.setLong(parameterIndex++, sportActivity.getDuration());
-                preparedStatement.setLong(parameterIndex++, sportActivity.getSteps());
-                preparedStatement.setInt(parameterIndex++, sportActivity.getCalories());
-                if (sportActivity.getSportActivityMap().getPolyline().size() > 0) {
+                preparedStatement.setString(parameterIndex++, sportActivityWeb.getWorkout());
+                preparedStatement.setLong(parameterIndex++, sportActivityWeb.getStartTimestamp());
+                preparedStatement.setLong(parameterIndex++, sportActivityWeb.getEndTimestamp());
+                preparedStatement.setDouble(parameterIndex++, sportActivityWeb.getDistance());
+                preparedStatement.setLong(parameterIndex++, sportActivityWeb.getDuration());
+                preparedStatement.setLong(parameterIndex++, sportActivityWeb.getSteps());
+                preparedStatement.setInt(parameterIndex++, sportActivityWeb.getCalories());
+                if (sportActivityWeb.getSportActivityMap().getPolyline().size() > 0) {
                     preparedStatement.setString(parameterIndex++, polylineBuilder.toString());
                 } else {
                     preparedStatement.setString(parameterIndex++, null);
                 }
-                if (sportActivity.getSportActivityMap().getMarkers().size() > 0) {
+                if (sportActivityWeb.getSportActivityMap().getMarkers().size() > 0) {
                     preparedStatement.setString(parameterIndex++, markerPointsBuilder.toString());
                 } else {
                     preparedStatement.setString(parameterIndex++, null);
                 }
-                preparedStatement.setInt(parameterIndex++, sportActivity.getType());
-                preparedStatement.setLong(parameterIndex++, sportActivity.getLastModified());
+                preparedStatement.setInt(parameterIndex++, sportActivityWeb.getType());
+                preparedStatement.setLong(parameterIndex++, sportActivityWeb.getLastModified());
                 preparedStatement.setLong(parameterIndex++, timeStamp);
                 preparedStatement.execute();
                 int updateCount = preparedStatement.getUpdateCount();
                 if (updateCount == 1) {
-                    inserActivitySplits(connection, sportActivity.getSplits(), sportActivity.getId().toString(), userID);
+                    inserActivitySplits(connection, sportActivityWeb.getSplitWebs(), sportActivityWeb.getId().toString(), userID);
                 }
                 connection.commit();
                 connection.setAutoCommit(true);
@@ -110,8 +110,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
     }
 
     @Override
-    public SportActivity getSportActivity(String id, String userID) {
-        SportActivity sportActivity = null;
+    public SportActivityWeb getSportActivity(String id, String userID) {
+        SportActivityWeb sportActivityWeb = null;
         SQLBuilder builder = new SQLBuilder();
         String where = Constants.SPORT_ACTIVITY_ID + "=?" + " AND " + Constants.SPORT_ACTIVITY_USERID + "=?";
         String statement = builder.table(Constants.SPORT_ACTIVITY_TABLE)
@@ -137,12 +137,12 @@ public class SportActivityDAOImpl implements SportActivityDAO {
             ex.printStackTrace();
         }
 
-        return sportActivity;
+        return sportActivityWeb;
     }
 
     @Override
-    public ArrayList<SportActivity> getActivities(String userID, String where, Object[] selectionArgs, String[] orderBy, int limit) {
-        ArrayList<SportActivity> sportActivities = new ArrayList<>();
+    public ArrayList<SportActivityWeb> getActivities(String userID, String where, Object[] selectionArgs, String[] orderBy, int limit) {
+        ArrayList<SportActivityWeb> sportActivities = new ArrayList<>();
         SQLBuilder builder = new SQLBuilder();
         String statement = builder.table(Constants.SPORT_ACTIVITY_TABLE)
                 .select("*")
@@ -207,7 +207,7 @@ public class SportActivityDAOImpl implements SportActivityDAO {
     }
 
     @Override
-    public int updateSportActivity(String userID, SportActivity sportActivity, long timestamp) {
+    public int updateSportActivity(String userID, SportActivityWeb sportActivityWeb, long timestamp) {
         String where = Constants.SPORT_ACTIVITY_ID + "=? AND " + Constants.SPORT_ACTIVITY_USERID + "=?";
         SQLBuilder builder = new SQLBuilder();
         builder.table(Constants.SPORT_ACTIVITY_TABLE);
@@ -216,25 +216,25 @@ public class SportActivityDAOImpl implements SportActivityDAO {
         ArrayList<String> columns = new ArrayList<>();
         ArrayList<String> values = new ArrayList<>();
 
-        if (sportActivity.getDistance() != 0) {
+        if (sportActivityWeb.getDistance() != 0) {
             columns.add(Constants.SPORT_ACTIVITY_DISTANCE);
         }
-        if (sportActivity.getDuration() != 0) {
+        if (sportActivityWeb.getDuration() != 0) {
             columns.add(Constants.SPORT_ACTIVITY_DURATION);
         }
-        if (sportActivity.getEndTimestamp() != 0) {
+        if (sportActivityWeb.getEndTimestamp() != 0) {
             columns.add(Constants.SPORT_ACTIVITY_END_TIMESTAMP);
         }
-        if (sportActivity.getStartTimestamp() != 0) {
+        if (sportActivityWeb.getStartTimestamp() != 0) {
             columns.add(Constants.SPORT_ACTIVITY_START_TIMESTMAP);
         }
-        if (sportActivity.getSteps() != 0) {
+        if (sportActivityWeb.getSteps() != 0) {
             columns.add(Constants.SPORT_ACTIVITY_STEPS);
         }
-        if (sportActivity.getCalories() != 0) {
+        if (sportActivityWeb.getCalories() != 0) {
             columns.add(Constants.SPORT_ACTIVITY_CALORIES);
         }
-        if (sportActivity.getWorkout() != null) {
+        if (sportActivityWeb.getWorkout() != null) {
             columns.add(Constants.SPORT_ACTIVITY_ACTIVITY);
         }
 
@@ -254,30 +254,30 @@ public class SportActivityDAOImpl implements SportActivityDAO {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
                 int parameterIndex = 1;
-                if (sportActivity.getDistance() != 0) {
-                    preparedStatement.setDouble(parameterIndex++, sportActivity.getDistance());
+                if (sportActivityWeb.getDistance() != 0) {
+                    preparedStatement.setDouble(parameterIndex++, sportActivityWeb.getDistance());
                 }
-                if (sportActivity.getDuration() != 0) {
-                    preparedStatement.setDouble(parameterIndex++, sportActivity.getDuration());
+                if (sportActivityWeb.getDuration() != 0) {
+                    preparedStatement.setDouble(parameterIndex++, sportActivityWeb.getDuration());
                 }
-                if (sportActivity.getStartTimestamp() != 0) {
-                    preparedStatement.setLong(parameterIndex++, sportActivity.getStartTimestamp());
+                if (sportActivityWeb.getStartTimestamp() != 0) {
+                    preparedStatement.setLong(parameterIndex++, sportActivityWeb.getStartTimestamp());
                 }
-                if (sportActivity.getEndTimestamp() != 0) {
-                    preparedStatement.setLong(parameterIndex++, sportActivity.getEndTimestamp());
+                if (sportActivityWeb.getEndTimestamp() != 0) {
+                    preparedStatement.setLong(parameterIndex++, sportActivityWeb.getEndTimestamp());
                 }
-                if (sportActivity.getCalories() != 0) {
-                    preparedStatement.setInt(parameterIndex++, sportActivity.getCalories());
+                if (sportActivityWeb.getCalories() != 0) {
+                    preparedStatement.setInt(parameterIndex++, sportActivityWeb.getCalories());
                 }
-                if (sportActivity.getSteps() != 0) {
-                    preparedStatement.setLong(parameterIndex++, sportActivity.getSteps());
+                if (sportActivityWeb.getSteps() != 0) {
+                    preparedStatement.setLong(parameterIndex++, sportActivityWeb.getSteps());
                 }
-                if (sportActivity.getWorkout() != null) {
-                    preparedStatement.setString(parameterIndex++, sportActivity.getWorkout());
+                if (sportActivityWeb.getWorkout() != null) {
+                    preparedStatement.setString(parameterIndex++, sportActivityWeb.getWorkout());
                 }
-                preparedStatement.setLong(parameterIndex++, sportActivity.getLastModified());
+                preparedStatement.setLong(parameterIndex++, sportActivityWeb.getLastModified());
                 preparedStatement.setLong(parameterIndex++, timestamp);
-                preparedStatement.setString(parameterIndex++, sportActivity.getId().toString());
+                preparedStatement.setString(parameterIndex++, sportActivityWeb.getId().toString());
                 preparedStatement.setString(parameterIndex++, userID);
 
                 preparedStatement.execute();
@@ -325,7 +325,7 @@ public class SportActivityDAOImpl implements SportActivityDAO {
         return jsonArray;
     }
 
-    private int inserActivitySplits(Connection connection, ArrayList<Split> splits, String activityID, String userID) {
+    private int inserActivitySplits(Connection connection, ArrayList<SplitWeb> splitWebs, String activityID, String userID) {
         String[] columns = {SplitConstants.SPLIT_ID, SplitConstants.SPLIT_SPORT_ACTIVITY_ID, SplitConstants.SPLIT_USER_ID, SplitConstants.SPLIT_DISTANCE, SplitConstants.SPLIT_DURATION};
         String[] values = {"?", "?", "?", "?", "?"};
         String statement = new SQLBuilder()
@@ -333,13 +333,13 @@ public class SportActivityDAOImpl implements SportActivityDAO {
                 .insert(columns, values)
                 .build();
         try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
-            for (Split split : splits) {
+            for (SplitWeb splitWeb : splitWebs) {
                 preparedStatement.clearParameters();
-                preparedStatement.setInt(1, split.getId());
+                preparedStatement.setInt(1, splitWeb.getId());
                 preparedStatement.setString(2, activityID);
                 preparedStatement.setString(3, userID);
-                preparedStatement.setDouble(4, split.getDistance());
-                preparedStatement.setLong(5, split.getDuration());
+                preparedStatement.setDouble(4, splitWeb.getDistance());
+                preparedStatement.setLong(5, splitWeb.getDuration());
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
@@ -351,8 +351,8 @@ public class SportActivityDAOImpl implements SportActivityDAO {
         return 0;
     }
 
-    private ArrayList<Split> getActivitySplits(Connection connection, String activityID, String userID) {
-        ArrayList<Split> splits = new ArrayList<>();
+    private ArrayList<SplitWeb> getActivitySplits(Connection connection, String activityID, String userID) {
+        ArrayList<SplitWeb> splitWebs = new ArrayList<>();
         String[] projection = {SplitConstants.SPLIT_ID,
                 SplitConstants.SPLIT_DISTANCE,
                 SplitConstants.SPLIT_DURATION};
@@ -369,20 +369,20 @@ public class SportActivityDAOImpl implements SportActivityDAO {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Split split = new Split(rs.getInt(SplitConstants.SPLIT_ID));
-                split.setDistance(rs.getDouble(SplitConstants.SPLIT_DISTANCE));
-                split.setDuration(rs.getLong(SplitConstants.SPLIT_DURATION));
-                splits.add(split);
+                SplitWeb splitWeb = new SplitWeb(rs.getInt(SplitConstants.SPLIT_ID));
+                splitWeb.setDistance(rs.getDouble(SplitConstants.SPLIT_DISTANCE));
+                splitWeb.setDuration(rs.getLong(SplitConstants.SPLIT_DURATION));
+                splitWebs.add(splitWeb);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
 
-        return splits;
+        return splitWebs;
     }
 
-    private SportActivity getSportActivityFromResultSet(Connection connection, String userID, ResultSet rs) {
+    private SportActivityWeb getSportActivityFromResultSet(Connection connection, String userID, ResultSet rs) {
         ArrayList<LatLng> markers = null;
         ArrayList<LatLng> polyline = null;
         try {
@@ -411,9 +411,9 @@ public class SportActivityDAOImpl implements SportActivityDAO {
         sportActivityMap.setMarkers(markers);
         sportActivityMap.setPolyline(polyline);
 
-        SportActivity sportActivity = null;
+        SportActivityWeb sportActivityWeb = null;
         try {
-            sportActivity = new SportActivity(UUID.fromString(rs.getString(Constants.SPORT_ACTIVITY_ID)),
+            sportActivityWeb = new SportActivityWeb(rs.getString(Constants.SPORT_ACTIVITY_ID),
                     rs.getString(Constants.SPORT_ACTIVITY_ACTIVITY),
                     rs.getLong(Constants.SPORT_ACTIVITY_DURATION),
                     rs.getDouble(Constants.SPORT_ACTIVITY_DISTANCE),
@@ -429,7 +429,7 @@ public class SportActivityDAOImpl implements SportActivityDAO {
             e.printStackTrace();
         }
 
-        return sportActivity;
+        return sportActivityWeb;
     }
 
     private StringBuilder stringConcatinator(StringBuilder stringBuilder, Iterator<LatLng> iterator) {

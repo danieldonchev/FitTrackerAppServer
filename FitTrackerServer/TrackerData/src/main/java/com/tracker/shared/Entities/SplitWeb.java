@@ -1,16 +1,16 @@
 package com.tracker.shared.Entities;
 
-public class Split
+public class SplitWeb
 {
     private int id;
     private long duration;
     private double distance;
 
-    public Split(int id) {
+    public SplitWeb(int id) {
         this.id = id;
     }
 
-    public Split(int id, long duration, double distance) {
+    public SplitWeb(int id, long duration, double distance) {
         this(id);
         this.duration = duration;
         this.distance = distance;
