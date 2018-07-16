@@ -3,18 +3,15 @@ package tracker.IntegrationTests;
 import com.tracker.shared.Entities.*;
 import org.junit.jupiter.api.Test;
 import sun.misc.IOUtils;
-import tracker.Https.API;
-import tracker.Https.HttpsConnection;
+import tracker.Utils.Https.API;
+import tracker.Utils.Https.HttpsConnection;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.UUID;
 
-import static tracker.Https.HttpsConnection.HTTP_POST;
+import static tracker.Utils.Https.HttpsConnection.HTTP_POST;
 import static tracker.Utils.TestUtils.readStream;
 
 public class WeightIntegrationTest {

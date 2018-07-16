@@ -1,18 +1,18 @@
 package tracker.rest;
 
-import com.tracker.shared.Entities.GoalWeb;
-import com.tracker.shared.Entities.SerializeHelper;
-import com.tracker.shared.Entities.SportActivityWeb;
-import com.tracker.shared.Entities.WeightWeb;
+import com.tracker.shared.Entities.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
 import tracker.DAO.*;
+import tracker.DAO.DAOServices.SettingsService;
 import tracker.DAO.DAOServices.SynchronizationService;
-import tracker.Entities.SportActivity;
-import tracker.Markers.Secured;
-import tracker.Markers.Sync;
+import tracker.DAO.DAOServices.UserSettignsService;
+import tracker.DAO.Daos.SyncDao;
+import tracker.Entities.*;
+import tracker.Markers.*;
 import tracker.Entities.Users.GenericUser;
+import tracker.WebEntitiesHelper;
 
 import javax.inject.Inject;
 import javax.naming.NamingException;
@@ -35,13 +35,14 @@ import java.util.List;
 public class Synchronization {
 
     private SynchronizationService service;
+    private UserSettignsService settingsService;
 
-    public Synchronization() {
-    }
+    public Synchronization() { }
 
     @Inject
-    public Synchronization(SynchronizationService service) {
+    public Synchronization(SynchronizationService service, UserSettignsService settingsService) {
         this.service = service;
+        this.settingsService = settingsService;
     }
 
     @GET
@@ -57,48 +58,25 @@ public class Synchronization {
     @GET
     @Path("sport-activities")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @SyncSportActivityListInterceptorWriter
     public Response getSportActivities(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
 
-        List<Object> sportact = this.service.getMissingEntities(user, "user_sport_activity", SportActivity.class);
-//        for(Object sportActivity : sportact){
-//            ((SportActivity) sportActivity).
-//        }
-
-        DAOFactory daoFactory = new DAOFactory();
-        SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
-
-        String where = SportActivityDAOImpl.Constants.SPORT_ACTIVITY_LAST_SYNC + ">? AND " +
-                SportActivityDAOImpl.Constants.SPORT_ACTIVITY_USERID + "=? AND " +
-                SportActivityDAOImpl.Constants.SPORT_ACTIVITY_DELETED + "=0;";
-        Object[] args = {user.getClientSyncTimestamp()};
-
-        ArrayList<SportActivityWeb> sportActivities = sportActivityDAO.getActivities(user.getId(), where, args, null, 0);
-
+        List<Object> missingEntities = this.service.getMissingEntities(user, "user_sport_activity", SportActivity.class);
 
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
-        return Response.ok().entity(SerializeHelper.serializeSportActivities(sportActivities)).build();
+        return Response.ok().entity(missingEntities).build();
     }
 
     @POST
     @Path("sport-activities")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response insertSportActivities(InputStream inputStream, @Context SecurityContext securityContext) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        user.setWriting(true);
-        long timestamp = user.getNewServerTimestamp();
+    @UserWriting
+    @SyncSportActivityListInterceptorReader
+    public Response insertSportActivities(List<SportActivity> sportActivities, @Context SecurityContext securityContext) {
 
-        DAOFactory daoFactory = new DAOFactory();
-        SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
-        try {
-            List<SportActivityWeb> sportActivities = SerializeHelper.deserializeSportActivities(IOUtils.readFully(inputStream, -1, true));
-            for (SportActivityWeb sportActivityWeb : sportActivities) {
-                sportActivityDAO.insertSportActivity(sportActivityWeb, user.getId().toString(), timestamp);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.service.insertEntities(sportActivities);
 
         return Response.ok().build();
     }
@@ -108,10 +86,12 @@ public class Synchronization {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDeletedActivities(@Context SecurityContext securityContext) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
+        List<String> sportActivities = this.service.getDeletedEntitiesId(user, "user_sport_activity");
 
-        DAOFactory daoFactory = new DAOFactory();
-        SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
-        JSONArray jsonArray = sportActivityDAO.getDeletedSportActivities(user.getId().toString());
+        JSONArray jsonArray = new JSONArray();
+        for(String id : sportActivities){
+            jsonArray.put(id);
+        }
 
         return Response.ok().entity(jsonArray.toString()).build();
     }
@@ -119,17 +99,16 @@ public class Synchronization {
     @POST
     @Path("deleted-activities")
     @Consumes(MediaType.APPLICATION_JSON)
+    @UserWriting
     public Response deleteActivities(String data, @Context SecurityContext securityContext) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        user.setWriting(true);
-        JSONArray jsonArray = new JSONArray(data);
-        DAOFactory daoFactory = new DAOFactory();
-        SportActivityDAO sportActivityDAO = daoFactory.getSportActivityDAO();
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            sportActivityDAO.deleteSportActivity(user.getId().toString(), jsonObject.getString("id"), user.getNewServerTimestamp());
+        JSONArray jsonArray = new JSONArray(data);
+        ArrayList<String> ids = new ArrayList<>();
+        for(int i = 0; i < jsonArray.length(); i++){
+            ids.add(jsonArray.get(i).toString());
         }
+        this.service.deleteEntities(user, "user_sport_activity", ids);
 
         return Response.ok().build();
     }
@@ -140,81 +119,46 @@ public class Synchronization {
     public Response getGoals(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
 
-        DAOFactory daoFactory = new DAOFactory();
-        GoalDAO goalDAO = daoFactory.getGoalDAO();
+        List<Object> missingEntities = this.service.getMissingEntities(user, "user_sport_activity", SportActivity.class);
 
-        String where = GoalDAOImpl.Constants.LAST_SYNC + ">? AND " +
-                GoalDAOImpl.Constants.USERID + "=? AND " +
-                GoalDAOImpl.Constants.DELETED + "=0;";
-        Object[] args = {user.getClientSyncTimestamp()};
-
-        ArrayList<GoalWeb> goalWebs = goalDAO.getGoals(user.getId(), where, args, null, 0);
-
-        response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
-        return Response.ok().entity(SerializeHelper.serializeGoals(goalWebs)).build();
+        return Response.ok().entity(missingEntities).build();
     }
 
     @POST
     @Path("goals")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response insertGoals(InputStream inputStream, @Context SecurityContext securityContext) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        user.setWriting(true);
-        long timestamp = user.getNewServerTimestamp();
+    @UserWriting
+    @SyncGoalListInterceptorReader
+    public Response insertGoals(List<Goal> goals, @Context SecurityContext securityContext) {
 
-        DAOFactory daoFactory = new DAOFactory();
-        GoalDAO goalDAO = daoFactory.getGoalDAO();
-        try {
-            ArrayList<GoalWeb> goalWebs = SerializeHelper.deserializeGoals(IOUtils.readFully(inputStream, -1, true));
-            for (GoalWeb goalWeb : goalWebs) {
-                try {
-                    goalDAO.insertGoal(goalWeb, user.getId().toString(), timestamp);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (NamingException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        this.service.insertEntities(goals);
         return Response.ok().build();
     }
 
     @GET
     @Path("deleted-goals")
     @Produces(MediaType.APPLICATION_JSON)
+    @SyncGoalListInterceptorWriter
     public Response getDeletedGoals(@Context SecurityContext securityContext) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-
-        DAOFactory daoFactory = new DAOFactory();
-        GoalDAO goalDAO = daoFactory.getGoalDAO();
-        JSONArray jsonArray = goalDAO.getDeletedGoals(user.getId().toString());
-
-        return Response.ok().entity(jsonArray.toString()).build();
+        List<Object> missingEntities = this.service.getMissingEntities(user, "goals", Goal.class);
+        return Response.ok().entity(missingEntities).build();
     }
 
     @POST
     @Path("deleted-goals")
     @Consumes(MediaType.APPLICATION_JSON)
+    @UserWriting
     public Response deleteGoals(String data, @Context SecurityContext securityContext) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        user.setWriting(true);
-        JSONArray jsonArray = new JSONArray(data);
-        DAOFactory daoFactory = new DAOFactory();
-        GoalDAO goalDAO = daoFactory.getGoalDAO();
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                goalDAO.deleteGoal(user.getId().toString(), jsonArray.getString(i), user.getNewServerTimestamp());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (NamingException e) {
-                e.printStackTrace();
-            }
+        JSONArray jsonArray = new JSONArray(data);
+        ArrayList<String> ids = new ArrayList<>();
+        for(int i = 0; i < jsonArray.length(); i++){
+            ids.add(jsonArray.get(i).toString());
         }
+        this.service.deleteEntities(user, "goals", ids);
 
         return Response.ok().build();
     }
@@ -223,21 +167,11 @@ public class Synchronization {
     @Path("weights")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response insertWeights(InputStream inputStream, @Context SecurityContext securityContext) {
+    @UserWriting
+    @SyncWeightListInterceptorReader
+    public Response insertWeights(List<Weight> weights, @Context SecurityContext securityContext) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        user.setWriting(true);
-        long timestamp = user.getNewServerTimestamp();
-
-        DAOFactory daoFactory = new DAOFactory();
-        WeightDAO weightDAO = daoFactory.getWeightsDAO();
-        try {
-            ArrayList<WeightWeb> weightWebs = SerializeHelper.deserializeWeights(IOUtils.readFully(inputStream, -1, true));
-            for (WeightWeb weightWeb : weightWebs) {
-                weightDAO.insertWeight(weightWeb, user.getId(), timestamp);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.service.insertEntities(weights);
 
         return Response.ok().build();
     }
@@ -245,20 +179,13 @@ public class Synchronization {
     @GET
     @Path("weights")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @SyncWeightListInterceptorWriter
     public Response getWeights(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-
-        DAOFactory daoFactory = new DAOFactory();
-        WeightDAO weightDAO = daoFactory.getWeightsDAO();
-
-        String where = WeightsDAOImpl.Constants.LAST_SYNC + ">? AND " +
-                WeightsDAOImpl.Constants.USER_ID + "=?";
-        Object[] args = {user.getClientSyncTimestamp()};
-
-        ArrayList<WeightWeb> weightWebs = weightDAO.getWeights(user.getId(), where, args, null, 0);
+        List<Object> missingEntities = this.service.getMissingEntities(user, "weights", Weight.class);
 
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
-        return Response.ok().entity(SerializeHelper.serializeWeights(weightWebs)).build();
+        return Response.ok().entity(missingEntities).build();
     }
 
     @GET
@@ -266,32 +193,22 @@ public class Synchronization {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getSettings(String data, @Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-
-        DAOFactory daoFactory = new DAOFactory();
-        UserDetailsDAO detailsDAO = daoFactory.getUserDetailsDAO();
-
-        String where = UserDetailsDAOImpl.Constants.COLUMN_LAST_SYNC + ">? AND " +
-                UserDetailsDAOImpl.Constants.COLUMN_ID + "=?";
-        Object[] args = {user.getClientSyncTimestamp(), user.getId()};
-
-        JSONObject object = detailsDAO.getUserSettings(user.getId(), where, args);
-
+        Details details = this.settingsService.get(user);
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
-        return Response.ok().entity(object.toString()).build();
+        if(details == null){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } else {
+            return Response.ok().entity(details.getSettings()).build();
+        }
     }
 
     @POST
     @Path("settings")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response updateSettings(tracker.Settings settings, @Context SecurityContext securityContext, @Context HttpServletResponse response) {
+    @UserWriting
+    public Response updateSettings(Details details, @Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        user.setWriting(true);
-        DAOFactory daoFactory = new DAOFactory();
-        UserDetailsDAO detailsDAO = daoFactory.getUserDetailsDAO();
-
-        detailsDAO.update(user.getId().toString(), new JSONObject(settings.getSettings()), settings.getLastModified(),
-                user.getNewServerTimestamp());
-
+        this.settingsService.update(details, user);
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().build();
     }
@@ -302,11 +219,14 @@ public class Synchronization {
     public Response getLastModifiedTimes(@Context SecurityContext securityContext) {
 
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        DAOFactory daoFactory = new DAOFactory();
-        UserSyncDAO userSyncDAO = daoFactory.getUserSyncDAO();
-        JSONObject jsonObject = userSyncDAO.getLastModifiedTimes(user.getId().toString());
+        ModifiedTimes times = this.service.getTimes(user);
+        JSONObject timesJSON = new JSONObject();
+        timesJSON.put("last_modified_activities", times.getLastModifiedActivities());
+        timesJSON.put("last_modified_settings", times.getLastModifiedSettings());
+        timesJSON.put("last_modified_goals", times.getLastModifiedGoals());
+        timesJSON.put("last_modified_weights", times.getLastModifiedWeights());
 
-        return Response.ok().entity(jsonObject.toString()).build();
+        return Response.ok().entity(timesJSON).build();
     }
 
 }

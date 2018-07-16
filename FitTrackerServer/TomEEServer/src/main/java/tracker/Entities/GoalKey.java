@@ -35,4 +35,26 @@ public class GoalKey implements Serializable {
     public void setUserID(String userID) {
         this.userID = userID;
     }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + id.hashCode();
+        result = 31 * result + userID.hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this){
+            return true;
+        }
+        if(!(obj instanceof GoalKey)){
+            return false;
+        }
+        GoalKey key = (GoalKey) obj;
+
+        return key.id.equals(this.id) &&
+                key.userID.equals(this.userID);
+    }
 }

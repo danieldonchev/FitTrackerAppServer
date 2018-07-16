@@ -56,7 +56,6 @@ public class SerializeHelper {
                     sportActivityFlat.calories(),
                     sportActivityFlat.startTimestamp(),
                     sportActivityFlat.endTimestamp(),
-                    sportActivityFlat.type(),
                     sportActivityFlat.lastModified());
 
             activity.setSportActivityMap(map);
@@ -105,7 +104,7 @@ public class SerializeHelper {
         for(int i = 0; i < goalsFlatBufferer.goalsLength(); i++){
             GoalFlat goalFlat = goalsFlatBufferer.goals(i);
 
-            GoalWeb newGoalWeb = new GoalWeb(UUID.fromString(goalFlat.id()),
+            GoalWeb newGoalWeb = new GoalWeb(goalFlat.id(),
                     goalFlat.type(),
                     goalFlat.distance(),
                     goalFlat.duration(),

@@ -82,6 +82,8 @@ public class UserServiceImpl implements UserService{
     public UserTokens insertOAuthUser(User user){
         boolean userNew = true;
         User existingUser = null;
+
+
         try {
             userTransaction.begin();
             existingUser = dao.findUser(user.getEmail());
@@ -97,6 +99,13 @@ public class UserServiceImpl implements UserService{
             userTokens = getUserTokens(existingUser);
             userTokens.setId(existingUser.getId());
         } else {
+            try {
+                userTransaction.begin();
+                dao.create(user);
+                userTransaction.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             userTokens = getUserTokens(user);
             userTokens.setId(user.getId());
         }

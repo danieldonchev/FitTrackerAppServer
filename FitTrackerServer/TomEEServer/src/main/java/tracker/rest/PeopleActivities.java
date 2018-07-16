@@ -4,8 +4,8 @@ import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.SportActivityMap;
 import com.tracker.shared.Entities.SportActivityWithOwner;
 import org.json.JSONObject;
-import tracker.DAO.DAOFactory;
-import tracker.DAO.SharedActivitiesDAO;
+import tracker.DAO.PreviousDAOSystem.DAOFactory;
+import tracker.DAO.PreviousDAOSystem.SharedActivitiesDAO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

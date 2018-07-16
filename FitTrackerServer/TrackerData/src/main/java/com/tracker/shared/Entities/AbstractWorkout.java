@@ -5,16 +5,14 @@ public abstract class AbstractWorkout
     protected String workout;
     protected long duration = 0;
     protected int calories;
-    protected int type;
 
     public AbstractWorkout() {}
 
-    public AbstractWorkout(String workout, long duration, int calories, int type)
+    public AbstractWorkout(String workout, long duration, int calories)
     {
         this.workout = workout;
         this.duration = duration;
         this.calories = calories;
-        this.type = type;
     }
 
     public String getWorkout() {
@@ -39,13 +37,5 @@ public abstract class AbstractWorkout
 
     public void setCalories(int calories) {
         this.calories = calories;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 }

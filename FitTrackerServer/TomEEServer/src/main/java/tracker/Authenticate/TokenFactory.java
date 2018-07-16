@@ -1,15 +1,8 @@
 package tracker.Authenticate;
 
 import io.jsonwebtoken.*;
-import tracker.DAO.DAOFactory;
-import tracker.DAO.UserDAO;
-import tracker.DAO.UserDAOImpl;
-import tracker.Entities.User;
-import tracker.Entities.UserTokens;
-import tracker.Entities.Users.GenericUser;
 
 import javax.ws.rs.NotAuthorizedException;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import static tracker.Authenticate.TokenAuthenticator.accessTokenSecret;

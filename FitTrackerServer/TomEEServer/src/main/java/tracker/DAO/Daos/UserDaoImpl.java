@@ -2,7 +2,6 @@ package tracker.DAO.Daos;
 
 
 import tracker.Authenticate.PasswordGenerator;
-import tracker.DAO.UserDAO;
 import tracker.Entities.User;
 
 import javax.enterprise.inject.Alternative;

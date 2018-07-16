@@ -3,16 +3,15 @@ package tracker.IntegrationTests;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import tracker.Https.API;
-import tracker.Https.HttpsClient;
-import tracker.Https.HttpsConnection;
+import tracker.Utils.Https.API;
+import tracker.Utils.Https.HttpsClient;
+import tracker.Utils.Https.HttpsConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.sql.Connection;
 
 import static tracker.Utils.TestUtils.readStream;
 import static tracker.Utils.TestUtils.writeTokens;

@@ -3,7 +3,6 @@ package tracker.rest;
 import org.json.JSONObject;
 import tracker.DAO.DAOServices.UserSettignsService;
 import tracker.Entities.Details;
-import tracker.Entities.UserSettings;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
 import tracker.Entities.Users.GenericUser;
@@ -39,8 +38,8 @@ public class Settings {
     public Response updateSettings(Details userSettings, @Context SecurityContext context) {
         GenericUser user = (GenericUser) context.getUserPrincipal();
 
-        userSettings.setUserID(user.getId());
-        this.service.update(userSettings);
+        userSettings.setId(user.getId());
+        this.service.update(userSettings, user);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", "userSettings");
 
@@ -53,7 +52,7 @@ public class Settings {
     public Response getSettings(@Context SecurityContext context, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) context.getUserPrincipal();
 
-        Details userSettings = this.service.get(user.getId());
+        Details userSettings = this.service.get(user);
         JSONObject settingsJson = new JSONObject(userSettings.getSettings());
 
         response.addHeader("Data-Type", "userSettings");

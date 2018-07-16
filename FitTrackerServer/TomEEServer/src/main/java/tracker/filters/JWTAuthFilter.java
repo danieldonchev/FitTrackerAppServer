@@ -3,12 +3,13 @@ package tracker.filters;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import tracker.Authenticate.TokenAuthenticator;
-import tracker.DAO.DAOFactory;
-import tracker.DAO.UserSyncDAO;
+import tracker.DAO.DAOServices.SynchronizationService;
+import tracker.Entities.ModifiedTimes;
 import tracker.Markers.Secured;
 import tracker.Entities.Users.GenericUser;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -17,7 +18,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.security.Principal;
 import java.time.Instant;
 
@@ -25,6 +25,16 @@ import java.time.Instant;
 @Secured
 @Priority(Priorities.AUTHENTICATION)
 public class JWTAuthFilter implements ContainerRequestFilter {
+
+    private SynchronizationService service;
+
+    public JWTAuthFilter() {
+    }
+
+    @Inject
+    public JWTAuthFilter(SynchronizationService service) {
+        this.service = service;
+    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -42,19 +52,21 @@ public class JWTAuthFilter implements ContainerRequestFilter {
         String syncVersion = requestContext.getHeaderString("Sync-Time");
 
         try {
+
             // Validate token
             TokenAuthenticator authenticator = new TokenAuthenticator();
             Jws<Claims> tokenClaims = authenticator.validateJwt(token);
             String username = (String) tokenClaims.getBody().get("email");
             String id = (String) tokenClaims.getBody().get("userID");
 
+            GenericUser user = new GenericUser(id, username, Long.parseLong(syncVersion));
+
             // Get server last sync time
-            DAOFactory daoFactory = new DAOFactory();
-            UserSyncDAO userSyncDAO = daoFactory.getUserSyncDAO();
-            long serverVersion = userSyncDAO.getLastModifiedTime(id);
+            ModifiedTimes times = this.service.getTimes(user);
+            long serverVersion = times.getLastModified();
 
             // Create GenericUser from access token information and server information
-            GenericUser user = new GenericUser(id, username, Long.parseLong(syncVersion));
+
             user.setOldServerSyncTimestamp(serverVersion);
             long timestamp = Instant.now().toEpochMilli();
             user.setNewServerTimestamp(timestamp);

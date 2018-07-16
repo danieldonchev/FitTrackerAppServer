@@ -33,16 +33,16 @@ public class SportActivityWeb extends AbstractWorkout
         sportActivityMap = new SportActivityMap();
     }
 
-    private SportActivityWeb(String workout, long duration, int calories, int type)
+    private SportActivityWeb(String workout, long duration, int calories)
     {
-        super(workout, duration, calories, type);
+        super(workout, duration, calories);
         sportActivityMap = new SportActivityMap();
         splitWebs = new ArrayList<>();
     }
 
-    public SportActivityWeb(String id, String workout, long duration, double distance, long steps, int calories, long startTimestamp, long endTimestamp, int type, long lastModified)
+    public SportActivityWeb(String id, String workout, long duration, double distance, long steps, int calories, long startTimestamp, long endTimestamp, long lastModified)
     {
-        this(workout, duration, calories, type);
+        this(workout, duration, calories);
         this.id = id;
         this.distance = distance;
         this.steps = steps;
@@ -52,9 +52,9 @@ public class SportActivityWeb extends AbstractWorkout
     }
 
     public SportActivityWeb(String id, String workout, long duration, double distance, long steps, int calories, SportActivityMap sportActivityMap, long startTimestamp,
-                            long endTimestamp, int type, long lastModified, ArrayList<SplitWeb> splitWebs)
+                            long endTimestamp, long lastModified, ArrayList<SplitWeb> splitWebs)
     {
-        this(workout, duration, calories, type);
+        this(workout, duration, calories);
         this.id = id;
         this.distance = distance;
         this.steps = steps;
@@ -92,7 +92,6 @@ public class SportActivityWeb extends AbstractWorkout
         this.duration = sportActivityFlatBufferer.duration();
         this.steps = sportActivityFlatBufferer.steps();
         this.calories = sportActivityFlatBufferer.calories();
-        this.type = sportActivityFlatBufferer.type();
         this.lastModified = sportActivityFlatBufferer.lastModified();
 
 
@@ -140,7 +139,6 @@ public class SportActivityWeb extends AbstractWorkout
         SportActivityFlat.addDistance(builder, distance);
         SportActivityFlat.addSteps(builder, steps);
         SportActivityFlat.addCalories(builder, calories);
-        SportActivityFlat.addType(builder, type);
         SportActivityFlat.addLastModified(builder, lastModified);
 
         return SportActivityFlat.endSportActivity(builder);

@@ -1,6 +1,7 @@
 package tracker.DAO.Daos;
 
 import tracker.Entities.SportActivity;
+import tracker.Entities.SportActivityKey;
 import tracker.Entities.User;
 import tracker.Entities.Users.GenericUser;
 
@@ -27,4 +28,27 @@ public class SyncDao extends GenericDAOImpl {
         List list =   query.getResultList();
         return list;
     }
+
+    public List<String> getDeletedEntities(GenericUser user, String table){
+        Query query = getEntityManager().createNativeQuery("SELECT id from " + table + " s WHERE last_sync > :arg1 AND " +
+                "userID = :arg2 and deleted = 1");
+        query.setParameter("arg1", user.getClientSyncTimestamp());
+        query.setParameter("arg2", user.getId());
+        List list =   query.getResultList();
+        return list;
+    }
+
+    public List<String> deleteEntities(GenericUser user, String table, List<String> ids){
+        for(String id : ids){
+            Query query = getEntityManager().createNativeQuery("UPDATE " + table + " SET deleted = 1 WHERE " +
+                    "id = :arg1 AND userID = :arg2");
+            query.setParameter("arg1", id);
+            query.setParameter("arg2", user.getId());
+            query.executeUpdate();
+        }
+
+        return ids;
+    }
+
+
 }

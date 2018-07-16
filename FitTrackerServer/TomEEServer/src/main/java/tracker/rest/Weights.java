@@ -1,10 +1,7 @@
 package tracker.rest;
 
 import org.json.JSONObject;
-import sun.misc.IOUtils;
-import tracker.DAO.DAOFactory;
 import tracker.DAO.DAOServices.WeightService;
-import tracker.DAO.WeightDAO;
 import tracker.Entities.Weight;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
@@ -19,8 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.io.IOException;
-import java.io.InputStream;
 
 @Secured
 @Sync

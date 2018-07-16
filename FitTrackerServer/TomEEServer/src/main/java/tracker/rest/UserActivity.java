@@ -3,7 +3,6 @@ package tracker.rest;
 import com.tracker.shared.Entities.SportActivityWeb;
 import org.json.JSONObject;
 import tracker.DAO.DAOServices.SportActivityService;
-import tracker.DAO.SportActivityDAO;
 import tracker.Entities.SportActivity;
 import tracker.Markers.*;
 import tracker.Entities.Users.GenericUser;

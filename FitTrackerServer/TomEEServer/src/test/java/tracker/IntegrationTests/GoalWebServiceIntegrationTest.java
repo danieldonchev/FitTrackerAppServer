@@ -1,20 +1,15 @@
 package tracker.IntegrationTests;
 
 import com.tracker.shared.Entities.GoalWeb;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import sun.misc.IOUtils;
-import tracker.Https.API;
-import tracker.Https.HttpsClient;
-import tracker.Https.HttpsConnection;
+import tracker.Utils.Https.API;
+import tracker.Utils.Https.HttpsConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.util.UUID;
 
-import static tracker.Https.HttpsConnection.*;
+import static tracker.Utils.Https.HttpsConnection.*;
 import static tracker.Utils.TestUtils.readStream;
 
 public class GoalWebServiceIntegrationTest {
@@ -25,7 +20,7 @@ public class GoalWebServiceIntegrationTest {
             HttpsConnection httpsConnection = new HttpsConnection();
             HttpsURLConnection connection = httpsConnection.getConnection(HTTP_POST, API.goal);
             connection.setRequestProperty("Content-Type", "application/octet-stream");
-            GoalWeb goal = new GoalWeb(UUID.fromString("dc9e60b2-5f0d-4a94-9226-c76817bfd608"),
+            GoalWeb goal = new GoalWeb("dc9e60b2-5f0d-4a94-9226-c76817bfd608",
                                     1,
                                     555.42d,
                                     180l,
@@ -53,7 +48,7 @@ public class GoalWebServiceIntegrationTest {
         HttpsConnection httpsConnection = new HttpsConnection();
         HttpsURLConnection connection = httpsConnection.getConnection(HTTP_PUT, API.goal);
         connection.setRequestProperty("Content-Type", "application/octet-stream");
-        GoalWeb goal = new GoalWeb(UUID.fromString("dc9e60b2-5f0d-4a94-9226-c76817bfd607"),
+        GoalWeb goal = new GoalWeb("dc9e60b2-5f0d-4a94-9226-c76817bfd607",
                 1,
                 1235,
                 23,

@@ -23,8 +23,8 @@ public class GoalWeb {
 
     public GoalWeb() {}
 
-    public GoalWeb(UUID id, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified){
-        this.id = id.toString();
+    public GoalWeb(String id, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified){
+        this.id = id;
         this.type = type;
         this.distance = distance;
         this.duration = duration;

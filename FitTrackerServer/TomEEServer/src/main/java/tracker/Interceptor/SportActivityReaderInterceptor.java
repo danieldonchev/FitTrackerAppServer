@@ -9,6 +9,7 @@ import tracker.Entities.Split;
 import tracker.Entities.SportActivity;
 import tracker.Entities.Users.GenericUser;
 import tracker.Markers.SportActivityInterceptorReader;
+import tracker.WebEntitiesHelper;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -34,46 +35,8 @@ public class SportActivityReaderInterceptor implements ReaderInterceptor {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         long timestamp = user.getNewServerTimestamp();
 
-        ArrayList<Split> splits = new ArrayList<>();
-        for(SplitWeb splitWeb : sportActivityWeb.getSplitWebs()){
-            Split split = new Split(splitWeb.getId(),
-                    sportActivityWeb.getId(),
-                    user.getId(),
-                    splitWeb.getDuration(),
-                    splitWeb.getDistance());
-            splits.add(split);
-        }
-        GeometryFactory factory = new GeometryFactory();
-        ArrayList<Coordinate> polylineCoordinates = new ArrayList<>();
-        for(LatLng latLng : sportActivityWeb.getSportActivityMap().getPolyline()){
-            Coordinate coordinate = new Coordinate();
-            coordinate.x = latLng.latitude;
-            coordinate.y = latLng.longitude;
-            polylineCoordinates.add(coordinate);
-        }
-        ArrayList<Coordinate> markerCoordinates = new ArrayList<>();
-        for(LatLng latLng : sportActivityWeb.getSportActivityMap().getMarkers()){
-            Coordinate coordinate = new Coordinate();
-            coordinate.x = latLng.latitude;
-            coordinate.y = latLng.longitude;
-            markerCoordinates.add(coordinate);
-        }
-        LineString lineString = factory.createLineString(polylineCoordinates.toArray(new Coordinate[polylineCoordinates.size()]));
-        MultiPoint multiPoint = factory.createMultiPoint(markerCoordinates.toArray(new Coordinate[markerCoordinates.size()]));
-
-        SportActivity sportActivity = new SportActivity(sportActivityWeb.getId(),
-                user.getId(),
-                sportActivityWeb.getWorkout(),
-                sportActivityWeb.getDistance(),
-                sportActivityWeb.getSteps(),
-                sportActivityWeb.getStartTimestamp(),
-                sportActivityWeb.getEndTimestamp(),
-                splits,
-                lineString,
-                multiPoint,
-                sportActivityWeb.getLastModified(),
-                timestamp);
-
+        WebEntitiesHelper helper = new WebEntitiesHelper();
+        SportActivity sportActivity = helper.toSportActivity(sportActivityWeb, user, timestamp);
         return sportActivity;
     }
 }
