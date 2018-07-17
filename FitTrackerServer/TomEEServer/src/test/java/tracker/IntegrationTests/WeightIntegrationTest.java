@@ -28,10 +28,6 @@ public class WeightIntegrationTest {
 
             connection.getOutputStream().write(weightWeb.serialize());
             InputStream is = connection.getInputStream();
-            // GoalWeb goalWebReceived = new GoalWeb().deserialize(IOUtils.readFully(is, -1, true));
-            String receivedStr = readStream(is);
-            int b = 5;
-
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -4,6 +4,7 @@ import com.tracker.shared.Entities.GoalWeb;
 import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.SportActivityWeb;
 import org.json.JSONArray;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import sun.misc.IOUtils;
 import tracker.Utils.Https.API;
@@ -29,10 +30,10 @@ public class SyncIntegrationTest {
             connection.setRequestProperty("Content-Type", "application/octet-stream");
 
             InputStream is = connection.getInputStream();
-            GoalWeb goalWebReceived = new GoalWeb().deserialize(IOUtils.readFully(is, -1, true));
-            String receivedStr = readStream(is);
-            int b = 5;
+            ArrayList<SportActivityWeb> sportActivityWebs = SerializeHelper.deserializeSportActivities(IOUtils.readFully(is, -1, true));
 
+            Assert.assertEquals(connection.getResponseCode(), 200);
+            Assert.assertNotNull(sportActivityWebs);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,10 +74,7 @@ public class SyncIntegrationTest {
         connection.getOutputStream().write(SerializeHelper.serializeSportActivities(sportActivityWebs));
 
         InputStream is = connection.getInputStream();
-
-        String receivedStr = readStream(is);
-        int b = 5;
-
+        Assert.assertEquals(connection.getResponseCode(), 200);
 
     } catch (IOException e) {
         e.printStackTrace();
@@ -98,9 +96,6 @@ public class SyncIntegrationTest {
 
             InputStream is = connection.getInputStream();
 
-            String receivedStr = readStream(is);
-            int b = 5;
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,10 +109,6 @@ public class SyncIntegrationTest {
             HttpsURLConnection connection = httpsConnection.getConnection(HTTP_GET, API.deletedActivities);
 
             InputStream is = connection.getInputStream();
-
-            String receivedStr = readStream(is);
-            int b = 5;
-
 
         } catch (IOException e) {
             e.printStackTrace();

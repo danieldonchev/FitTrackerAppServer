@@ -1,6 +1,8 @@
 package tracker.IntegrationTests;
 
 import com.tracker.shared.Entities.GoalWeb;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import tracker.Utils.Https.API;
 import tracker.Utils.Https.HttpsConnection;
@@ -33,10 +35,13 @@ public class GoalWebServiceIntegrationTest {
 
             connection.getOutputStream().write(goal.serialize());
             InputStream is = connection.getInputStream();
-           // GoalWeb goalWebReceived = new GoalWeb().deserialize(IOUtils.readFully(is, -1, true));
             String receivedStr = readStream(is);
-            int b = 5;
+            JSONObject object = new JSONObject(receivedStr);
 
+            Assert.assertNotNull(connection);
+            Assert.assertEquals(connection.getResponseCode(), 200);
+            Assert.assertEquals(object.getString("id"), goal.getId());
+            Assert.assertEquals(object.getString("data"), GoalWeb.class.getSimpleName());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,20 +66,31 @@ public class GoalWebServiceIntegrationTest {
         connection.getOutputStream().write(goal.serialize());
         InputStream is = connection.getInputStream();
         String receivedStr = readStream(is);
-        int b = 5;
+        JSONObject object = new JSONObject(receivedStr);
+
+        Assert.assertNotNull(connection);
+        Assert.assertEquals(connection.getResponseCode(), 200);
+        Assert.assertEquals(object.getString("id"), goal.getId());
+        Assert.assertEquals(object.getString("data"), GoalWeb.class.getSimpleName());
     }
 
     @Test
     public void deleteGoal() throws IOException {
 
+        String id = "/dc9e60b2-5f0d-4a94-9226-c76817bfd607";
         HttpsConnection httpsConnection = new HttpsConnection();
-        HttpsURLConnection connection = httpsConnection.getConnection(HTTP_DELETE, API.goal + "/dc9e60b2-5f0d-4a94-9226-c76817bfd607");
+        HttpsURLConnection connection = httpsConnection.getConnection(HTTP_DELETE, API.goal + id);
         connection.setRequestProperty("Content-Type", "application/json");
 
         InputStream is = connection.getInputStream();
         String receivedStr = readStream(is);
 
-        int b = 5;
+        JSONObject object = new JSONObject(receivedStr);
+
+        Assert.assertNotNull(connection);
+        Assert.assertEquals(connection.getResponseCode(), 200);
+        Assert.assertEquals(object.getString("id"), id);
+        Assert.assertEquals(object.getString("data"), GoalWeb.class.getSimpleName());
     }
 
 

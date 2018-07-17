@@ -1,6 +1,8 @@
 package tracker.IntegrationTests;
 
 import com.tracker.shared.Entities.*;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import sun.misc.IOUtils;
 import tracker.Utils.Https.API;
@@ -48,10 +50,12 @@ public class UserActivityIntegrationTest {
 
             connection.getOutputStream().write(sportActivityWeb.serialize());
             InputStream is = connection.getInputStream();
-            // GoalWeb goalWebReceived = new GoalWeb().deserialize(IOUtils.readFully(is, -1, true));
             String receivedStr = readStream(is);
-            int b = 5;
-
+            JSONObject object = new JSONObject(receivedStr);
+            Assert.assertNotNull(connection);
+            Assert.assertEquals(connection.getResponseCode(), 200);
+            Assert.assertEquals(object.getString("id"), sportActivityWeb.getId());
+            Assert.assertEquals(object.getString("data"), GoalWeb.class.getSimpleName());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,11 +70,7 @@ public class UserActivityIntegrationTest {
             connection.setRequestProperty("Content-Type", "application/octet-stream");
 
             InputStream is = connection.getInputStream();
-             GoalWeb goalWebReceived = new GoalWeb().deserialize(IOUtils.readFully(is, -1, true));
-            String receivedStr = readStream(is);
-            int b = 5;
-
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,10 +105,6 @@ public class UserActivityIntegrationTest {
 
             connection.getOutputStream().write(sportActivityWeb.serialize());
             InputStream is = connection.getInputStream();
-            // GoalWeb goalWebReceived = new GoalWeb().deserialize(IOUtils.readFully(is, -1, true));
-            String receivedStr = readStream(is);
-            int b = 5;
-
 
         } catch (IOException e) {
             e.printStackTrace();
