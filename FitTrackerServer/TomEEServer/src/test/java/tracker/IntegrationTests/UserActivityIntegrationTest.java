@@ -70,7 +70,7 @@ public class UserActivityIntegrationTest {
             connection.setRequestProperty("Content-Type", "application/octet-stream");
 
             InputStream is = connection.getInputStream();
-            
+            Assert.assertEquals(connection.getResponseCode(), 200);
         } catch (IOException e) {
             e.printStackTrace();
         }
