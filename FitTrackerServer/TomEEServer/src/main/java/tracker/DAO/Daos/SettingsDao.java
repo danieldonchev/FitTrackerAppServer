@@ -2,7 +2,7 @@ package tracker.DAO.Daos;
 
 import org.json.JSONObject;
 import tracker.Entities.Details;
-import tracker.Entities.Users.GenericUser;
+import tracker.Entities.GenericUser;
 
 import javax.enterprise.inject.Alternative;
 import javax.persistence.Query;

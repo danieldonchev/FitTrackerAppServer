@@ -5,12 +5,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPoint;
-import sun.misc.IOUtils;
-import tracker.Entities.Goal;
-import tracker.Entities.Split;
-import tracker.Entities.SportActivity;
-import tracker.Entities.Users.GenericUser;
-import tracker.Entities.Weight;
+import tracker.Entities.*;
 
 import java.util.ArrayList;
 

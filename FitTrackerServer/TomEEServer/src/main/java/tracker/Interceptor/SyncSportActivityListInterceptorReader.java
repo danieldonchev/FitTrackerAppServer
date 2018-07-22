@@ -3,8 +3,8 @@ package tracker.Interceptor;
 import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.SportActivityWeb;
 import sun.misc.IOUtils;
+import tracker.Entities.GenericUser;
 import tracker.Entities.SportActivity;
-import tracker.Entities.Users.GenericUser;
 import tracker.WebEntitiesHelper;
 
 import javax.ws.rs.WebApplicationException;

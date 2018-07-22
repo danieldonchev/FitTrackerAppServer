@@ -2,7 +2,7 @@ package tracker.Interceptor;
 
 import com.tracker.shared.Entities.WeightWeb;
 import sun.misc.IOUtils;
-import tracker.Entities.Users.GenericUser;
+import tracker.Entities.GenericUser;
 import tracker.Entities.Weight;
 import tracker.Markers.WeightInterceptorReader;
 

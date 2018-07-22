@@ -2,10 +2,10 @@ package tracker.rest;
 
 import com.tracker.shared.Entities.SportActivityWeb;
 import org.json.JSONObject;
-import tracker.DAO.DAOServices.SportActivityService;
+import tracker.DAO.DaoServices.SportActivityService;
+import tracker.Entities.GenericUser;
 import tracker.Entities.SportActivity;
 import tracker.Markers.*;
-import tracker.Entities.Users.GenericUser;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;

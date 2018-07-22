@@ -2,18 +2,16 @@ package tracker.rest;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.json.JSONObject;
-import tracker.Authenticate.*;
-
-import tracker.DAO.DAOServices.UserService;
-import tracker.DAO.DAOServices.UserServiceImpl;
-
+import tracker.Authenticate.OauthVerifier;
+import tracker.DAO.DaoServices.UserService;
 import tracker.Entities.User;
 import tracker.Entities.UserTokens;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;

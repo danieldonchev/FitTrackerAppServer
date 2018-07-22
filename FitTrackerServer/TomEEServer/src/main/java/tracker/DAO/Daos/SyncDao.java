@@ -1,14 +1,10 @@
 package tracker.DAO.Daos;
 
-import tracker.Entities.SportActivity;
-import tracker.Entities.SportActivityKey;
-import tracker.Entities.User;
-import tracker.Entities.Users.GenericUser;
+import tracker.Entities.GenericUser;
 
 import javax.enterprise.inject.Alternative;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Alternative

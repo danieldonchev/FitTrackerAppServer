@@ -2,9 +2,9 @@ package tracker.Interceptor;
 
 import com.tracker.shared.Entities.GoalWeb;
 import sun.misc.IOUtils;
+import tracker.Entities.GenericUser;
 import tracker.Entities.Goal;
 import tracker.Markers.GoalInterceptor;
-import tracker.Entities.Users.GenericUser;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;

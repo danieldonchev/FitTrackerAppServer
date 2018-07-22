@@ -1,7 +1,7 @@
 package tracker.filters;
 
+import tracker.Entities.GenericUser;
 import tracker.Markers.Sync;
-import tracker.Entities.Users.GenericUser;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;

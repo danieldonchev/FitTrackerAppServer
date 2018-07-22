@@ -1,11 +1,11 @@
 package tracker.rest;
 
 import org.json.JSONObject;
-import tracker.DAO.DAOServices.UserSettignsService;
+import tracker.DAO.DaoServices.UserSettignsService;
 import tracker.Entities.Details;
+import tracker.Entities.GenericUser;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
-import tracker.Entities.Users.GenericUser;
 import tracker.Markers.UserWriting;
 
 import javax.inject.Inject;

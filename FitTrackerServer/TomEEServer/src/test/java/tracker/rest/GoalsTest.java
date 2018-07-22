@@ -11,12 +11,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import tracker.DAO.DAOServices.GoalService;
-import tracker.DAO.PreviousDAOSystem.DAOFactory;
-import tracker.DAO.PreviousDAOSystem.GoalDAOImpl;
+import tracker.DAO.DaoServices.GoalService;
+import tracker.Entities.GenericUser;
 import tracker.Entities.Goal;
-import tracker.Entities.GoalKey;
-import tracker.Entities.Users.GenericUser;
 
 import javax.naming.NamingException;
 import javax.ws.rs.core.Response;
@@ -24,7 +21,6 @@ import javax.ws.rs.core.SecurityContext;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
@@ -66,7 +62,6 @@ public class GoalsTest {
 
         MockitoAnnotations.initMocks(this);
         when(context.getUserPrincipal()).thenReturn(new GenericUser(UUID.randomUUID().toString(), "asd@asd.com"));
-        GoalDAOImpl goalDAO = mock(GoalDAOImpl.class);
         when(this.service.insertGoal(goal)).thenReturn(goal);
     }
 
@@ -95,7 +90,4 @@ public class GoalsTest {
         Assert.assertEquals(response.getStatus(), 200);
         Assert.assertEquals(jsonObject.toString(), response.getEntity().toString());
     }
-
-
-
 }

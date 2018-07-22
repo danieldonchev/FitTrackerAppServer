@@ -1,21 +1,14 @@
 package tracker.rest;
 
-import com.tracker.shared.Entities.*;
+import com.tracker.shared.Entities.SportActivityWeb;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sun.misc.IOUtils;
-import tracker.DAO.*;
-import tracker.DAO.DAOServices.SettingsService;
-import tracker.DAO.DAOServices.SynchronizationService;
-import tracker.DAO.DAOServices.UserSettignsService;
-import tracker.DAO.Daos.SyncDao;
+import tracker.DAO.DaoServices.SynchronizationService;
+import tracker.DAO.DaoServices.UserSettignsService;
 import tracker.Entities.*;
 import tracker.Markers.*;
-import tracker.Entities.Users.GenericUser;
-import tracker.WebEntitiesHelper;
 
 import javax.inject.Inject;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -23,9 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

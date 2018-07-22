@@ -2,13 +2,14 @@ package tracker.rest;
 
 import com.tracker.shared.Entities.GoalWeb;
 import org.json.JSONObject;
-import tracker.DAO.DAOServices.GoalService;
+import tracker.DAO.DaoServices.GoalService;
+import tracker.Entities.GenericUser;
 import tracker.Entities.Goal;
 import tracker.Markers.GoalInterceptor;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
 import tracker.Markers.UserWriting;
-import tracker.Entities.Users.GenericUser;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;

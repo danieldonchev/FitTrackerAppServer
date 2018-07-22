@@ -3,10 +3,10 @@ package tracker.filters;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import tracker.Authenticate.TokenAuthenticator;
-import tracker.DAO.DAOServices.SynchronizationService;
+import tracker.DAO.DaoServices.SynchronizationService;
+import tracker.Entities.GenericUser;
 import tracker.Entities.ModifiedTimes;
 import tracker.Markers.Secured;
-import tracker.Entities.Users.GenericUser;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;

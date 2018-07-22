@@ -2,7 +2,6 @@ package tracker.DAO.DaoServicesTest;
 
 import org.apache.openejb.jee.jpa.unit.PersistenceUnit;
 import org.apache.openejb.junit.ApplicationComposer;
-import org.apache.openejb.testing.Classes;
 import org.apache.openejb.testing.Module;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,10 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import tracker.DAO.DAOServices.GoalService;
-import tracker.DAO.DAOServices.GoalServiceImpl;
+import tracker.DAO.DaoServices.GoalServiceImpl;
 import tracker.DAO.Daos.GenericDAOImpl;
-import tracker.DAO.Daos.GenericDao;
 import tracker.Entities.Goal;
 
 import javax.persistence.EntityManager;

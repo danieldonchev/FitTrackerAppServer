@@ -1,13 +1,9 @@
 package tracker.Interceptor;
 
-import com.tracker.shared.Entities.LatLng;
-import com.tracker.shared.Entities.SplitWeb;
 import com.tracker.shared.Entities.SportActivityWeb;
-import com.vividsolutions.jts.geom.*;
 import sun.misc.IOUtils;
-import tracker.Entities.Split;
+import tracker.Entities.GenericUser;
 import tracker.Entities.SportActivity;
-import tracker.Entities.Users.GenericUser;
 import tracker.Markers.SportActivityInterceptorReader;
 import tracker.WebEntitiesHelper;
 
@@ -19,7 +15,6 @@ import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 @Provider
 @SportActivityInterceptorReader

@@ -1,11 +1,9 @@
 package tracker.Interceptor;
 
-import com.tracker.shared.Entities.GoalWeb;
 import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.WeightWeb;
 import sun.misc.IOUtils;
-import tracker.Entities.Goal;
-import tracker.Entities.Users.GenericUser;
+import tracker.Entities.GenericUser;
 import tracker.Entities.Weight;
 import tracker.WebEntitiesHelper;
 

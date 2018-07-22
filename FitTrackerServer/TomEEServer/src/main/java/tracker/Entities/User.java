@@ -28,6 +28,11 @@ public class User implements Principal {
         this.id = UUID.randomUUID().toString();
     }
 
+    public User(String id, String email){
+        this.id = id;
+        this.email = email;
+    }
+
     public User(String id, String name, String email, String password) {
         this.id = id;
         this.name = name;
