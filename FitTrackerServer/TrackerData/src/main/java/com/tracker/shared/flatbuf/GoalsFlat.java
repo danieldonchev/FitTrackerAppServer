@@ -2,16 +2,15 @@
 
 package com.tracker.shared.flatbuf;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.google.flatbuffers.Table;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.nio.*;
+import java.lang.*;
+import java.util.*;
+import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")
 public final class GoalsFlat extends Table {
-  public static GoalsFlat getRootAsGoals(ByteBuffer _bb) { return getRootAsGoals(_bb, new GoalsFlat()); }
-  public static GoalsFlat getRootAsGoals(ByteBuffer _bb, GoalsFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
+  public static GoalsFlat getRootAsGoalsFlat(ByteBuffer _bb) { return getRootAsGoalsFlat(_bb, new GoalsFlat()); }
+  public static GoalsFlat getRootAsGoalsFlat(ByteBuffer _bb, GoalsFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
   public void __init(int _i, ByteBuffer _bb) { bb_pos = _i; bb = _bb; }
   public GoalsFlat __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
@@ -19,18 +18,18 @@ public final class GoalsFlat extends Table {
   public GoalFlat goals(GoalFlat obj, int j) { int o = __offset(4); return o != 0 ? obj.__assign(__indirect(__vector(o) + j * 4), bb) : null; }
   public int goalsLength() { int o = __offset(4); return o != 0 ? __vector_len(o) : 0; }
 
-  public static int createGoals(FlatBufferBuilder builder,
+  public static int createGoalsFlat(FlatBufferBuilder builder,
       int goalsOffset) {
     builder.startObject(1);
     GoalsFlat.addGoals(builder, goalsOffset);
-    return GoalsFlat.endGoals(builder);
+    return GoalsFlat.endGoalsFlat(builder);
   }
 
-  public static void startGoals(FlatBufferBuilder builder) { builder.startObject(1); }
+  public static void startGoalsFlat(FlatBufferBuilder builder) { builder.startObject(1); }
   public static void addGoals(FlatBufferBuilder builder, int goalsOffset) { builder.addOffset(0, goalsOffset, 0); }
   public static int createGoalsVector(FlatBufferBuilder builder, int[] data) { builder.startVector(4, data.length, 4); for (int i = data.length - 1; i >= 0; i--) builder.addOffset(data[i]); return builder.endVector(); }
   public static void startGoalsVector(FlatBufferBuilder builder, int numElems) { builder.startVector(4, numElems, 4); }
-  public static int endGoals(FlatBufferBuilder builder) {
+  public static int endGoalsFlat(FlatBufferBuilder builder) {
     int o = builder.endObject();
     return o;
   }

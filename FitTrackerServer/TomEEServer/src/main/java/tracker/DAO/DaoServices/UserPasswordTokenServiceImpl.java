@@ -1,6 +1,6 @@
 package tracker.DAO.DaoServices;
 
-import tracker.DAO.Daos.GenericDAOImpl;
+import tracker.DAO.Daos.GenericDao;
 import tracker.Entities.UserPasswordToken;
 
 import javax.annotation.Resource;
@@ -17,10 +17,10 @@ public class UserPasswordTokenServiceImpl implements UserPasswordTokenService{
 
     @Resource
     private UserTransaction userTransaction;
-    private GenericDAOImpl<UserPasswordToken, String> dao;
+    private GenericDao<UserPasswordToken, String> dao;
 
     @Inject
-    public UserPasswordTokenServiceImpl(GenericDAOImpl<UserPasswordToken, String> dao){
+    public UserPasswordTokenServiceImpl(GenericDao<UserPasswordToken, String> dao){
         this.dao = dao;
     }
 

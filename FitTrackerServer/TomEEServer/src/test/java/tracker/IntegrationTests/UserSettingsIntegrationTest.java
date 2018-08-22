@@ -1,7 +1,9 @@
 package tracker.IntegrationTests;
 
 import org.json.JSONObject;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Test;
+import org.junit.runners.MethodSorters;
 import tracker.Utils.Https.API;
 import tracker.Utils.Https.HttpsConnection;
 
@@ -12,6 +14,7 @@ import java.io.InputStream;
 import static tracker.Utils.Https.HttpsConnection.HTTP_PUT;
 import static tracker.Utils.TestUtils.readStream;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserSettingsIntegrationTest {
 
     @Test

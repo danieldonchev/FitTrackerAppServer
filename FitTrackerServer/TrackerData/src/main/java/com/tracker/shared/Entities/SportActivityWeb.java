@@ -72,17 +72,13 @@ public class SportActivityWeb extends AbstractWorkout
         int finish = getSportActivityInt(builder);
 
         builder.finish(finish);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
 
     public SportActivityWeb deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        SportActivityFlat sportActivityFlatBufferer = SportActivityFlat.getRootAsSportActivity(buf);
+        SportActivityFlat sportActivityFlatBufferer = SportActivityFlat.getRootAsSportActivityFlat(buf);
 
         this.id = UUID.fromString(sportActivityFlatBufferer.id()).toString();
         this.workout = sportActivityFlatBufferer.activity();
@@ -119,7 +115,7 @@ public class SportActivityWeb extends AbstractWorkout
     }
 
     public int getSportActivityInt(FlatBufferBuilder builder){
-        int idString = builder.createString(id.toString());
+        int idString = builder.createString(id);
         int activityString = builder.createString(workout);
 
         int cardioMapInt = 0;
@@ -128,7 +124,7 @@ public class SportActivityWeb extends AbstractWorkout
         }
         int splits = getSplitsBufferInt(builder);
 
-        SportActivityFlat.startSportActivity(builder);
+        SportActivityFlat.startSportActivityFlat(builder);
         SportActivityFlat.addId(builder, idString);
         SportActivityFlat.addActivity(builder, activityString);
         SportActivityFlat.addSplits(builder, splits);
@@ -141,7 +137,7 @@ public class SportActivityWeb extends AbstractWorkout
         SportActivityFlat.addCalories(builder, calories);
         SportActivityFlat.addLastModified(builder, lastModified);
 
-        return SportActivityFlat.endSportActivity(builder);
+        return SportActivityFlat.endSportActivityFlat(builder);
     }
 
     public int getSplitsBufferInt(FlatBufferBuilder builder)
@@ -154,14 +150,14 @@ public class SportActivityWeb extends AbstractWorkout
             while(splitListIterator.hasPrevious())
             {
                 SplitWeb splitWeb = splitListIterator.previous();
-                SplitFlat.createSplit(builder, splitWeb.getId(), splitWeb.getDistance(), splitWeb.getDuration());
+                SplitFlat.createSplitFlat(builder, splitWeb.getId(), splitWeb.getDistance(), splitWeb.getDuration());
             }
 
             int splits = builder.endVector();
 
-            SplitsFlat.startSplits(builder);
+            SplitsFlat.startSplitsFlat(builder);
             SplitsFlat.addSplits(builder, splits);
-            return SplitsFlat.endSplits(builder);
+            return SplitsFlat.endSplitsFlat(builder);
         }
 
 

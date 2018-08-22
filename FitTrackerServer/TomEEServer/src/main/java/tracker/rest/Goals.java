@@ -2,13 +2,11 @@ package tracker.rest;
 
 import com.tracker.shared.Entities.GoalWeb;
 import org.json.JSONObject;
+import tracker.API;
 import tracker.DAO.DaoServices.GoalService;
 import tracker.Entities.GenericUser;
 import tracker.Entities.Goal;
-import tracker.Markers.GoalInterceptor;
-import tracker.Markers.Secured;
-import tracker.Markers.Sync;
-import tracker.Markers.UserWriting;
+import tracker.Markers.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,11 +15,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.util.List;
 
 @Stateless
 @Secured
 @Sync
-@Path("goals")
+@Path(API.goal)
 public class Goals {
 
     private GoalService goalService;
@@ -34,7 +33,6 @@ public class Goals {
     }
 
     @POST
-    @Path("goal")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     @GoalInterceptor
@@ -50,7 +48,7 @@ public class Goals {
     }
 
     @DELETE
-    @Path("goal/{id}")
+    @Path("{id}")
     @UserWriting
     @GoalInterceptor
     public Response deleteGoal(@PathParam("id") String id, @Context SecurityContext context) {
@@ -65,7 +63,6 @@ public class Goals {
     }
 
     @PUT
-    @Path("goal")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_JSON)
     @UserWriting
@@ -80,4 +77,16 @@ public class Goals {
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
+
+    @GET
+    @Path("all")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @GoalListInterceptorWriter
+    public Response getGoals(@Context SecurityContext context) {
+        String id = ((GenericUser) context.getUserPrincipal()).getId();
+        List<Goal> goals = this.goalService.getGoals(id);
+
+        return Response.ok().entity(goals).build();
+    }
+
 }

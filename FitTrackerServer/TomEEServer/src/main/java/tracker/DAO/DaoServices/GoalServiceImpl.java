@@ -1,19 +1,24 @@
 package tracker.DAO.DaoServices;
 
-import tracker.DAO.Daos.GenericDao;
+import tracker.DAO.Daos.GoalDao;
 import tracker.Entities.Goal;
 import tracker.Entities.GoalKey;
+import tracker.Qualifiers.GoalDaoQualifier;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.List;
 
 @Stateless
 public class GoalServiceImpl implements GoalService{
 
-    private GenericDao<Goal, String> dao;
+    private GoalDao dao;
+
+    public GoalServiceImpl() {
+    }
 
     @Inject
-    public GoalServiceImpl(GenericDao<Goal, String> dao){
+    public GoalServiceImpl(@GoalDaoQualifier GoalDao dao){
         this.dao = dao;
     }
 
@@ -35,5 +40,10 @@ public class GoalServiceImpl implements GoalService{
         goal.setGoalKey(new GoalKey(id, userID));
         goal.setDeleted(1);
         dao.update(goal);
+    }
+
+    @Override
+    public List<Goal> getGoals(String userID){
+        return dao.getAll(userID);
     }
 }

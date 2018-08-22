@@ -1,7 +1,8 @@
 package tracker.Interceptor;
 
+import com.google.common.io.ByteStreams;
 import com.tracker.shared.Entities.SportActivityWeb;
-import sun.misc.IOUtils;
+import org.apache.commons.io.IOUtils;
 import tracker.Entities.GenericUser;
 import tracker.Entities.SportActivity;
 import tracker.Markers.SportActivityInterceptorReader;
@@ -26,7 +27,8 @@ public class SportActivityReaderInterceptor implements ReaderInterceptor {
     @Override
     public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
         InputStream inputStream = context.getInputStream();
-        SportActivityWeb sportActivityWeb = new SportActivityWeb().deserialize(IOUtils.readFully(inputStream, -1, true));
+       // SportActivityWeb sportActivityWeb = new SportActivityWeb().deserialize(IOUtils.readFully(inputStream, -1, true));
+        SportActivityWeb sportActivityWeb = new SportActivityWeb().deserialize(IOUtils.toByteArray(inputStream));
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         long timestamp = user.getNewServerTimestamp();
 

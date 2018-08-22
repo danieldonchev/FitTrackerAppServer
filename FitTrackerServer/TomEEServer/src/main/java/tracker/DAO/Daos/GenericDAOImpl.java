@@ -1,9 +1,13 @@
 package tracker.DAO.Daos;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import java.io.Serializable;
 
+@Default
 public class GenericDAOImpl<T, PK extends Serializable> implements GenericDao<T, PK> {
 
     @PersistenceContext(unitName = "trackerApp")

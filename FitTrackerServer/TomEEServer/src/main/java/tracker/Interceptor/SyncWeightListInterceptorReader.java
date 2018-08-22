@@ -2,7 +2,7 @@ package tracker.Interceptor;
 
 import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.WeightWeb;
-import sun.misc.IOUtils;
+import org.apache.commons.io.IOUtils;
 import tracker.Entities.GenericUser;
 import tracker.Entities.Weight;
 import tracker.WebEntitiesHelper;
@@ -29,7 +29,7 @@ public class SyncWeightListInterceptorReader implements ReaderInterceptor {
         GenericUser user = (GenericUser)  securityContext.getUserPrincipal();
         InputStream is = context.getInputStream();
         ArrayList<Weight> weights = new ArrayList<>();
-        ArrayList<WeightWeb> weightWebs = SerializeHelper.deserializeWeights(IOUtils.readFully(is, -1, true));
+        ArrayList<WeightWeb> weightWebs = SerializeHelper.deserializeWeights(IOUtils.toByteArray(is));
         WebEntitiesHelper helper = new WebEntitiesHelper();
         for(WeightWeb weightWeb : weightWebs){
             weights.add(helper.toWeight(weightWeb, user));

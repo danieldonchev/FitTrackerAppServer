@@ -1,7 +1,9 @@
 package tracker.rest;
 
 import org.json.JSONObject;
+import tracker.API;
 import tracker.DAO.DaoServices.WeightService;
+import tracker.DAO.DaoServices.WeightServiceImpl;
 import tracker.Entities.Weight;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;
@@ -19,7 +21,7 @@ import javax.ws.rs.core.SecurityContext;
 
 @Secured
 @Sync
-@Path("weights")
+@Path(API.weight)
 public class Weights {
 
     private WeightService service;
@@ -33,7 +35,6 @@ public class Weights {
     }
 
     @POST
-    @Path("weight")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     @WeightInterceptorReader

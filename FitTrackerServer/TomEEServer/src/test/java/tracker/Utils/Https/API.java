@@ -4,8 +4,8 @@ public final class API {
     //base url address
 //    private static final String baseURLHttps = "https://95.42.100.225:8181/";
 //    private static final String baseURLHttp = "http://95.42.100.225:8080/";
-    private static final String baseURLHttps = "https://192.168.100.44:8181/";
-    private static final String baseURLHttp = "http://192.168.100.44:8080/";
+    private static final String baseURLHttps = "https://192.168.100.44:8181/api/";
+    private static final String baseURLHttp = "http://192.168.100.44:8080/api/";
 //
 //    private static final String baseURLHttps = "https://192.168.43.96:8181/";
 //    private static final String baseURLHttp = "http://192.168.43.96:8080/";
@@ -14,7 +14,7 @@ public final class API {
     private static final String baseUser = baseURLHttps + "user/";
     private static final String baseAuth = baseURLHttps + "auth/";
     private static final String baseSync = baseURLHttps + "sync/";
-    private static final String baseGoal = baseURLHttps + "goals/";
+    private static final String baseGoal = baseURLHttps + "goal/";
     private static final String basePeopleActivites = baseURLHttp + "people-activities/";
     private static final String baseWeight = baseURLHttps + "weights/";
 
@@ -34,7 +34,7 @@ public final class API {
     public static final String profilePic = baseUser + "profile-pic";
 
     //goals
-    public static final String goal = baseGoal + "goal";
+    public static final String goal = baseGoal;
 
     //weights
     public static final String weight = baseWeight + "weight";

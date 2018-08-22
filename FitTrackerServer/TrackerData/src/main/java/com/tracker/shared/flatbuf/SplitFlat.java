@@ -2,10 +2,10 @@
 
 package com.tracker.shared.flatbuf;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.google.flatbuffers.Struct;
-
-import java.nio.ByteBuffer;
+import java.nio.*;
+import java.lang.*;
+import java.util.*;
+import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")
 public final class SplitFlat extends Struct {
@@ -16,7 +16,7 @@ public final class SplitFlat extends Struct {
   public double distance() { return bb.getDouble(bb_pos + 8); }
   public long duration() { return bb.getLong(bb_pos + 16); }
 
-  public static int createSplit(FlatBufferBuilder builder, int id, double distance, long duration) {
+  public static int createSplitFlat(FlatBufferBuilder builder, int id, double distance, long duration) {
     builder.prep(8, 24);
     builder.putLong(duration);
     builder.putDouble(distance);

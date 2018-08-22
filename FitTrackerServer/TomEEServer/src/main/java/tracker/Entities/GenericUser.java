@@ -8,6 +8,7 @@ public class GenericUser extends User {
     private long newServerTimestamp;
     private boolean isWriting;
     private boolean isNew;
+    private boolean isMobile;
 
     public GenericUser(){}
 
@@ -60,4 +61,11 @@ public class GenericUser extends User {
         isNew = aNew;
     }
 
+    public boolean isMobile() {
+        return isMobile;
+    }
+
+    public void setMobile(boolean mobile) {
+        isMobile = mobile;
+    }
 }

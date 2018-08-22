@@ -1,7 +1,9 @@
 package tracker.rest;
 
 import org.json.JSONObject;
+import tracker.API;
 import tracker.DAO.DaoServices.UserSettignsService;
+import tracker.DAO.DaoServices.UserSettignsServiceImpl;
 import tracker.Entities.Details;
 import tracker.Entities.GenericUser;
 import tracker.Markers.Secured;
@@ -18,7 +20,7 @@ import javax.ws.rs.core.SecurityContext;
 
 @Secured
 @Sync
-@Path("settings")
+@Path(API.settings)
 public class Settings {
 
     private UserSettignsService service;
@@ -32,7 +34,6 @@ public class Settings {
     }
 
     @PUT
-    @Path("setting")
     @Consumes(MediaType.APPLICATION_JSON)
     @UserWriting
     public Response updateSettings(Details userSettings, @Context SecurityContext context) {
@@ -47,7 +48,6 @@ public class Settings {
     }
 
     @GET
-    @Path("setting")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSettings(@Context SecurityContext context, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) context.getUserPrincipal();

@@ -25,7 +25,7 @@ public class TokenFactory {
                 .claim(EMAIL, email)
                 .claim(USERID, userID)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 7200 * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 720000 * 1000))
                 .signWith(SignatureAlgorithm.HS256, accessTokenSecret.getBytes())
                 .compact();
 
@@ -51,7 +51,7 @@ public class TokenFactory {
                         .setSubject(SUBJECT)
                         .setIssuer(ISSUER)
                         .setIssuedAt(new Date(System.currentTimeMillis()))
-                        .setExpiration(new Date(System.currentTimeMillis() + 7200 * 1000))
+                        .setExpiration(new Date(System.currentTimeMillis() + 720000 * 1000))
                         .claim(EMAIL, email)
                         .claim(USERID, userID)
                         .signWith(SignatureAlgorithm.HS256, accessTokenSecret.getBytes())

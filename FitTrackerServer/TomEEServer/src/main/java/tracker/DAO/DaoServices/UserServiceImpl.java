@@ -12,7 +12,9 @@ import tracker.Entities.UserPasswordToken;
 import tracker.Entities.UserRefreshToken;
 import tracker.Entities.UserTokens;
 import tracker.MailSender;
+import tracker.Qualifiers.UserDaoQualifier;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
@@ -23,6 +25,7 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import javax.ws.rs.NotAuthorizedException;
+import java.util.Optional;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.BEAN)
@@ -35,7 +38,7 @@ public class UserServiceImpl implements UserService{
     private UserPasswordTokenService userPasswordTokenService;
 
     @Inject
-    public UserServiceImpl(UserDao dao, UserTokenService userTokenService, UserPasswordTokenService passwordTokenService){
+    public UserServiceImpl(@UserDaoQualifier UserDao dao, UserTokenService userTokenService, UserPasswordTokenService passwordTokenService){
         this.dao = dao;
         this.userTokenService = userTokenService;
         this.userPasswordTokenService = passwordTokenService;
@@ -83,13 +86,13 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserTokens insertOAuthUser(User user){
         boolean userNew = true;
-        User existingUser = null;
+        Optional<User> existingUser = Optional.empty();
 
 
         try {
             userTransaction.begin();
             existingUser = dao.findUser(user.getEmail());
-            if(existingUser == null){
+            if(!existingUser.isPresent()){
                 dao.create(user);
             }
             userTransaction.commit();
@@ -97,9 +100,9 @@ public class UserServiceImpl implements UserService{
             userNew = catchUserExistsException(e);
         }
         UserTokens userTokens = null;
-        if(existingUser != null){
-            userTokens = getUserTokens(existingUser);
-            userTokens.setId(existingUser.getId());
+        if(existingUser.isPresent()){
+            userTokens = getUserTokens(existingUser.get());
+            userTokens.setId(existingUser.get().getId());
         } else {
             try {
                 userTransaction.begin();
@@ -123,23 +126,25 @@ public class UserServiceImpl implements UserService{
         @return     UserTokens with new refresh and access token.
      */
     @Override
-    public UserTokens loginUser(User user){
-        User userFromDB = dao.findUser(user.getEmail());
-
-        PasswordValidator validator = new PasswordValidator();
-        if (validator.validatePassword(user.getPassword(), userFromDB.getPassword())){
-            TokenFactory tokenFactory = new TokenFactory();
-            String refreshToken = tokenFactory.getRefreshToken(user.getEmail(), userFromDB.getId());
-            UserTokens userTokens = new UserTokens(userFromDB.getId(),
-                    user.getEmail(),
-                    refreshToken,
-                    tokenFactory.getRegisterAccessToken(userFromDB.getId(), user.getEmail()),
-                    false);
-            insertRefreshToken(new UserRefreshToken(userFromDB.getId(), refreshToken));
-            return userTokens;
-        } else{
-            return null;
+    @Nullable
+    public Optional<UserTokens> loginUser(User user) {
+        Optional<User> optionalUser = dao.findUser(user.getEmail());
+        if (optionalUser.isPresent()) {
+            User userFromDB = optionalUser.get();
+            PasswordValidator validator = new PasswordValidator();
+            if (validator.validatePassword(user.getPassword(), userFromDB.getPassword())) {
+                TokenFactory tokenFactory = new TokenFactory();
+                String refreshToken = tokenFactory.getRefreshToken(user.getEmail(), userFromDB.getId());
+                UserTokens userTokens = new UserTokens(userFromDB.getId(),
+                        user.getEmail(),
+                        refreshToken,
+                        tokenFactory.getRegisterAccessToken(userFromDB.getId(), user.getEmail()),
+                        false);
+                insertRefreshToken(new UserRefreshToken(userFromDB.getId(), refreshToken));
+                return Optional.of(userTokens);
+            }
         }
+        return Optional.empty();
     }
 
     /*
@@ -207,7 +212,7 @@ public class UserServiceImpl implements UserService{
     public boolean sendPasswordCodeToUser(String email){
 
         try {
-            User user = dao.findUser(email);
+            Optional<User> user = dao.findUser(email);
         } catch (NoResultException e) {
             return false;
         }

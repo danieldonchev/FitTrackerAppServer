@@ -43,17 +43,14 @@ public class SportActivityMap
         int finish = getBufferInt(builder);
 
         builder.finish(finish);
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
 
     public SportActivityMap deserialize(byte[] bytesRead)
     {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        SportActivityMapFlat sportActivityMapFlat = SportActivityMapFlat.getRootAsSportActivityMap(buf);
+        SportActivityMapFlat sportActivityMapFlat = SportActivityMapFlat.getRootAsSportActivityMapFlat(buf);
 
         return deserializeFromFlatBuffMap(sportActivityMapFlat);
     }
@@ -68,7 +65,7 @@ public class SportActivityMap
         while(markerIterator.hasPrevious())
         {
             LatLng latLng = markerIterator.previous();
-            MarkersFlat.createMarkers(builder, latLng.latitude, latLng.longitude, 0);
+            MarkersFlat.createMarkersFlat(builder, latLng.latitude, latLng.longitude, 0);
         }
 
         int markers = builder.endVector();
@@ -78,16 +75,16 @@ public class SportActivityMap
         while(polyLineIterator.hasPrevious())
         {
             LatLng latLng = polyLineIterator.previous();
-            PolylineFlat.createPolyline(builder, latLng.latitude, latLng.longitude);
+            PolylineFlat.createPolylineFlat(builder, latLng.latitude, latLng.longitude);
         }
 
         int polyline = builder.endVector();
 
-        SportActivityMapFlat.startSportActivityMap(builder);
+        SportActivityMapFlat.startSportActivityMapFlat(builder);
         SportActivityMapFlat.addMarkers(builder, markers);
         SportActivityMapFlat.addPolyline(builder, polyline);
 
-        return SportActivityMapFlat.endSportActivityMap(builder);
+        return SportActivityMapFlat.endSportActivityMapFlat(builder);
     }
 
     public SportActivityMap deserializeFromFlatBuffMap(SportActivityMapFlat map){

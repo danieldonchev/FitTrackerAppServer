@@ -2,7 +2,7 @@ package tracker.Interceptor;
 
 import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.SportActivityWeb;
-import sun.misc.IOUtils;
+import org.apache.commons.io.IOUtils;
 import tracker.Entities.GenericUser;
 import tracker.Entities.SportActivity;
 import tracker.WebEntitiesHelper;
@@ -29,7 +29,7 @@ public class SyncSportActivityListInterceptorReader implements ReaderInterceptor
         InputStream inputStream = context.getInputStream();
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         long timestamp = user.getNewServerTimestamp();
-        ArrayList<SportActivityWeb> sportActivitiesWeb = SerializeHelper.deserializeSportActivities(IOUtils.readFully(inputStream, -1, true));
+        ArrayList<SportActivityWeb> sportActivitiesWeb = SerializeHelper.deserializeSportActivities(IOUtils.toByteArray(inputStream));
         ArrayList<SportActivity> sportActivities = new ArrayList<>();
         WebEntitiesHelper helper = new WebEntitiesHelper();
         for(SportActivityWeb sportActivityWeb : sportActivitiesWeb){

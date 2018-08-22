@@ -1,7 +1,7 @@
 package tracker.Interceptor;
 
+import com.google.common.io.ByteStreams;
 import com.tracker.shared.Entities.GoalWeb;
-import sun.misc.IOUtils;
 import tracker.Entities.GenericUser;
 import tracker.Entities.Goal;
 import tracker.Markers.GoalInterceptor;
@@ -26,10 +26,9 @@ public class GoalReaderInterceptor implements ReaderInterceptor {
     public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
 
         InputStream inputStream = context.getInputStream();
-        GoalWeb goalWeb = new GoalWeb().deserialize(IOUtils.readFully(inputStream, -1, true));
+        GoalWeb goalWeb = new GoalWeb().deserialize(org.apache.commons.io.IOUtils.toByteArray(inputStream));
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         long timestamp = user.getNewServerTimestamp();
-
         Goal goal = new Goal(goalWeb.getId(),
                 user.getId(),
                 goalWeb.getType(),
@@ -44,4 +43,6 @@ public class GoalReaderInterceptor implements ReaderInterceptor {
 
         return goal;
     }
+
+
 }

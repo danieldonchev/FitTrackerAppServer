@@ -28,11 +28,7 @@ public class SportActivityWithOwner extends AbstractWorkout{
         int finish = getSportActivityInt(builder);
 
         builder.finish(finish);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
 
@@ -71,7 +67,7 @@ public class SportActivityWithOwner extends AbstractWorkout{
             profPic = builder.createByteVector(profilePic);
         }
 
-        SportActivityFlat.startSportActivity(builder);
+        SportActivityFlat.startSportActivityFlat(builder);
 
         com.tracker.shared.flatbuf.SportActivityWithOwner.addActivity(builder, activityString);
         com.tracker.shared.flatbuf.SportActivityWithOwner.addName(builder, nameString);
@@ -81,7 +77,7 @@ public class SportActivityWithOwner extends AbstractWorkout{
         com.tracker.shared.flatbuf.SportActivityWithOwner.addEndTimestamp(builder, endTimestamp);
         com.tracker.shared.flatbuf.SportActivityWithOwner.addDuration(builder, duration);
         com.tracker.shared.flatbuf.SportActivityWithOwner.addDistance(builder, distance);
-        com.tracker.shared.flatbuf.SportActivityWithOwner.addStartPoint(builder, PolylineFlat.createPolyline(builder, latLng.latitude, latLng.longitude));
+        com.tracker.shared.flatbuf.SportActivityWithOwner.addStartPoint(builder, PolylineFlat.createPolylineFlat(builder, latLng.latitude, latLng.longitude));
         com.tracker.shared.flatbuf.SportActivityWithOwner.addProfilePic(builder, profPic);
 
         return com.tracker.shared.flatbuf.SportActivityWithOwner.endSportActivityWithOwner(builder);

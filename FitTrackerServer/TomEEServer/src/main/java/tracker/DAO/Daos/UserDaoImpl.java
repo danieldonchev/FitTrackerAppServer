@@ -3,25 +3,35 @@ package tracker.DAO.Daos;
 
 import tracker.Authenticate.PasswordGenerator;
 import tracker.Entities.User;
+import tracker.Qualifiers.UserDaoQualifier;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import java.util.Optional;
 
-@Alternative
+@UserDaoQualifier
 public class UserDaoImpl extends GenericDAOImpl<User, String> implements UserDao {
 
     /*
         Finds user by email.
         @param email User email.
-        @return User
+        @return User If user is not found returns null.
      */
     @Override
-    public User findUser(String email){
+    public Optional<User> findUser(String email){
         Query query = getEntityManager().createQuery("SELECT u FROM User u WHERE email=:arg1");
         query.setParameter("arg1", email);
-        User userFromDB = (User) query.getSingleResult();
-        return userFromDB;
+        Optional<User> user;
+        try{
+            user = Optional.of((User) query.getSingleResult());
+        } catch (NoResultException e){
+            user = Optional.empty();
+        }
+
+        return user;
     }
 
     /*
@@ -31,7 +41,7 @@ public class UserDaoImpl extends GenericDAOImpl<User, String> implements UserDao
     public boolean changePassword(String email, String password) {
         try {
             PasswordGenerator generator = new PasswordGenerator();
-            Query query = getEntityManager().createQuery("UPDATE User SET Passhash = :arg1 WHERE email=:arg2");
+            Query query = getEntityManager().createQuery("UPDATE User SET password = :arg1 WHERE email=:arg2");
             query.setParameter("arg1", generator.generatePasswordHash(password));
             query.setParameter("arg2", email);
             query.executeUpdate();

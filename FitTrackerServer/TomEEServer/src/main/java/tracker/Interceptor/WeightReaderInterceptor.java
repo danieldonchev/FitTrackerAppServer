@@ -1,7 +1,7 @@
 package tracker.Interceptor;
 
 import com.tracker.shared.Entities.WeightWeb;
-import sun.misc.IOUtils;
+import org.apache.commons.io.IOUtils;
 import tracker.Entities.GenericUser;
 import tracker.Entities.Weight;
 import tracker.Markers.WeightInterceptorReader;
@@ -26,7 +26,7 @@ public class WeightReaderInterceptor implements ReaderInterceptor {
     public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         InputStream is = context.getInputStream();
-        WeightWeb weightWeb = new WeightWeb().deserialize(IOUtils.readFully(is, -1 , true));
+        WeightWeb weightWeb = new WeightWeb().deserialize(IOUtils.toByteArray(is));
         long timestamp = user.getNewServerTimestamp();
         Weight weight = new Weight(user.getId(),
                 weightWeb.date,

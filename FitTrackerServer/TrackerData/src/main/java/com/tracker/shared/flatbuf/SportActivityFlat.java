@@ -2,23 +2,24 @@
 
 package com.tracker.shared.flatbuf;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.google.flatbuffers.Table;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.nio.*;
+import java.lang.*;
+import java.util.*;
+import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")
 public final class SportActivityFlat extends Table {
-  public static SportActivityFlat getRootAsSportActivity(ByteBuffer _bb) { return getRootAsSportActivity(_bb, new SportActivityFlat()); }
-  public static SportActivityFlat getRootAsSportActivity(ByteBuffer _bb, SportActivityFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
+  public static SportActivityFlat getRootAsSportActivityFlat(ByteBuffer _bb) { return getRootAsSportActivityFlat(_bb, new SportActivityFlat()); }
+  public static SportActivityFlat getRootAsSportActivityFlat(ByteBuffer _bb, SportActivityFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
   public void __init(int _i, ByteBuffer _bb) { bb_pos = _i; bb = _bb; }
   public SportActivityFlat __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
   public String id() { int o = __offset(4); return o != 0 ? __string(o + bb_pos) : null; }
   public ByteBuffer idAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
+  public ByteBuffer idInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
   public String activity() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
   public ByteBuffer activityAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
+  public ByteBuffer activityInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
   public double distance() { int o = __offset(8); return o != 0 ? bb.getDouble(o + bb_pos) : -1.0; }
   public long startTimestamp() { int o = __offset(10); return o != 0 ? bb.getLong(o + bb_pos) : -1L; }
   public long endTimestamp() { int o = __offset(12); return o != 0 ? bb.getLong(o + bb_pos) : -1L; }
@@ -32,7 +33,7 @@ public final class SportActivityFlat extends Table {
   public int type() { int o = __offset(24); return o != 0 ? bb.getInt(o + bb_pos) : 0; }
   public long lastModified() { int o = __offset(26); return o != 0 ? bb.getLong(o + bb_pos) : 0L; }
 
-  public static int createSportActivity(FlatBufferBuilder builder,
+  public static int createSportActivityFlat(FlatBufferBuilder builder,
       int idOffset,
       int activityOffset,
       double distance,
@@ -58,10 +59,10 @@ public final class SportActivityFlat extends Table {
     SportActivityFlat.addCalories(builder, calories);
     SportActivityFlat.addActivity(builder, activityOffset);
     SportActivityFlat.addId(builder, idOffset);
-    return SportActivityFlat.endSportActivity(builder);
+    return SportActivityFlat.endSportActivityFlat(builder);
   }
 
-  public static void startSportActivity(FlatBufferBuilder builder) { builder.startObject(12); }
+  public static void startSportActivityFlat(FlatBufferBuilder builder) { builder.startObject(12); }
   public static void addId(FlatBufferBuilder builder, int idOffset) { builder.addOffset(0, idOffset, 0); }
   public static void addActivity(FlatBufferBuilder builder, int activityOffset) { builder.addOffset(1, activityOffset, 0); }
   public static void addDistance(FlatBufferBuilder builder, double distance) { builder.addDouble(2, distance, -1.0); }
@@ -74,10 +75,11 @@ public final class SportActivityFlat extends Table {
   public static void addSportActivityMap(FlatBufferBuilder builder, int sportActivityMapOffset) { builder.addOffset(9, sportActivityMapOffset, 0); }
   public static void addType(FlatBufferBuilder builder, int type) { builder.addInt(10, type, 0); }
   public static void addLastModified(FlatBufferBuilder builder, long lastModified) { builder.addLong(11, lastModified, 0L); }
-  public static int endSportActivity(FlatBufferBuilder builder) {
+  public static int endSportActivityFlat(FlatBufferBuilder builder) {
     int o = builder.endObject();
     return o;
   }
-  public static void finishSportActivityBuffer(FlatBufferBuilder builder, int offset) { builder.finish(offset); }
+  public static void finishSportActivityFlatBuffer(FlatBufferBuilder builder, int offset) { builder.finish(offset); }
+  public static void finishSizePrefixedSportActivityFlatBuffer(FlatBufferBuilder builder, int offset) { builder.finishSizePrefixed(offset); }
 }
 

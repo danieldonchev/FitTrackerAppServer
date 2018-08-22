@@ -30,17 +30,13 @@ public class WeightWeb {
 
         int finish = weightInt(builder);
         builder.finish(finish);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
 
     public WeightWeb deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        WeightFlat weightFlatBufferer = WeightFlat.getRootAsWeight(buf);
+        WeightFlat weightFlatBufferer = WeightFlat.getRootAsWeightFlat(buf);
 
         weight = weightFlatBufferer.weight();
         date = weightFlatBufferer.date();
@@ -51,10 +47,10 @@ public class WeightWeb {
 
     public int weightInt(FlatBufferBuilder builder){
 
-        WeightFlat.startWeight(builder);
+        WeightFlat.startWeightFlat(builder);
         WeightFlat.addWeight(builder, weight);
         WeightFlat.addDate(builder, date);
         WeightFlat.addLastModified(builder, lastModified);
-        return WeightFlat.endWeight(builder);
+        return WeightFlat.endWeightFlat(builder);
     }
 }

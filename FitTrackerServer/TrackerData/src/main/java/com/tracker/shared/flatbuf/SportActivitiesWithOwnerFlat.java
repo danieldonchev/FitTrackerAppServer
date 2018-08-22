@@ -2,35 +2,34 @@
 
 package com.tracker.shared.flatbuf;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.google.flatbuffers.Table;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.nio.*;
+import java.lang.*;
+import java.util.*;
+import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")
 public final class SportActivitiesWithOwnerFlat extends Table {
-  public static SportActivitiesWithOwnerFlat getRootAsSportActivitiesWithOwner(ByteBuffer _bb) { return getRootAsSportActivitiesWithOwner(_bb, new SportActivitiesWithOwnerFlat()); }
-  public static SportActivitiesWithOwnerFlat getRootAsSportActivitiesWithOwner(ByteBuffer _bb, SportActivitiesWithOwnerFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
+  public static SportActivitiesWithOwnerFlat getRootAsSportActivitiesWithOwnerFlat(ByteBuffer _bb) { return getRootAsSportActivitiesWithOwnerFlat(_bb, new SportActivitiesWithOwnerFlat()); }
+  public static SportActivitiesWithOwnerFlat getRootAsSportActivitiesWithOwnerFlat(ByteBuffer _bb, SportActivitiesWithOwnerFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
   public void __init(int _i, ByteBuffer _bb) { bb_pos = _i; bb = _bb; }
   public SportActivitiesWithOwnerFlat __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public SportActivityWithOwner sportActivities(int j) { return sportActivities(new SportActivityWithOwner(), j); }
-  public SportActivityWithOwner sportActivities(SportActivityWithOwner obj, int j) { int o = __offset(4); return o != 0 ? obj.__assign(__indirect(__vector(o) + j * 4), bb) : null; }
+  public SportActivityWithOwnerFlat sportActivities(int j) { return sportActivities(new SportActivityWithOwnerFlat(), j); }
+  public SportActivityWithOwnerFlat sportActivities(SportActivityWithOwnerFlat obj, int j) { int o = __offset(4); return o != 0 ? obj.__assign(__indirect(__vector(o) + j * 4), bb) : null; }
   public int sportActivitiesLength() { int o = __offset(4); return o != 0 ? __vector_len(o) : 0; }
 
-  public static int createSportActivitiesWithOwner(FlatBufferBuilder builder,
+  public static int createSportActivitiesWithOwnerFlat(FlatBufferBuilder builder,
       int sportActivitiesOffset) {
     builder.startObject(1);
     SportActivitiesWithOwnerFlat.addSportActivities(builder, sportActivitiesOffset);
-    return SportActivitiesWithOwnerFlat.endSportActivitiesWithOwner(builder);
+    return SportActivitiesWithOwnerFlat.endSportActivitiesWithOwnerFlat(builder);
   }
 
-  public static void startSportActivitiesWithOwner(FlatBufferBuilder builder) { builder.startObject(1); }
+  public static void startSportActivitiesWithOwnerFlat(FlatBufferBuilder builder) { builder.startObject(1); }
   public static void addSportActivities(FlatBufferBuilder builder, int sportActivitiesOffset) { builder.addOffset(0, sportActivitiesOffset, 0); }
   public static int createSportActivitiesVector(FlatBufferBuilder builder, int[] data) { builder.startVector(4, data.length, 4); for (int i = data.length - 1; i >= 0; i--) builder.addOffset(data[i]); return builder.endVector(); }
   public static void startSportActivitiesVector(FlatBufferBuilder builder, int numElems) { builder.startVector(4, numElems, 4); }
-  public static int endSportActivitiesWithOwner(FlatBufferBuilder builder) {
+  public static int endSportActivitiesWithOwnerFlat(FlatBufferBuilder builder) {
     int o = builder.endObject();
     return o;
   }

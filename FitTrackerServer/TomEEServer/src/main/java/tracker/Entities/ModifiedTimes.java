@@ -2,12 +2,14 @@ package tracker.Entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "user_sync")
 public class ModifiedTimes {
 
+    @Id
     private String id;
     @Column(name = "last_modified")
     private long lastModified;

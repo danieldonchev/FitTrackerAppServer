@@ -1,12 +1,11 @@
 package tracker.IntegrationTests;
 
-import com.tracker.shared.Entities.GoalWeb;
 import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.SportActivityWeb;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import sun.misc.IOUtils;
 import tracker.Utils.Https.API;
 import tracker.Utils.Https.HttpsConnection;
 
@@ -18,7 +17,6 @@ import java.util.UUID;
 
 import static tracker.Utils.Https.HttpsConnection.HTTP_GET;
 import static tracker.Utils.Https.HttpsConnection.HTTP_POST;
-import static tracker.Utils.TestUtils.readStream;
 
 public class SyncIntegrationTest {
 
@@ -30,7 +28,7 @@ public class SyncIntegrationTest {
             connection.setRequestProperty("Content-Type", "application/octet-stream");
 
             InputStream is = connection.getInputStream();
-            ArrayList<SportActivityWeb> sportActivityWebs = SerializeHelper.deserializeSportActivities(IOUtils.readFully(is, -1, true));
+            ArrayList<SportActivityWeb> sportActivityWebs = SerializeHelper.deserializeSportActivities(IOUtils.toByteArray(is));
 
             Assert.assertEquals(connection.getResponseCode(), 200);
             Assert.assertNotNull(sportActivityWebs);
@@ -114,4 +112,6 @@ public class SyncIntegrationTest {
             e.printStackTrace();
         }
     }
+
+
 }

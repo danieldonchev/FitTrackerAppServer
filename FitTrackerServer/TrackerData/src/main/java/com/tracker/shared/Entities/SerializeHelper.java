@@ -22,22 +22,18 @@ public class SerializeHelper {
         }
 
         int vector = SportActivitiesFlat.createSportActivitiesVector(builder, sportActivityOffsets);
-        SportActivitiesFlat.startSportActivities(builder);
+        SportActivitiesFlat.startSportActivitiesFlat(builder);
         SportActivitiesFlat.addSportActivities(builder, vector);
-        int activities = SportActivitiesFlat.endSportActivities(builder);
+        int activities = SportActivitiesFlat.endSportActivitiesFlat(builder);
 
         builder.finish(activities);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
     public static ArrayList<SportActivityWeb> deserializeSportActivities(byte[] bytes){
         ArrayList<SportActivityWeb> sportActivities = new ArrayList<>();
         ByteBuffer buf = ByteBuffer.wrap(bytes);
-        SportActivitiesFlat sportActivitiesFlatBufferer = SportActivitiesFlat.getRootAsSportActivities(buf);
+        SportActivitiesFlat sportActivitiesFlatBufferer = SportActivitiesFlat.getRootAsSportActivitiesFlat(buf);
 
         for(int i = 0; i < sportActivitiesFlatBufferer.sportActivitiesLength(); i++){
             SportActivityFlat sportActivityFlat = sportActivitiesFlatBufferer.sportActivities(i);
@@ -84,22 +80,18 @@ public class SerializeHelper {
         }
 
         int vector = GoalsFlat.createGoalsVector(builder, goalsOffset);
-        GoalsFlat.startGoals(builder);
+        GoalsFlat.startGoalsFlat(builder);
         GoalsFlat.addGoals(builder, vector);
-        int activities = GoalsFlat.endGoals(builder);
+        int activities = GoalsFlat.endGoalsFlat(builder);
 
         builder.finish(activities);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
     public static ArrayList<GoalWeb> deserializeGoals(byte[] bytes){
         ArrayList<GoalWeb> goalWebs = new ArrayList<>();
         ByteBuffer buf = ByteBuffer.wrap(bytes);
-        GoalsFlat goalsFlatBufferer = GoalsFlat.getRootAsGoals(buf);
+        GoalsFlat goalsFlatBufferer = GoalsFlat.getRootAsGoalsFlat(buf);
 
         for(int i = 0; i < goalsFlatBufferer.goalsLength(); i++){
             GoalFlat goalFlat = goalsFlatBufferer.goals(i);
@@ -132,25 +124,21 @@ public class SerializeHelper {
         }
 
         int vector = SportActivitiesFlat.createSportActivitiesVector(builder, sportActivityOffsets);
-        SportActivitiesFlat.startSportActivities(builder);
+        SportActivitiesFlat.startSportActivitiesFlat(builder);
         SportActivitiesFlat.addSportActivities(builder, vector);
-        int activities = SportActivitiesFlat.endSportActivities(builder);
+        int activities = SportActivitiesFlat.endSportActivitiesFlat(builder);
 
         builder.finish(activities);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
     public static ArrayList<SportActivityWithOwner> deserializeSportActivityWithOwners(byte[] bytes){
         ArrayList<SportActivityWithOwner> sportActivities = new ArrayList<>();
         ByteBuffer buf = ByteBuffer.wrap(bytes);
-        SportActivitiesWithOwnerFlat sportActivitiesBufferer = SportActivitiesWithOwnerFlat.getRootAsSportActivitiesWithOwner(buf);
+        SportActivitiesWithOwnerFlat sportActivitiesBufferer = SportActivitiesWithOwnerFlat.getRootAsSportActivitiesWithOwnerFlat(buf);
 
         for(int i = 0; i < sportActivitiesBufferer.sportActivitiesLength(); i++){
-            com.tracker.shared.flatbuf.SportActivityWithOwner sportActivity = sportActivitiesBufferer.sportActivities(i);
+            com.tracker.shared.flatbuf.SportActivityWithOwnerFlat sportActivity = sportActivitiesBufferer.sportActivities(i);
 
             SportActivityWithOwner activity = new SportActivityWithOwner();
             activity.setWorkout(sportActivity.activity());
@@ -190,23 +178,19 @@ public class SerializeHelper {
         }
 
         int vector = WeightsFlat.createWeightsVector(builder, weightsOffset);
-        WeightsFlat.startWeights(builder);
+        WeightsFlat.startWeightsFlat(builder);
         WeightsFlat.addWeights(builder, vector);
-        int weightsInt = WeightsFlat.endWeights(builder);
+        int weightsInt = WeightsFlat.endWeightsFlat(builder);
 
         builder.finish(weightsInt);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
     public static ArrayList<WeightWeb> deserializeWeights(byte[] bytes){
         ArrayList<WeightWeb> weightWebs = new ArrayList<>();
 
         ByteBuffer buf = ByteBuffer.wrap(bytes);
-        WeightsFlat weightsFlatBufferer = WeightsFlat.getRootAsWeights(buf);
+        WeightsFlat weightsFlatBufferer = WeightsFlat.getRootAsWeightsFlat(buf);
 
         for(int i = 0; i < weightsFlatBufferer.weightsLength(); i++){
             WeightFlat weightFlat = weightsFlatBufferer.weights(i);

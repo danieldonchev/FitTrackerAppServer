@@ -10,16 +10,16 @@ import java.util.UUID;
 
 @FlatBufferSerializable
 public class GoalWeb {
-    private String id;
-    private int type;
-    private double distance;
-    private long duration;
-    private long calories;
-    private long steps;
-    private long fromDate;
-    private long toDate;
-    private long lastModified;
-    private long lastSync;
+        private String id;
+        private int type;
+        private double distance;
+        private long duration;
+        private long calories;
+        private long steps;
+        private long fromDate;
+        private long toDate;
+        private long lastModified;
+        private long lastSync;
 
     public GoalWeb() {}
 
@@ -49,17 +49,13 @@ public class GoalWeb {
 
         int finish = getGoalInt(builder);
         builder.finish(finish);
-
-        ByteBuffer buf = builder.dataBuffer();
-        byte[] array = new byte[buf.remaining()];
-        buf.get(array);
-        return array;
+        return builder.sizedByteArray();
     }
 
 
     public GoalWeb deserialize(byte[] bytesRead) {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
-        GoalFlat goalFlatBufferer = GoalFlat.getRootAsGoal(buf);
+        GoalFlat goalFlatBufferer = GoalFlat.getRootAsGoalFlat(buf);
 
         id = goalFlatBufferer.id();
         type = goalFlatBufferer.type();
@@ -77,7 +73,7 @@ public class GoalWeb {
     public int getGoalInt(FlatBufferBuilder builder){
         int id = builder.createString(this.id);
 
-        GoalFlat.startGoal(builder);
+        GoalFlat.startGoalFlat(builder);
         GoalFlat.addId(builder, id);
         GoalFlat.addType(builder, type);
         GoalFlat.addDistance(builder, distance);
@@ -87,7 +83,7 @@ public class GoalWeb {
         GoalFlat.addFromDate(builder, fromDate);
         GoalFlat.addToDate(builder, toDate);
         GoalFlat.addLastModified(builder, lastModified);
-        return GoalFlat.endGoal(builder);
+        return GoalFlat.endGoalFlat(builder);
     }
 
     public int getType() {

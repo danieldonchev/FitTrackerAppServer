@@ -1,9 +1,5 @@
 package tracker;
 
-import com.sun.jndi.cosnaming.IiopUrl;
-
-import javax.annotation.Resource;
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

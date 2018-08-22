@@ -3,7 +3,9 @@ package tracker.rest;
 import com.tracker.shared.Entities.SportActivityWeb;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tracker.API;
 import tracker.DAO.DaoServices.SynchronizationService;
+import tracker.DAO.DaoServices.SynchronizationServiceImpl;
 import tracker.DAO.DaoServices.UserSettignsService;
 import tracker.Entities.*;
 import tracker.Markers.*;
@@ -21,7 +23,7 @@ import java.util.List;
 
 @Secured
 @Sync
-@Path("sync")
+@Path(API.sync)
 public class Synchronization {
 
     private SynchronizationService service;
@@ -36,7 +38,7 @@ public class Synchronization {
     }
 
     @GET
-    @Path("should-sync")
+    @Path(API.syncCheck)
     @Produces(MediaType.APPLICATION_JSON)
     public Response shouldSync(@Context HttpServletRequest req) {
         return Response.ok().build();
@@ -46,7 +48,7 @@ public class Synchronization {
     Gets missing activities
      */
     @GET
-    @Path("sport-activities")
+    @Path(API.missingSportActivities)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @SyncSportActivityListInterceptorWriter
     public Response getSportActivities(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
@@ -59,7 +61,7 @@ public class Synchronization {
     }
 
     @POST
-    @Path("sport-activities")
+    @Path(API.missingSportActivities)
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
@@ -72,7 +74,7 @@ public class Synchronization {
     }
 
     @GET
-    @Path("deleted-activities")
+    @Path(API.deletedSportActivities)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDeletedActivities(@Context SecurityContext securityContext) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
@@ -87,7 +89,7 @@ public class Synchronization {
     }
 
     @POST
-    @Path("deleted-activities")
+    @Path(API.deletedSportActivities)
     @Consumes(MediaType.APPLICATION_JSON)
     @UserWriting
     public Response deleteActivities(String data, @Context SecurityContext securityContext) {
@@ -104,8 +106,8 @@ public class Synchronization {
     }
 
     @GET
-    @Path("goals")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Path(API.missingGoals)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getGoals(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
 
@@ -115,7 +117,7 @@ public class Synchronization {
     }
 
     @POST
-    @Path("goals")
+    @Path(API.missingGoals)
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
@@ -127,9 +129,9 @@ public class Synchronization {
     }
 
     @GET
-    @Path("deleted-goals")
+    @Path(API.deletedGoals)
     @Produces(MediaType.APPLICATION_JSON)
-    @SyncGoalListInterceptorWriter
+    @GoalListInterceptorWriter
     public Response getDeletedGoals(@Context SecurityContext securityContext) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         List<Object> missingEntities = this.service.getMissingEntities(user, "goals", Goal.class);
@@ -137,7 +139,7 @@ public class Synchronization {
     }
 
     @POST
-    @Path("deleted-goals")
+    @Path(API.deletedGoals)
     @Consumes(MediaType.APPLICATION_JSON)
     @UserWriting
     public Response deleteGoals(String data, @Context SecurityContext securityContext) {
@@ -154,7 +156,7 @@ public class Synchronization {
     }
 
     @POST
-    @Path("weights")
+    @Path(API.weights)
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
@@ -167,7 +169,7 @@ public class Synchronization {
     }
 
     @GET
-    @Path("weights")
+    @Path(API.weights)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @SyncWeightListInterceptorWriter
     public Response getWeights(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
@@ -179,7 +181,7 @@ public class Synchronization {
     }
 
     @GET
-    @Path("settings")
+    @Path(API.settings)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getSettings(String data, @Context SecurityContext securityContext, @Context HttpServletResponse response) {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
@@ -193,7 +195,7 @@ public class Synchronization {
     }
 
     @POST
-    @Path("settings")
+    @Path(API.settings)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     public Response updateSettings(Details details, @Context SecurityContext securityContext, @Context HttpServletResponse response) {
@@ -204,7 +206,7 @@ public class Synchronization {
     }
 
     @GET
-    @Path("sync-times")
+    @Path(API.syncTimes)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLastModifiedTimes(@Context SecurityContext securityContext) {
 

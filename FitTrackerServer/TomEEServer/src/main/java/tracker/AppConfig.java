@@ -1,6 +1,5 @@
 package tracker;
 
-import org.hibernate.Hibernate;
 import tracker.Markers.Sync;
 import tracker.filters.JWTAuthFilter;
 import tracker.filters.SyncFilter;
@@ -10,7 +9,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.Set;
 
-@ApplicationPath("/*")
+@ApplicationPath("/api/*")
 public class AppConfig extends Application {
 
     public AppConfig() {
@@ -26,14 +25,14 @@ public class AppConfig extends Application {
     private Set<Class<?>> getRestResourceClasses() {
 
         Set<Class<?>> resources = new java.util.HashSet<>();
-        resources.add(UserAuthentication.class);
+        resources.add(Authentication.class);
         resources.add(JWTAuthFilter.class);
-        resources.add(UserActivity.class);
+        resources.add(SportActivities.class);
         resources.add(SyncFilter.class);
         resources.add(Sync.class);
         resources.add(Synchronization.class);
         resources.add(Goals.class);
-        resources.add(PeopleActivities.class);
+        resources.add(SharedSportActivities.class);
         resources.add(Weights.class);
         resources.add(tracker.rest.Settings.class);
 

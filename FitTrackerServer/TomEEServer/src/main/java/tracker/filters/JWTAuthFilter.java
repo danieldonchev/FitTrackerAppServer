@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import tracker.Authenticate.TokenAuthenticator;
 import tracker.DAO.DaoServices.SynchronizationService;
+import tracker.DAO.DaoServices.SynchronizationServiceImpl;
 import tracker.Entities.GenericUser;
 import tracker.Entities.ModifiedTimes;
 import tracker.Markers.Secured;
@@ -38,9 +39,12 @@ public class JWTAuthFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-
         // Get the HTTP Authorization header from the request
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        boolean isMobile = false;
+        if(requestContext.getHeaderString("User-Agent").contains("Mobile")) {
+            isMobile = true;
+        }
 
         // Check if the HTTP Authorization header is present and formatted correctly
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -59,7 +63,8 @@ public class JWTAuthFilter implements ContainerRequestFilter {
             String username = (String) tokenClaims.getBody().get("email");
             String id = (String) tokenClaims.getBody().get("userID");
 
-            GenericUser user = new GenericUser(id, username, Long.parseLong(syncVersion));
+            GenericUser user = new GenericUser(id, username, syncVersion != null ? Long.parseLong(syncVersion) : 0);
+            user.setMobile(isMobile);
 
             // Get server last sync time
             ModifiedTimes times = this.service.getTimes(user);

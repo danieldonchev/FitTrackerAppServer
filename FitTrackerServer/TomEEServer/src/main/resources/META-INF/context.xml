@@ -15,4 +15,5 @@
                   type="javax.sql.DataSource"
     />
 
+    <Valve className="org.apache.catalina.valves.rewrite.RewriteValve"/>
 </Context>
