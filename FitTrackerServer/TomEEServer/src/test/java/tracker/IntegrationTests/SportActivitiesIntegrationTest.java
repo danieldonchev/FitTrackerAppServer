@@ -63,7 +63,7 @@ public class SportActivitiesIntegrationTest {
     public void getSportActivity(){
         try {
             HttpsConnection httpsConnection = new HttpsConnection();
-            HttpsURLConnection connection = httpsConnection.getConnection(HTTP_GET, API.sportActivity + "/469b4f22-09d3-40a5-ab65-33b81c45e573" + "/b69f6037-e959-4f39-88e9-becdc93b2995");
+            HttpsURLConnection connection = httpsConnection.getConnection(HTTP_GET, API.sportActivity + "/16411e7b-e71c-488d-b1e5-06cc7643141c" + "/10a6a2af-c980-4385-a5e4-00286ea3b5f0");
             connection.setRequestProperty("Content-Type", "application/octet-stream");
 
             InputStream is = connection.getInputStream();

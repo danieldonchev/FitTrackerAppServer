@@ -2,33 +2,34 @@ package tracker.Entities;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Embeddable
 public class SportActivityKey implements Serializable {
-    private String id;
-    private String userID;
+    private UUID id;
+    private UUID userID;
 
     public SportActivityKey() {
     }
 
-    public SportActivityKey(String id, String userID) {
+    public SportActivityKey(UUID id, UUID userID) {
         this.id = id;
         this.userID = userID;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getUserID() {
+    public UUID getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(UUID userID) {
         this.userID = userID;
     }
 }

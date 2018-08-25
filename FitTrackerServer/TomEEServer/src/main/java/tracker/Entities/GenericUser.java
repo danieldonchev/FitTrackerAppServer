@@ -1,6 +1,8 @@
 package tracker.Entities;
 
 
+import java.util.UUID;
+
 public class GenericUser extends User {
 
     private long clientSyncTimestamp;
@@ -13,7 +15,7 @@ public class GenericUser extends User {
     public GenericUser(){}
 
     public GenericUser(String id, String email) {
-        super(id, email);
+        super(UUID.fromString(id), email);
     }
 
     public GenericUser(String id, String email, long syncVersion) {

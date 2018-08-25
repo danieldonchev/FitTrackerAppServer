@@ -1,9 +1,8 @@
 package tracker.rest;
 
 import org.json.JSONObject;
-import tracker.API;
+import tracker.Utils.API;
 import tracker.DAO.DaoServices.UserSettignsService;
-import tracker.DAO.DaoServices.UserSettignsServiceImpl;
 import tracker.Entities.Details;
 import tracker.Entities.GenericUser;
 import tracker.Markers.Secured;

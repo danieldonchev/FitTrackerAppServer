@@ -4,7 +4,7 @@ package com.tracker.shared.flatbuf;
 
 import java.nio.*;
 import java.lang.*;
-import java.util.*;
+
 import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")

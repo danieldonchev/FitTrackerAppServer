@@ -1,31 +1,34 @@
 package tracker.Entities;
 
+import tracker.Utils.DBConstants;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
-@Table(name = "user_sync")
+@Table(name = DBConstants.TABLE_SYNC)
 public class ModifiedTimes {
 
     @Id
-    private String id;
-    @Column(name = "last_modified")
+    private UUID id;
+    @Column(name = DBConstants.last_modified)
     private long lastModified;
-    @Column(name = "last_modified_activities")
+    @Column(name = DBConstants.sync_activities)
     private long lastModifiedActivities;
-    @Column(name = "last_modified_settings")
+    @Column(name = DBConstants.sync_settings)
     private long lastModifiedSettings;
-    @Column(name = "last_modified_goals")
+    @Column(name = DBConstants.sync_goals)
     private long lastModifiedGoals;
-    @Column(name = "last_modified_weights")
+    @Column(name = DBConstants.sync_weights)
     private long lastModifiedWeights;
 
     public ModifiedTimes() {
     }
 
-    public ModifiedTimes(String id, long lastModified, long lastModifiedActivities, long lastModifiedSettings, long lastModifiedGoals, long lastModifiedWeights) {
+    public ModifiedTimes(UUID id, long lastModified, long lastModifiedActivities, long lastModifiedSettings, long lastModifiedGoals, long lastModifiedWeights) {
         this.id = id;
         this.lastModified = lastModified;
         this.lastModifiedActivities = lastModifiedActivities;
@@ -34,11 +37,11 @@ public class ModifiedTimes {
         this.lastModifiedWeights = lastModifiedWeights;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

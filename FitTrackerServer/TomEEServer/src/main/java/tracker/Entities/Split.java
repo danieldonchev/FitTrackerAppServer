@@ -1,31 +1,35 @@
 package tracker.Entities;
 
+import tracker.Utils.DBConstants;
+
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
-@Table(name = "sport_activity_splits")
+@Table(name = DBConstants.TABLE_SPORT_ACTIVITY_SPLITS)
 public class Split {
     @EmbeddedId
     private SplitKey splitKey;
-    @Column(name = "user_id") private String userID;
+    @Column(name = DBConstants.userID)
+    private UUID userID;
     private long duration;
     private double distance;
 
     public Split() {
     }
 
-    public Split(int id, String sportActivityId, String userID, long duration, double distance) {
+    public Split(int id, UUID sportActivityId, UUID userID, long duration, double distance) {
         this.splitKey = new SplitKey(id, sportActivityId);
         this.userID = userID;
         this.duration = duration;
         this.distance = distance;
     }
 
-    public String getUserID() {
+    public UUID getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(UUID userID) {
         this.userID = userID;
     }
 

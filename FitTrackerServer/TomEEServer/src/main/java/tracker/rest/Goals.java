@@ -2,7 +2,7 @@ package tracker.rest;
 
 import com.tracker.shared.Entities.GoalWeb;
 import org.json.JSONObject;
-import tracker.API;
+import tracker.Utils.API;
 import tracker.DAO.DaoServices.GoalService;
 import tracker.Entities.GenericUser;
 import tracker.Entities.Goal;
@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
+import java.util.UUID;
 
 @Stateless
 @Secured
@@ -42,7 +43,7 @@ public class Goals {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
-        jsonObject.put("id", goal.getGoalKey().getId());
+        jsonObject.put("id", goal.getGoalKey().getId().toString());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
@@ -53,7 +54,8 @@ public class Goals {
     @GoalInterceptor
     public Response deleteGoal(@PathParam("id") String id, @Context SecurityContext context) {
 
-        goalService.deleteGoal(id, ((GenericUser) context.getUserPrincipal()).getId());
+
+        goalService.deleteGoal(UUID.fromString(id), ((GenericUser) context.getUserPrincipal()).getId());
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
@@ -73,7 +75,7 @@ public class Goals {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
-        jsonObject.put("id", goal.getGoalKey().getId());
+        jsonObject.put("id", goal.getGoalKey().getId().toString());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
@@ -83,7 +85,7 @@ public class Goals {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @GoalListInterceptorWriter
     public Response getGoals(@Context SecurityContext context) {
-        String id = ((GenericUser) context.getUserPrincipal()).getId();
+        UUID id = ((GenericUser) context.getUserPrincipal()).getId();
         List<Goal> goals = this.goalService.getGoals(id);
 
         return Response.ok().entity(goals).build();

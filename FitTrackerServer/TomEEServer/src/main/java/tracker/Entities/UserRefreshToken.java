@@ -1,29 +1,32 @@
 package tracker.Entities;
 
+import tracker.Utils.DBConstants;
+
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = DBConstants.TABLE_REFRESH_TOKENS)
 public class UserRefreshToken {
 
     @Id
-    private String id;
-    @Column(name = "refresh_token")
+    private UUID id;
+    @Column(name = DBConstants.refresh_token)
     private String refreshToken;
 
     public UserRefreshToken() {
     }
 
-    public UserRefreshToken(String id, String refreshToken) {
+    public UserRefreshToken(UUID id, String refreshToken) {
         this.id = id;
         this.refreshToken = refreshToken;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

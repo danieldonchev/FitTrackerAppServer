@@ -1,9 +1,8 @@
 package tracker.rest;
 
 import org.json.JSONObject;
-import tracker.API;
+import tracker.Utils.API;
 import tracker.DAO.DaoServices.WeightService;
-import tracker.DAO.DaoServices.WeightServiceImpl;
 import tracker.Entities.Weight;
 import tracker.Markers.Secured;
 import tracker.Markers.Sync;

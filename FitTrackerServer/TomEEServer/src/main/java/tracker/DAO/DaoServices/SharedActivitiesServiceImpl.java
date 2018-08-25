@@ -9,6 +9,7 @@ import tracker.Qualifiers.SharedActivitiesDaoQualifier;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Stateless
 public class SharedActivitiesServiceImpl implements SharedActivitiesService {
@@ -27,7 +28,7 @@ public class SharedActivitiesServiceImpl implements SharedActivitiesService {
         return dao.getSharedSportActivities(bounds);
     }
 
-    public SportActivityMap getSportActivityMap(String activityID, String userID){
+    public SportActivityMap getSportActivityMap(UUID activityID, UUID userID){
         return dao.getSharedSportActivityMap(activityID, userID);
     }
 }

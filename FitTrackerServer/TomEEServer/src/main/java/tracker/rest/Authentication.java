@@ -2,14 +2,13 @@ package tracker.rest;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.json.JSONObject;
-import tracker.API;
+import tracker.Utils.API;
 import tracker.Authenticate.OauthVerifier;
 import tracker.DAO.DaoServices.UserService;
 import tracker.Entities.User;
 import tracker.Entities.UserTokens;
 
 import javax.inject.Inject;
-import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

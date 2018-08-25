@@ -6,14 +6,15 @@ import tracker.Qualifiers.GoalDaoQualifier;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.UUID;
 
 @GoalDaoQualifier
 public class GoalDaoImpl extends GenericDAOImpl<Goal, GoalKey> implements GoalDao{
 
     @Override
-    public List<Goal> getAll(String id) {
+    public List<Goal> getAll(UUID userID) {
          TypedQuery<Goal> query = getEntityManager().createQuery("select g from Goal g where g.goalKey.userID = :arg1", Goal.class);
-        query.setParameter("arg1", id);
+        query.setParameter("arg1", userID);
         List<Goal> list = query.getResultList();
 
         return list;

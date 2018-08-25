@@ -2,9 +2,8 @@ package tracker.rest;
 
 import com.tracker.shared.Entities.SportActivityWeb;
 import org.json.JSONObject;
-import tracker.API;
+import tracker.Utils.API;
 import tracker.DAO.DaoServices.SportActivityService;
-import tracker.DAO.DaoServices.SportActivityServiceImpl;
 import tracker.Entities.GenericUser;
 import tracker.Entities.SportActivity;
 import tracker.Markers.*;
@@ -19,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 @Secured
 @Sync
@@ -56,8 +56,9 @@ public class SportActivities {
     public Response getSportActivity(@PathParam("id") String id, @PathParam("userID") String userID, @Context SecurityContext context) {
         GenericUser user = (GenericUser) context.getUserPrincipal();
 
-        if (userID.equals(user.getId())) {
-            SportActivity sportActivity = this.service.read(id, userID);
+        if (userID.equals(user.getId().toString())) {
+            SportActivity sportActivity = this.service.read(UUID.fromString(id),
+                                                            UUID.fromString(userID));
             if (sportActivity == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             } else {
@@ -75,7 +76,7 @@ public class SportActivities {
         GenericUser user = (GenericUser) context.getUserPrincipal();
 
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
-        this.service.delete(id, user.getId());
+        this.service.delete(UUID.fromString(id), user.getId());
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", id);

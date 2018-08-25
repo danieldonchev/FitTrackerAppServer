@@ -1,11 +1,13 @@
 package tracker.Entities;
 
+import tracker.Utils.DBConstants;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_password_tokens")
+@Table(name = DBConstants.TABLE_PASSWORD_TOKENS)
 public class UserPasswordToken {
 
     @Id

@@ -2,10 +2,12 @@ package tracker.DAO.DaoServices;
 
 import tracker.Entities.SportActivity;
 
+import java.util.UUID;
+
 public interface SportActivityService {
 
     SportActivity create(SportActivity sportActivity);
     SportActivity update(SportActivity sportActivity);
-    SportActivity read(String id, String userID);
-    void delete(String id, String userID);
+    SportActivity read(UUID id, UUID userID);
+    void delete(UUID id, UUID userID);
 }

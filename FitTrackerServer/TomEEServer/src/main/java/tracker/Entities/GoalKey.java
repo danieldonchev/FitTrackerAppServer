@@ -1,60 +1,38 @@
 package tracker.Entities;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.UUID;
 
 @Embeddable
 public class GoalKey implements Serializable {
 
-    @Column(name = "id", nullable = false)
-    private String id;
+    @Id
+    private UUID id;
+    private UUID userID;
 
-    @Column(name = "userID", nullable = false)
-    private String userID;
+    public GoalKey() {
+    }
 
-    public GoalKey(){}
-
-    public GoalKey(String id, String userID){
+    public GoalKey(UUID id, UUID userID) {
         this.id = id;
         this.userID = userID;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getUserID() {
+    public UUID getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(UUID userID) {
         this.userID = userID;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + id.hashCode();
-        result = 31 * result + userID.hashCode();
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == this){
-            return true;
-        }
-        if(!(obj instanceof GoalKey)){
-            return false;
-        }
-        GoalKey key = (GoalKey) obj;
-
-        return key.id.equals(this.id) &&
-                key.userID.equals(this.userID);
     }
 }

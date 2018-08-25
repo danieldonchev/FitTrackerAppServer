@@ -14,6 +14,7 @@ import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 @Provider
 @GoalInterceptor
@@ -29,7 +30,8 @@ public class GoalReaderInterceptor implements ReaderInterceptor {
         GoalWeb goalWeb = new GoalWeb().deserialize(org.apache.commons.io.IOUtils.toByteArray(inputStream));
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         long timestamp = user.getNewServerTimestamp();
-        Goal goal = new Goal(goalWeb.getId(),
+        Goal goal = new Goal(
+                UUID.fromString(goalWeb.getId()),
                 user.getId(),
                 goalWeb.getType(),
                 goalWeb.getDistance(),

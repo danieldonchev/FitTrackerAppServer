@@ -5,7 +5,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import static tracker.AppUtils.fromHex;
+import static tracker.Utils.AppUtils.fromHex;
 
 public class PasswordValidator {
 

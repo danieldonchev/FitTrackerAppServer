@@ -1,10 +1,9 @@
 package tracker.Interceptor;
 
-import com.tracker.shared.Entities.GoalWeb;
 import com.tracker.shared.Entities.SerializeHelper;
 import com.tracker.shared.Entities.WeightWeb;
 import tracker.Entities.Weight;
-import tracker.WebEntitiesHelper;
+import tracker.Utils.WebEntitiesHelper;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.Provider;

@@ -5,7 +5,7 @@ import com.tracker.shared.Entities.SerializeHelper;
 import org.apache.commons.io.IOUtils;
 import tracker.Entities.GenericUser;
 import tracker.Entities.Goal;
-import tracker.WebEntitiesHelper;
+import tracker.Utils.WebEntitiesHelper;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;

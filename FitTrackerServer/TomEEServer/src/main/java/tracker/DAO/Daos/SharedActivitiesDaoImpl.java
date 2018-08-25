@@ -5,20 +5,18 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 import org.json.JSONObject;
 import tracker.Entities.SportActivity;
-import tracker.Entities.SportActivityKey;
 import tracker.Qualifiers.SharedActivitiesDaoQualifier;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Alternative;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @SharedActivitiesDaoQualifier
-public class SharedActivitiesDaoImpl extends GenericDAOImpl<SportActivity, SportActivityKey> implements SharedActivitiesDao {
+public class SharedActivitiesDaoImpl extends GenericDAOImpl<SportActivity, UUID> implements SharedActivitiesDao {
 
     /*
     TO DO:
@@ -57,7 +55,7 @@ public class SharedActivitiesDaoImpl extends GenericDAOImpl<SportActivity, Sport
     Old method, has to be refactored to use jpa
      */
     @Override
-    public SportActivityMap getSharedSportActivityMap(String activityID, String userID) {
+    public SportActivityMap getSharedSportActivityMap(UUID activityID, UUID userID) {
         SportActivityMap map = new SportActivityMap();
 
 //        String[] projection = {Constants.SPORT_ACTIVITY_POLYLINE,

@@ -11,7 +11,6 @@ public final class API {
 //    private static final String baseURLHttp = "http://192.168.43.96:8080/";
 
     //base resources
-    private static final String baseUser = baseURLHttps + "user/";
     private static final String baseAuth = baseURLHttps + "auth/";
     private static final String baseSync = baseURLHttps + "sync/";
     private static final String baseGoal = baseURLHttps + "goal/";
@@ -19,35 +18,35 @@ public final class API {
     private static final String baseWeight = baseURLHttps + "weights/";
 
     //user authentication
-    public static final String googleLogin = baseAuth + "googlelogin";
-    public static final String fbLogin = baseAuth + "fblogin";
-    public static final String localLogin = baseAuth + "login";
-    public static final String register = baseAuth + "register";
-    public static final String captcha = baseURLHttp + "auth/" + "captcha";
-    public static final String passwordToken = baseAuth + "forgotten-password";
-    public static final String changePassword = baseAuth + "password";
-    public static final String accessToken = baseAuth + "access-token";
+    public static final String googleLogin = baseAuth + "googlelogin/";
+    public static final String fbLogin = baseAuth + "fblogin/";
+    public static final String localLogin = baseAuth + "login/";
+    public static final String register = baseAuth + "register/";
+    public static final String captcha = baseURLHttp + "auth/" + "captcha/";
+    public static final String passwordToken = baseAuth + "forgotten-password/";
+    public static final String changePassword = baseAuth + "password/";
+    public static final String accessToken = baseAuth + "access-token/";
 
     //user activity resources
-    public static final String sportActivity = baseUser + "sport-activity";
-    public static final String userSettings = baseURLHttps + "settings";
-    public static final String profilePic = baseUser + "profile-pic";
+    public static final String sportActivity = baseURLHttps + "sport-activity/";
+    public static final String userSettings = baseURLHttps + "settings/";
+   // public static final String profilePic = baseUser + "profile-pic";
 
     //goals
     public static final String goal = baseGoal;
 
     //weights
-    public static final String weight = baseWeight + "weight";
+    public static final String weight = baseWeight + "weight/";
 
     //people activities
-    public static final String peopleActivities = basePeopleActivites + "activities";
-    public static final String sharedMap = basePeopleActivites + "map";
+    public static final String peopleActivities = basePeopleActivites + "activities/";
+    public static final String sharedMap = basePeopleActivites + "map/";
 
     //settings
-    public static final String settings = baseURLHttps + "settings/" + "setting";
+    public static final String settings = baseURLHttps + "settings/" + "setting/";
 
     //synchronization
-    public static final String checkSync = baseSync + "should-sync";
+    public static final String checkSync = baseSync + "should-sync/";
     public static final String syncActivities = baseSync + "sport-activities";
     public static final String deletedActivities = baseSync + "deleted-activities";
     public static final String insertActivities = baseSync + "insert-sport-activities";

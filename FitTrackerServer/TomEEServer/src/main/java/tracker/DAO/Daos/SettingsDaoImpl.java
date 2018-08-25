@@ -9,9 +9,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.persistence.Query;
 import java.util.Iterator;
+import java.util.UUID;
 
 @SettingsDaoQualifier
-public class SettingsDaoImpl extends GenericDAOImpl<Details, String> implements SettingsDao{
+public class SettingsDaoImpl extends GenericDAOImpl<Details, UUID> implements SettingsDao{
 
     public SettingsDaoImpl(){}
 

@@ -1,4 +1,4 @@
-package tracker;
+package tracker.Utils;
 
 import com.tracker.shared.Entities.*;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import tracker.Entities.*;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class WebEntitiesHelper {
 
@@ -20,7 +21,7 @@ public class WebEntitiesHelper {
         ArrayList<Split> splits = new ArrayList<>();
         for(SplitWeb splitWeb : sportActivityWeb.getSplitWebs()){
             Split split = new Split(splitWeb.getId(),
-                    sportActivityWeb.getId(),
+                    UUID.fromString(sportActivityWeb.getId()),
                     user.getId(),
                     splitWeb.getDuration(),
                     splitWeb.getDistance());
@@ -44,7 +45,8 @@ public class WebEntitiesHelper {
         LineString lineString = factory.createLineString(polylineCoordinates.toArray(new Coordinate[polylineCoordinates.size()]));
         MultiPoint multiPoint = factory.createMultiPoint(markerCoordinates.toArray(new Coordinate[markerCoordinates.size()]));
 
-        SportActivity sportActivity = new SportActivity(sportActivityWeb.getId(),
+        SportActivity sportActivity = new SportActivity(
+                UUID.fromString(sportActivityWeb.getId()),
                 user.getId(),
                 sportActivityWeb.getWorkout(),
                 sportActivityWeb.getDistance(),
@@ -61,7 +63,7 @@ public class WebEntitiesHelper {
     }
 
     public SportActivityWeb toSportActivityWeb(SportActivity sportActivity){
-        SportActivityWeb sportActivityWeb = new SportActivityWeb(sportActivity.getSportActivityKey().getId());
+        SportActivityWeb sportActivityWeb = new SportActivityWeb(sportActivity.getSportActivityKey().getId().toString());
 
         ArrayList<LatLng> polyline = new ArrayList<>();
         if(sportActivity.getPolyline() != null){
@@ -103,7 +105,7 @@ public class WebEntitiesHelper {
 
     public GoalWeb toGoalWeb(Goal goal){
         GoalWeb goalWeb = new GoalWeb(
-                goal.getGoalKey().getId(),
+                goal.getGoalKey().getId().toString(),
                 goal.getType(),
                 goal.getDistance(),
                 goal.getDuration(),
@@ -118,7 +120,7 @@ public class WebEntitiesHelper {
 
     public Goal toGoal(GoalWeb goalWeb, GenericUser user){
         Goal goal = new Goal(
-                goalWeb.getId(),
+                UUID.fromString(goalWeb.getId()),
                 user.getId(),
                 goalWeb.getType(),
                 goalWeb.getDistance(),

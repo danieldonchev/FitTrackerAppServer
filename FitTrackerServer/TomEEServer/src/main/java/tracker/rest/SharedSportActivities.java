@@ -2,9 +2,8 @@ package tracker.rest;
 
 import com.tracker.shared.Entities.SportActivityMap;
 import org.json.JSONObject;
-import tracker.API;
+import tracker.Utils.API;
 import tracker.DAO.DaoServices.SharedActivitiesService;
-import tracker.DAO.DaoServices.SharedActivitiesServiceImpl;
 import tracker.Entities.SportActivity;
 
 import javax.inject.Inject;
@@ -13,6 +12,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Path(API.sharedSportActivities)
 public class SharedSportActivities {
@@ -40,7 +40,8 @@ public class SharedSportActivities {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getSharedMap(@PathParam("activityID") String activityID, @PathParam("userID") String userID) {
 
-        SportActivityMap map = service.getSportActivityMap(activityID, userID);
+        SportActivityMap map = service.getSportActivityMap(UUID.fromString(activityID),
+                                                            UUID.fromString(userID));
         return Response.ok().entity(map.serialize()).build();
     }
 }

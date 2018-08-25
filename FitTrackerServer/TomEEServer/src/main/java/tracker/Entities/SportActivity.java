@@ -2,15 +2,17 @@ package tracker.Entities;
 
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPoint;
-import org.hibernate.annotations.DynamicUpdate;
+import tracker.Utils.DBConstants;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "user_sport_activity")
+@Table(name = DBConstants.TABLE_SPORT_ACTIVITIES)
 public class SportActivity {
+
     @EmbeddedId
     private SportActivityKey sportActivityKey;
     private String activity = "Walking";
@@ -22,21 +24,21 @@ public class SportActivity {
     private long endTimestamp = 0;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     @JoinColumns({
-            @JoinColumn(name = "sport_activity_id"),
-            @JoinColumn(name = "user_id")
+            @JoinColumn(name = DBConstants.splits_sport_activity_id),
+            @JoinColumn(name = DBConstants.userID)
     })
 
     private List<Split> splits;
     @Column(columnDefinition = "LINESTRING") private LineString polyline;
     @Column(columnDefinition = "MULTIPOINT") private MultiPoint markers;
-    @Column(name = "last_modified") private long lastModified;
-    @Column(name = "last_sync") private long lastSync;
+    @Column(name = DBConstants.last_modified) private long lastModified;
+    @Column(name = DBConstants.last_sync) private long lastSync;
     private int deleted = 0;
 
     public SportActivity() {
     }
 
-    public SportActivity(String id, String userID, String activity, double distance, long steps, long startTimestamp, long endTimestamp, ArrayList<Split> splits, LineString polyline, MultiPoint markers, long lastModified, long lastSync) {
+    public SportActivity(UUID id, UUID userID, String activity, double distance, long steps, long startTimestamp, long endTimestamp, ArrayList<Split> splits, LineString polyline, MultiPoint markers, long lastModified, long lastSync) {
         this.sportActivityKey = new SportActivityKey(id, userID);
         this.activity = activity;
         this.distance = distance;

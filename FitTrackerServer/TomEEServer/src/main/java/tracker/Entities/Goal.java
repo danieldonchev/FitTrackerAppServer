@@ -1,15 +1,13 @@
 package tracker.Entities;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import tracker.Utils.DBConstants;
+
+import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 //@DynamicUpdate
-@Table(name = "goals")
-//@Filter(name = "deletedFilter",
-//            condition = "deleted > 0")
+@Table(name = DBConstants.TABLE_GOALS)
 public class Goal {
 
     @EmbeddedId
@@ -19,15 +17,15 @@ public class Goal {
     private long duration;
     private long calories;
     private long steps;
-    @Column(name = "from_date") private long fromDate;
-    @Column(name = "to_date") private long toDate;
-    @Column(name = "last_modified") private long lastModified;
-    @Column(name = "last_sync") private long lastSync;
+    @Column(name = DBConstants.goals_from_date) private long fromDate;
+    @Column(name = DBConstants.goals_to_date) private long toDate;
+    @Column(name = DBConstants.last_modified) private long lastModified;
+    @Column(name = DBConstants.last_sync) private long lastSync;
     private int deleted = 0;
 
     public Goal(){ }
 
-    public Goal(String id, String userID, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified, long lastSync){
+    public Goal(UUID id, UUID userID, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified, long lastSync){
         this.goalKey = new GoalKey(id, userID);
         this.type = type;
         this.distance = distance;
@@ -38,14 +36,6 @@ public class Goal {
         this.toDate = toDate;
         this.lastModified = lastModified;
         this.lastSync = lastSync;
-    }
-
-    public GoalKey getGoalKey() {
-        return goalKey;
-    }
-
-    public void setGoalKey(GoalKey goalKey) {
-        this.goalKey = goalKey;
     }
 
     public int getType() {
@@ -126,6 +116,14 @@ public class Goal {
 
     public void setDeleted(int deleted) {
         this.deleted = deleted;
+    }
+
+    public GoalKey getGoalKey() {
+        return goalKey;
+    }
+
+    public void setGoalKey(GoalKey goalKey) {
+        this.goalKey = goalKey;
     }
 
     @Override

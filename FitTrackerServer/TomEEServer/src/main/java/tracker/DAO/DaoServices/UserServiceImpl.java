@@ -11,8 +11,9 @@ import tracker.Entities.User;
 import tracker.Entities.UserPasswordToken;
 import tracker.Entities.UserRefreshToken;
 import tracker.Entities.UserTokens;
-import tracker.MailSender;
+import tracker.Utils.MailSender;
 import tracker.Qualifiers.UserDaoQualifier;
+
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
@@ -26,6 +27,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import javax.ws.rs.NotAuthorizedException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.BEAN)
@@ -134,11 +136,11 @@ public class UserServiceImpl implements UserService{
             PasswordValidator validator = new PasswordValidator();
             if (validator.validatePassword(user.getPassword(), userFromDB.getPassword())) {
                 TokenFactory tokenFactory = new TokenFactory();
-                String refreshToken = tokenFactory.getRefreshToken(user.getEmail(), userFromDB.getId());
+                String refreshToken = tokenFactory.getRefreshToken(user.getEmail(), userFromDB.getId().toString());
                 UserTokens userTokens = new UserTokens(userFromDB.getId(),
                         user.getEmail(),
                         refreshToken,
-                        tokenFactory.getRegisterAccessToken(userFromDB.getId(), user.getEmail()),
+                        tokenFactory.getRegisterAccessToken(userFromDB.getId().toString(), user.getEmail()),
                         false);
                 insertRefreshToken(new UserRefreshToken(userFromDB.getId(), refreshToken));
                 return Optional.of(userTokens);
@@ -155,8 +157,8 @@ public class UserServiceImpl implements UserService{
     private UserTokens getUserTokens(User user){
         UserTokens userTokens = new UserTokens();
         TokenFactory tokenFactory = new TokenFactory();
-        String refreshToken = tokenFactory.getRefreshToken(user.getEmail(), user.getId());
-        String accessToken = tokenFactory.getRegisterAccessToken(user.getId(), user.getEmail());
+        String refreshToken = tokenFactory.getRefreshToken(user.getEmail(), user.getId().toString());
+        String accessToken = tokenFactory.getRegisterAccessToken(user.getId().toString(), user.getEmail());
         UserRefreshToken userRefreshToken = new UserRefreshToken(user.getId(), refreshToken);
         insertRefreshToken(userRefreshToken);
 
@@ -178,7 +180,7 @@ public class UserServiceImpl implements UserService{
         Jws<Claims> claimsJws = authenticator.validateRefreshJwt(refreshToken);
         String userID = (String) claimsJws.getBody().get("userID");
         String email = (String) claimsJws.getBody().get("email");
-        boolean isTokenValid = userTokenService.isRefreshTokenValid(userID, refreshToken, dao.getLastPasswordChange(userID));
+        boolean isTokenValid = userTokenService.isRefreshTokenValid(UUID.fromString(userID), refreshToken, dao.getLastPasswordChange(UUID.fromString(userID)));
         if(isTokenValid){
             return tokenFactory.getAccessTokenFromRefreshToken(userID, email);
         } else{

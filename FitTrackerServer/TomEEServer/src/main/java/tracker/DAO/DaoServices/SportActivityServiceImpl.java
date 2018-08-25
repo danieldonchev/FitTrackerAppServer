@@ -6,6 +6,7 @@ import tracker.Entities.SportActivityKey;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.UUID;
 
 @Stateless
 public class SportActivityServiceImpl implements SportActivityService{
@@ -29,11 +30,12 @@ public class SportActivityServiceImpl implements SportActivityService{
         return sportActivity;
     }
 
-    public SportActivity read(String id, String userID){
+    public SportActivity read(UUID id, UUID userID){
+
         return dao.read(SportActivity.class, new SportActivityKey(id, userID));
     }
 
-    public void delete(String id, String userID){
+    public void delete(UUID id, UUID userID){
         SportActivity sportActivity = new SportActivity();
         sportActivity.setSportActivityKey(new SportActivityKey(id, userID));
         sportActivity.setDeleted(0);

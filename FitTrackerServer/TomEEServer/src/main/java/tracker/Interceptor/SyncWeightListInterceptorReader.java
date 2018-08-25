@@ -5,7 +5,7 @@ import com.tracker.shared.Entities.WeightWeb;
 import org.apache.commons.io.IOUtils;
 import tracker.Entities.GenericUser;
 import tracker.Entities.Weight;
-import tracker.WebEntitiesHelper;
+import tracker.Utils.WebEntitiesHelper;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;

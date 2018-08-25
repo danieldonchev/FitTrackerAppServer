@@ -1,8 +1,10 @@
 package tracker.Entities;
 
+import java.util.UUID;
+
 public class UserTokens {
 
-    private String id;
+    private UUID id;
     private String email;
     private String refreshToken;
     private String accessToken;
@@ -11,7 +13,7 @@ public class UserTokens {
     public UserTokens() {
     }
 
-    public UserTokens(String id, String email, String refreshToken, String accessToken, boolean isUserNew) {
+    public UserTokens(UUID id, String email, String refreshToken, String accessToken, boolean isUserNew) {
         this.id = id;
         this.email = email;
         this.refreshToken = refreshToken;
@@ -19,11 +21,11 @@ public class UserTokens {
         this.isUserNew = isUserNew;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

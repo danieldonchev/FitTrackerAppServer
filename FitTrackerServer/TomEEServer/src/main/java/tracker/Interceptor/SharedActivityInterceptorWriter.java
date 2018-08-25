@@ -24,8 +24,8 @@ public class SharedActivityInterceptorWriter implements WriterInterceptor {
         ArrayList<SportActivityWithOwner> sportActivities = new ArrayList<>();
         for(SportActivity sportActivity : (List<SportActivity>) sharedActivities){
             SportActivityWithOwner activity = new SportActivityWithOwner();
-            activity.setActivityID(sportActivity.getSportActivityKey().getId());
-            activity.setUserID(sportActivity.getSportActivityKey().getUserID());
+            activity.setActivityID(sportActivity.getSportActivityKey().getId().toString());
+            activity.setUserID(sportActivity.getSportActivityKey().getUserID().toString());
 
 
         }

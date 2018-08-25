@@ -1,26 +1,29 @@
 package tracker.Entities;
 
+import tracker.Utils.DBConstants;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
-@Table(name = "weights")
+@Table(name = DBConstants.TABLE_WEIGHT)
 public class Weight {
 
     @EmbeddedId
     private WeightKey weightKey;
     private double weight;
-    @Column(name = "last_modified")
+    @Column(name = DBConstants.last_modified)
     private long lastModified;
-    @Column(name = "last_sync")
+    @Column(name = DBConstants.last_sync)
     private long lastSync;
 
     public Weight() {
     }
 
-    public Weight(String userID, long date, double weight, long lastModified, long lastSync) {
+    public Weight(UUID userID, long date, double weight, long lastModified, long lastSync) {
         this.weightKey = new WeightKey(userID, date);
         this.weight = weight;
         this.lastModified = lastModified;

@@ -11,16 +11,17 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.ws.rs.NotAuthorizedException;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 import static tracker.Authenticate.TokenAuthenticator.refreshTokenSecret;
 
 @Stateless
 public class UserTokenServiceImpl implements UserTokenService{
 
-    private GenericDao<UserRefreshToken, String> dao;
+    private GenericDao<UserRefreshToken, UUID> dao;
 
     @Inject
-    public UserTokenServiceImpl(GenericDao<UserRefreshToken, String> dao){
+    public UserTokenServiceImpl(GenericDao<UserRefreshToken, UUID> dao){
         this.dao = dao;
     }
 
@@ -41,7 +42,7 @@ public class UserTokenServiceImpl implements UserTokenService{
         @return     The found token. If not found returns null.
      */
     @Override
-    public UserRefreshToken getRefreshToken(String id){
+    public UserRefreshToken getRefreshToken(UUID id){
         return dao.read(UserRefreshToken.class, id);
     }
 
@@ -54,8 +55,8 @@ public class UserTokenServiceImpl implements UserTokenService{
         @return     True if its valid else false.
      */
     @Override
-    public boolean isRefreshTokenValid(String userID, String refreshToken, long lastPassChange){
-        boolean isInDB = isRefreshTokenInDb(refreshToken, userID);
+    public boolean isRefreshTokenValid(UUID userID, String refreshToken, long lastPassChange){
+        boolean isInDB = isRefreshTokenInDb(refreshToken, userID.toString());
 
         if(isInDB){
             Jws<Claims> jwsClaims = null;

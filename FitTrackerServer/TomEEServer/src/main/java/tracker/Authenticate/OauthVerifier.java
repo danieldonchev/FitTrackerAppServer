@@ -4,7 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import org.json.JSONObject;
-import tracker.AppUtils;
+import tracker.Utils.AppUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;

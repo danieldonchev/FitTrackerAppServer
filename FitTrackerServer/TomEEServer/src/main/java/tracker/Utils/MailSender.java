@@ -1,4 +1,4 @@
-package tracker;
+package tracker.Utils;
 
 import javax.ejb.Stateless;
 import javax.mail.*;

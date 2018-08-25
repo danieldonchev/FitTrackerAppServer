@@ -8,6 +8,7 @@ import tracker.Qualifiers.GoalDaoQualifier;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.UUID;
 
 @Stateless
 public class GoalServiceImpl implements GoalService{
@@ -35,7 +36,7 @@ public class GoalServiceImpl implements GoalService{
     }
 
     @Override
-    public void deleteGoal(String id, String userID){
+    public void deleteGoal(UUID id, UUID userID){
         Goal goal = new Goal();
         goal.setGoalKey(new GoalKey(id, userID));
         goal.setDeleted(1);
@@ -43,7 +44,7 @@ public class GoalServiceImpl implements GoalService{
     }
 
     @Override
-    public List<Goal> getGoals(String userID){
+    public List<Goal> getGoals(UUID userID){
         return dao.getAll(userID);
     }
 }

@@ -81,7 +81,7 @@
                     <context>ROOT</context>
                     <deployOpenEjbApplication>true</deployOpenEjbApplication>
                     <libs>
-                        <lib>mysql:mysql-connector-java:5.1.16</lib>
+                        <lib>mysql:mysql-connector-java:8.0.11</lib>
                     </libs>
                     <synchronization>
                         <extensions>

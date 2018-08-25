@@ -1,5 +1,7 @@
 package tracker.Entities;
 
+import tracker.Utils.DBConstants;
+
 import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -9,11 +11,11 @@ import java.util.UUID;
 
 @XmlRootElement
 @Entity
-@Table(name = "users")
+@Table(name = DBConstants.TABLE_USERS)
 public class User implements Principal {
 
     @Id
-    private String id;
+    private UUID id;
     private String name;
     @Column(unique = true)
     private String email;
@@ -21,19 +23,19 @@ public class User implements Principal {
     private String password;
     @Transient @Nullable
     private String accessToken;
-    @Column(name = "password_last_modified")
+    @Column(name = DBConstants.user_password_last_modified)
     private long lastPassChange;
 
     public User(){
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID();
     }
 
-    public User(String id, String email){
+    public User(UUID id, String email){
         this.id = id;
         this.email = email;
     }
 
-    public User(String id, String name, String email, String password) {
+    public User(UUID id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -47,11 +49,11 @@ public class User implements Principal {
     }
 
     @XmlElement
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

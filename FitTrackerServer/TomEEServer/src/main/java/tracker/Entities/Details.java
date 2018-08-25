@@ -1,40 +1,43 @@
 package tracker.Entities;
 
+import tracker.Utils.DBConstants;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.UUID;
 
 @Entity
-@Table (name = "user_settings")
+@Table (name = DBConstants.TABLE_SETTINGS)
 @XmlRootElement
 public class Details {
 
     @Id
-    private String id;
+    private UUID id;
     private String settings;
-    @Column(name = "last_modified")
+    @Column(name = DBConstants.last_modified)
     private long lastModified;
-    @Column(name = "last_sync")
+    @Column(name = DBConstants.last_sync)
     private long lastSync;
 
     public Details() {
     }
 
-    public Details(String id, String settings, long lastModified, long lastSync) {
+    public Details(UUID id, String settings, long lastModified, long lastSync) {
         this.id = id;
         this.settings = settings;
         this.lastModified = lastModified;
         this.lastSync = lastSync;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String userID) {
+    public void setId(UUID userID) {
         this.id = userID;
     }
 

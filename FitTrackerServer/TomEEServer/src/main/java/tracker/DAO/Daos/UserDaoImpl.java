@@ -11,9 +11,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import java.util.Optional;
+import java.util.UUID;
 
 @UserDaoQualifier
-public class UserDaoImpl extends GenericDAOImpl<User, String> implements UserDao {
+public class UserDaoImpl extends GenericDAOImpl<User, UUID> implements UserDao {
 
     /*
         Finds user by email.
@@ -56,7 +57,7 @@ public class UserDaoImpl extends GenericDAOImpl<User, String> implements UserDao
         @param id User id.
         @return Long
      */
-    public long getLastPasswordChange(String id){
+    public long getLastPasswordChange(UUID id){
         Query query = getEntityManager().createQuery("select lastPassChange from User where id=:arg1");
         query.setParameter("arg1", id);
         return  (Long) query.getSingleResult();
