@@ -21,7 +21,7 @@ public class ReflectionTTest {
 
         SplitWeb splitWeb = new SplitWeb(1, 50, 50);
 
-        GoalWeb goalWeb = new GoalWeb(UUID.randomUUID().toString(),
+        GoalWeb goalWeb = new GoalWeb(UUID.randomUUID(),
                             1,
                             554.42d,
                             180l,

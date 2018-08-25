@@ -1,19 +1,17 @@
 package tracker.Entities;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 //@DynamicUpdate
 @Table(name = "goals")
-//@Filter(name = "deletedFilter",
-//            condition = "deleted > 0")
 public class Goal {
 
-    @EmbeddedId
-    private GoalKey goalKey;
+    @Id
+    @org.hibernate.annotations.Type(type = "pg-uuid")
+    private UUID id;
+    private String userID;
     private int type;
     private double distance;
     private long duration;
@@ -27,8 +25,9 @@ public class Goal {
 
     public Goal(){ }
 
-    public Goal(String id, String userID, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified, long lastSync){
-        this.goalKey = new GoalKey(id, userID);
+    public Goal(UUID id, String userID, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified, long lastSync){
+        this.id = id;
+        this.userID = userID;
         this.type = type;
         this.distance = distance;
         this.duration = duration;
@@ -40,12 +39,20 @@ public class Goal {
         this.lastSync = lastSync;
     }
 
-    public GoalKey getGoalKey() {
-        return goalKey;
+    public UUID getId() {
+        return id;
     }
 
-    public void setGoalKey(GoalKey goalKey) {
-        this.goalKey = goalKey;
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public int getType() {
@@ -138,7 +145,8 @@ public class Goal {
         }
         Goal goal = (Goal) obj;
 
-        return goal.getGoalKey().equals(this.goalKey) &&
+        return goal.getId().equals(this.id) &&
+                goal.getUserID().equals(this.userID) &&
                 goal.getType() == this.type &&
                 goal.getDistance() == this.distance &&
                 goal.getDuration() == this.duration &&
@@ -153,7 +161,8 @@ public class Goal {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + goalKey.hashCode();
+        result = 31 * result + id.hashCode();
+        result = 31 * result + userID.hashCode();
         result = 31 * result + type;
         result = 31 * result + Double.hashCode(distance);
         result = 31 * result + Long.hashCode(duration);

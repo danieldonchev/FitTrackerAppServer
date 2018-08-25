@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
+import java.util.UUID;
 
 @Stateless
 @Secured
@@ -42,7 +43,7 @@ public class Goals {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
-        jsonObject.put("id", goal.getGoalKey().getId());
+        jsonObject.put("id", goal.getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
@@ -51,7 +52,7 @@ public class Goals {
     @Path("{id}")
     @UserWriting
     @GoalInterceptor
-    public Response deleteGoal(@PathParam("id") String id, @Context SecurityContext context) {
+    public Response deleteGoal(@PathParam("id") UUID id, @Context SecurityContext context) {
 
         goalService.deleteGoal(id, ((GenericUser) context.getUserPrincipal()).getId());
 
@@ -73,7 +74,7 @@ public class Goals {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
-        jsonObject.put("id", goal.getGoalKey().getId());
+        jsonObject.put("id", goal.getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }

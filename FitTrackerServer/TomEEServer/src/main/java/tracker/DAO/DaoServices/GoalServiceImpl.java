@@ -2,12 +2,12 @@ package tracker.DAO.DaoServices;
 
 import tracker.DAO.Daos.GoalDao;
 import tracker.Entities.Goal;
-import tracker.Entities.GoalKey;
 import tracker.Qualifiers.GoalDaoQualifier;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.UUID;
 
 @Stateless
 public class GoalServiceImpl implements GoalService{
@@ -35,9 +35,10 @@ public class GoalServiceImpl implements GoalService{
     }
 
     @Override
-    public void deleteGoal(String id, String userID){
+    public void deleteGoal(UUID id, String userID){
         Goal goal = new Goal();
-        goal.setGoalKey(new GoalKey(id, userID));
+        goal.setId(id);
+        goal.setUserID(userID);
         goal.setDeleted(1);
         dao.update(goal);
     }

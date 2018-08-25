@@ -93,7 +93,7 @@ public class ReflectionT {
         String classSimpleName = object.getClass().getSimpleName();
         String className = "." + classSimpleName;
 
-        Object instance = Class.forName("com.tracker.shared.flatbuf" + className).newInstance();
+        Object instance = Class.forName("com.tracker.shared.flatbuf" + className).getDeclaredConstructor().newInstance();
         Method startMethod = instance.getClass().getDeclaredMethod("start" + classSimpleName, FlatBufferBuilder.class);
         Method endMethod = instance.getClass().getDeclaredMethod("end" + classSimpleName, FlatBufferBuilder.class);
 

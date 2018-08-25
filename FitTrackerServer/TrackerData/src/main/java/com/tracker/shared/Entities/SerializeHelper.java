@@ -96,7 +96,7 @@ public class SerializeHelper {
         for(int i = 0; i < goalsFlatBufferer.goalsLength(); i++){
             GoalFlat goalFlat = goalsFlatBufferer.goals(i);
 
-            GoalWeb newGoalWeb = new GoalWeb(goalFlat.id(),
+            GoalWeb newGoalWeb = new GoalWeb(UUID.fromString(goalFlat.id()),
                     goalFlat.type(),
                     goalFlat.distance(),
                     goalFlat.duration(),

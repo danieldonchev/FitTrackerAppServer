@@ -19,7 +19,7 @@ import java.util.List;
 public class GoalListInterceptorWriterImpl implements WriterInterceptor {
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
-        Object goalsList = context.getEntity();
+        Object goalsList =  context.getEntity();
         ArrayList<GoalWeb> goalWebs = new ArrayList<>();
         WebEntitiesHelper helper = new WebEntitiesHelper();
         for(Goal goal : (List<Goal>) goalsList){

@@ -103,7 +103,7 @@ public class WebEntitiesHelper {
 
     public GoalWeb toGoalWeb(Goal goal){
         GoalWeb goalWeb = new GoalWeb(
-                goal.getGoalKey().getId(),
+                goal.getId(),
                 goal.getType(),
                 goal.getDistance(),
                 goal.getDuration(),

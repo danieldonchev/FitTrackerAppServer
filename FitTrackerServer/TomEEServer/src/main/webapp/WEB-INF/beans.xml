@@ -6,11 +6,4 @@
                         http://java.sun.com/xml/ns/javaee
                         http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
-    <!--<alternatives>-->
-        <!--<class>tracker.DAO.Daos.UserDaoImpl</class>-->
-        <!--<class>tracker.DAO.Daos.SyncDaoImpl</class>-->
-        <!--<class>tracker.DAO.Daos.SettingsDaoImpl</class>-->
-        <!--<class>tracker.DAO.Daos.SharedActivitiesDaoImpl</class>-->
-        <!--<class>tracker.DAO.Daos.GoalDaoImpl</class>-->
-    <!--</alternatives>-->
 </beans>

@@ -1,10 +1,10 @@
 package tracker.DAO.Daos;
 
 import tracker.Entities.Goal;
-import tracker.Entities.GoalKey;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface GoalDao extends GenericDao<Goal, GoalKey>{
+public interface GoalDao extends GenericDao<Goal, UUID>{
     List<Goal> getAll(String id);
 }

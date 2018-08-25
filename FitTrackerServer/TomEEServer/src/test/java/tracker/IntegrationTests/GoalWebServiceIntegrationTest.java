@@ -15,6 +15,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.UUID;
 
 import static tracker.Utils.Https.HttpsConnection.*;
 import static tracker.Utils.TestUtils.readStream;
@@ -28,7 +29,7 @@ public class GoalWebServiceIntegrationTest {
             HttpsConnection httpsConnection = new HttpsConnection();
             HttpsURLConnection connection = httpsConnection.getConnection(HTTP_POST, API.goal);
             connection.setRequestProperty("Content-Type", "application/octet-stream");
-            GoalWeb goal = new GoalWeb("dc9e60b2-5f0d-4a94-9226-c76817bfd610",
+            GoalWeb goal = new GoalWeb(UUID.fromString("dc9e60b2-5f0d-4a94-9226-c76817bfd610"),
                                     1,
                                     555.42d,
                                     180L,
@@ -59,7 +60,7 @@ public class GoalWebServiceIntegrationTest {
         HttpsConnection httpsConnection = new HttpsConnection();
         HttpsURLConnection connection = httpsConnection.getConnection(HTTP_PUT, API.goal);
         connection.setRequestProperty("Content-Type", "application/octet-stream");
-        GoalWeb goal = new GoalWeb("dc9e60b2-5f0d-4a94-9226-c76817bfd610",
+        GoalWeb goal = new GoalWeb(UUID.fromString("dc9e60b2-5f0d-4a94-9226-c76817bfd610"),
                 1,
                 1235,
                 23,
