@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @FlatBufferSerializable
 public class GoalWeb {
-        private String id;
+        private UUID id;
         private int type;
         private double distance;
         private long duration;
@@ -23,7 +23,7 @@ public class GoalWeb {
 
     public GoalWeb() {}
 
-    public GoalWeb(String id, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified){
+    public GoalWeb(UUID id, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified){
         this.id = id;
         this.type = type;
         this.distance = distance;
@@ -35,11 +35,11 @@ public class GoalWeb {
         this.lastModified = lastModified;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -57,7 +57,7 @@ public class GoalWeb {
         ByteBuffer buf = ByteBuffer.wrap(bytesRead);
         GoalFlat goalFlatBufferer = GoalFlat.getRootAsGoalFlat(buf);
 
-        id = goalFlatBufferer.id();
+        id = UUID.fromString(goalFlatBufferer.id());
         type = goalFlatBufferer.type();
         distance = goalFlatBufferer.distance();
         duration = goalFlatBufferer.duration();
@@ -71,7 +71,7 @@ public class GoalWeb {
     }
 
     public int getGoalInt(FlatBufferBuilder builder){
-        int id = builder.createString(this.id);
+        int id = builder.createString(this.id.toString());
 
         GoalFlat.startGoalFlat(builder);
         GoalFlat.addId(builder, id);
