@@ -1,5 +1,6 @@
 package tracker.Entities;
 
+import org.hibernate.annotations.ColumnTransformer;
 import tracker.Utils.DBConstants;
 
 import javax.annotation.Nullable;
@@ -15,6 +16,8 @@ import java.util.UUID;
 public class User implements Principal {
 
     @Id
+    @ColumnTransformer(read = "uuid_from_bin(id)", write = "uuid_to_bin(?)")
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     private String name;
     @Column(unique = true)

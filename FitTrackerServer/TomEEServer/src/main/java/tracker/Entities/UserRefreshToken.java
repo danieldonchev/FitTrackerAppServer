@@ -1,5 +1,6 @@
 package tracker.Entities;
 
+import org.hibernate.annotations.ColumnTransformer;
 import tracker.Utils.DBConstants;
 
 import javax.persistence.*;
@@ -10,6 +11,8 @@ import java.util.UUID;
 public class UserRefreshToken {
 
     @Id
+    @ColumnTransformer(read = "uuid_from_bin(id)", write = "uuid_to_bin(?)")
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     @Column(name = DBConstants.refresh_token)
     private String refreshToken;

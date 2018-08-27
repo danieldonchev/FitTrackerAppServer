@@ -31,7 +31,7 @@ public class GoalReaderInterceptor implements ReaderInterceptor {
         GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         long timestamp = user.getNewServerTimestamp();
         Goal goal = new Goal(
-                UUID.fromString(goalWeb.getId()),
+                goalWeb.getId(),
                 user.getId(),
                 goalWeb.getType(),
                 goalWeb.getDistance(),

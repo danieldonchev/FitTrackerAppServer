@@ -8,7 +8,6 @@ import java.util.UUID;
 @Embeddable
 public class GoalKey implements Serializable {
 
-    @Id
     private UUID id;
     private UUID userID;
 

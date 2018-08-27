@@ -105,7 +105,7 @@ public class WebEntitiesHelper {
 
     public GoalWeb toGoalWeb(Goal goal){
         GoalWeb goalWeb = new GoalWeb(
-                goal.getGoalKey().getId().toString(),
+                goal.getGoalKey().getId(),
                 goal.getType(),
                 goal.getDistance(),
                 goal.getDuration(),
@@ -120,7 +120,7 @@ public class WebEntitiesHelper {
 
     public Goal toGoal(GoalWeb goalWeb, GenericUser user){
         Goal goal = new Goal(
-                UUID.fromString(goalWeb.getId()),
+                goalWeb.getId(),
                 user.getId(),
                 goalWeb.getType(),
                 goalWeb.getDistance(),
