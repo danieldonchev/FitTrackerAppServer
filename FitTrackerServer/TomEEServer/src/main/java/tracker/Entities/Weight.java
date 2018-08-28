@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -60,5 +61,22 @@ public class Weight {
 
     public void setLastSync(long lastSync) {
         this.lastSync = lastSync;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Weight weight1 = (Weight) o;
+        return Double.compare(weight1.weight, weight) == 0 &&
+                lastModified == weight1.lastModified &&
+                lastSync == weight1.lastSync &&
+                Objects.equals(weightKey, weight1.weightKey);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(weightKey, weight, lastModified, lastSync);
     }
 }

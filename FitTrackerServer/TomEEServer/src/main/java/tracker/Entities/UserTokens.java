@@ -1,5 +1,6 @@
 package tracker.Entities;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserTokens {
@@ -59,5 +60,23 @@ public class UserTokens {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserTokens that = (UserTokens) o;
+        return isUserNew == that.isUserNew &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(refreshToken, that.refreshToken) &&
+                Objects.equals(accessToken, that.accessToken);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, email, refreshToken, accessToken, isUserNew);
     }
 }

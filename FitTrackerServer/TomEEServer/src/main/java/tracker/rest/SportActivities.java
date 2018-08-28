@@ -44,7 +44,7 @@ public class SportActivities {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", SportActivityWeb.class.getSimpleName());
-        jsonObject.put("id", sportActivity.getSportActivityKey().getId());
+        jsonObject.put("id", sportActivity.getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
@@ -93,7 +93,7 @@ public class SportActivities {
         this.service.update(sportActivity);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", SportActivityWeb.class.getSimpleName());
-        jsonObject.put("id", sportActivity.getSportActivityKey().getId());
+        jsonObject.put("id", sportActivity.getId());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }

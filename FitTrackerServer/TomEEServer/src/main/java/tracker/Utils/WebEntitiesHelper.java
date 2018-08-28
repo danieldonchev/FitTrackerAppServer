@@ -63,7 +63,7 @@ public class WebEntitiesHelper {
     }
 
     public SportActivityWeb toSportActivityWeb(SportActivity sportActivity){
-        SportActivityWeb sportActivityWeb = new SportActivityWeb(sportActivity.getSportActivityKey().getId().toString());
+        SportActivityWeb sportActivityWeb = new SportActivityWeb(sportActivity.getId().toString());
 
         ArrayList<LatLng> polyline = new ArrayList<>();
         if(sportActivity.getPolyline() != null){
@@ -105,7 +105,7 @@ public class WebEntitiesHelper {
 
     public GoalWeb toGoalWeb(Goal goal){
         GoalWeb goalWeb = new GoalWeb(
-                goal.getGoalKey().getId(),
+                goal.getId(),
                 goal.getType(),
                 goal.getDistance(),
                 goal.getDuration(),

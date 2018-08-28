@@ -7,14 +7,16 @@ import tracker.Utils.DBConstants;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = DBConstants.TABLE_SPORT_ACTIVITIES)
 public class SportActivity {
 
-    @EmbeddedId
-    private SportActivityKey sportActivityKey;
+    @Id
+    private UUID id;
+    private UUID userID;
     private String activity = "Walking";
     private double distance = 0;
     private long duration = 0;
@@ -22,11 +24,10 @@ public class SportActivity {
     private long steps = 0;
     private long startTimestamp = 0;
     private long endTimestamp = 0;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.EAGER)
-    @JoinColumns({
-            @JoinColumn(name = DBConstants.splits_sport_activity_id),
-            @JoinColumn(name = DBConstants.userID)
-    })
+    @OneToMany(mappedBy = "splitKey.sportActivity", cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.EAGER)
+//    @JoinColumns({
+//            @JoinColumn(name = DBConstants.splits_sport_activity_id, referencedColumnName = DBConstants.id)
+//    })
 
     private List<Split> splits;
     @Column(columnDefinition = "LINESTRING") private LineString polyline;
@@ -39,17 +40,26 @@ public class SportActivity {
     }
 
     public SportActivity(UUID id, UUID userID, String activity, double distance, long steps, long startTimestamp, long endTimestamp, ArrayList<Split> splits, LineString polyline, MultiPoint markers, long lastModified, long lastSync) {
-        this.sportActivityKey = new SportActivityKey(id, userID);
+        this.id = id;
+        this.userID = userID;
         this.activity = activity;
         this.distance = distance;
         this.steps = steps;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
-        this.splits = splits;
         this.polyline = polyline;
         this.markers = markers;
         this.lastModified = lastModified;
         this.lastSync = lastSync;
+        this.splits = splits;
+        for(Split split: splits){
+            split.getSplitKey().setSportActivity(this);
+        }
+    }
+
+    public void addSplit(Split split){
+        split.getSplitKey().setSportActivity(this);
+        this.splits.add(split);
     }
 
     public double getDistance() {
@@ -156,11 +166,47 @@ public class SportActivity {
         this.activity = activity;
     }
 
-    public SportActivityKey getSportActivityKey() {
-        return sportActivityKey;
+    public UUID getId() {
+        return id;
     }
 
-    public void setSportActivityKey(SportActivityKey sportActivityKey) {
-        this.sportActivityKey = sportActivityKey;
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getUserID() {
+        return userID;
+    }
+
+    public void setUserID(UUID userID) {
+        this.userID = userID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SportActivity that = (SportActivity) o;
+        return Double.compare(that.distance, distance) == 0 &&
+                duration == that.duration &&
+                calories == that.calories &&
+                steps == that.steps &&
+                startTimestamp == that.startTimestamp &&
+                endTimestamp == that.endTimestamp &&
+                lastModified == that.lastModified &&
+                lastSync == that.lastSync &&
+                deleted == that.deleted &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(userID, that.userID) &&
+                Objects.equals(activity, that.activity) &&
+                Objects.equals(splits, that.splits) &&
+                Objects.equals(polyline, that.polyline) &&
+                Objects.equals(markers, that.markers);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, userID, activity, distance, duration, calories, steps, startTimestamp, endTimestamp, splits, polyline, markers, lastModified, lastSync, deleted);
     }
 }

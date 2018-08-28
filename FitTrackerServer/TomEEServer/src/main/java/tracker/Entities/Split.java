@@ -3,6 +3,7 @@ package tracker.Entities;
 import tracker.Utils.DBConstants;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +20,10 @@ public class Split {
     }
 
     public Split(int id, UUID sportActivityId, UUID userID, long duration, double distance) {
-        this.splitKey = new SplitKey(id, sportActivityId);
+        SportActivity sportActivity = new SportActivity();
+        sportActivity.setId(sportActivityId);
+        sportActivity.setUserID(userID);
+        this.splitKey = new SplitKey(id, sportActivity);
         this.userID = userID;
         this.duration = duration;
         this.distance = distance;
@@ -55,5 +59,22 @@ public class Split {
 
     public void setSplitKey(SplitKey splitKey) {
         this.splitKey = splitKey;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Split split = (Split) o;
+        return duration == split.duration &&
+                Double.compare(split.distance, distance) == 0 &&
+                Objects.equals(splitKey, split.splitKey) &&
+                Objects.equals(userID, split.userID);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(splitKey, userID, duration, distance);
     }
 }

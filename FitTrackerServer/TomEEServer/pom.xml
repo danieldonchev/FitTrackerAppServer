@@ -82,6 +82,8 @@
                     <deployOpenEjbApplication>true</deployOpenEjbApplication>
                     <libs>
                         <lib>mysql:mysql-connector-java:8.0.11</lib>
+                        <lib>log4j:log4j:1.2.17</lib>
+
                     </libs>
                     <synchronization>
                         <extensions>

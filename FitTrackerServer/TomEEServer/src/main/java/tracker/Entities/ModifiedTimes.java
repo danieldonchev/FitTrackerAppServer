@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -83,5 +84,24 @@ public class ModifiedTimes {
 
     public void setLastModifiedWeights(long lastModifiedWeights) {
         this.lastModifiedWeights = lastModifiedWeights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ModifiedTimes times = (ModifiedTimes) o;
+        return lastModified == times.lastModified &&
+                lastModifiedActivities == times.lastModifiedActivities &&
+                lastModifiedSettings == times.lastModifiedSettings &&
+                lastModifiedGoals == times.lastModifiedGoals &&
+                lastModifiedWeights == times.lastModifiedWeights &&
+                Objects.equals(id, times.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, lastModified, lastModifiedActivities, lastModifiedSettings, lastModifiedGoals, lastModifiedWeights);
     }
 }

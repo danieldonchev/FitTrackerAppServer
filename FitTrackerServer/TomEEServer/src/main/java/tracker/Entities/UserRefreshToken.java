@@ -4,6 +4,7 @@ import org.hibernate.annotations.ColumnTransformer;
 import tracker.Utils.DBConstants;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -11,8 +12,6 @@ import java.util.UUID;
 public class UserRefreshToken {
 
     @Id
-    @ColumnTransformer(read = "uuid_from_bin(id)", write = "uuid_to_bin(?)")
-    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     @Column(name = DBConstants.refresh_token)
     private String refreshToken;
@@ -39,5 +38,20 @@ public class UserRefreshToken {
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRefreshToken that = (UserRefreshToken) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(refreshToken, that.refreshToken);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, refreshToken);
     }
 }

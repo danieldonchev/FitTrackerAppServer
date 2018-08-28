@@ -52,7 +52,7 @@ public class SportActivitiesIntegrationTest {
             Assert.assertNotNull(connection);
             Assert.assertEquals(connection.getResponseCode(), 200);
             Assert.assertEquals(object.getString("id"), sportActivityWeb.getId());
-            Assert.assertEquals(object.getString("data"), GoalWeb.class.getSimpleName());
+            Assert.assertEquals(object.getString("data"), SportActivityWeb.class.getSimpleName());
 
         } catch (IOException e) {
             e.printStackTrace();

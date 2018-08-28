@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -65,5 +66,21 @@ public class Details {
 
     public void setLastSync(long lastSync) {
         this.lastSync = lastSync;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Details details = (Details) o;
+        return lastModified == details.lastModified &&
+                lastSync == details.lastSync &&
+                Objects.equals(id, details.id) &&
+                Objects.equals(settings, details.settings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, settings, lastModified, lastSync);
     }
 }

@@ -43,7 +43,7 @@ public class Goals {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
-        jsonObject.put("id", goal.getGoalKey().getId().toString());
+        jsonObject.put("id", goal.getId().toString());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }
@@ -75,7 +75,7 @@ public class Goals {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
-        jsonObject.put("id", goal.getGoalKey().getId().toString());
+        jsonObject.put("id", goal.getId().toString());
 
         return Response.ok().entity(jsonObject.toString()).build();
     }

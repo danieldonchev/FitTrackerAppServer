@@ -10,8 +10,9 @@ import java.util.UUID;
 @Table(name = DBConstants.TABLE_GOALS)
 public class Goal {
 
-    @EmbeddedId
-    private GoalKey goalKey;
+    @Id
+    private UUID id;
+    private UUID userID;
     private int type;
     private double distance;
     private long duration;
@@ -26,7 +27,8 @@ public class Goal {
     public Goal(){ }
 
     public Goal(UUID id, UUID userID, int type, double distance, long duration, long calories, long steps, long fromDate, long toDate, long lastModified, long lastSync){
-        this.goalKey = new GoalKey(id, userID);
+        this.id = id;
+        this.userID = userID;
         this.type = type;
         this.distance = distance;
         this.duration = duration;
@@ -118,12 +120,20 @@ public class Goal {
         this.deleted = deleted;
     }
 
-    public GoalKey getGoalKey() {
-        return goalKey;
+    public UUID getId() {
+        return id;
     }
 
-    public void setGoalKey(GoalKey goalKey) {
-        this.goalKey = goalKey;
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getUserID() {
+        return userID;
+    }
+
+    public void setUserID(UUID userID) {
+        this.userID = userID;
     }
 
     @Override
@@ -136,7 +146,8 @@ public class Goal {
         }
         Goal goal = (Goal) obj;
 
-        return goal.getGoalKey().equals(this.goalKey) &&
+        return goal.getId().equals(this.id) &&
+                goal.getUserID().equals(this.userID) &&
                 goal.getType() == this.type &&
                 goal.getDistance() == this.distance &&
                 goal.getDuration() == this.duration &&
@@ -151,8 +162,9 @@ public class Goal {
     @Override
     public int hashCode() {
         int result = 17;
-        result = 31 * result + goalKey.hashCode();
-        result = 31 * result + type;
+        result = 31 * result + id.hashCode();
+        result = 31 * result + userID.hashCode();
+        result = 31 * result + Integer.hashCode(type);
         result = 31 * result + Double.hashCode(distance);
         result = 31 * result + Long.hashCode(duration);
         result = 31 * result + Long.hashCode(calories);

@@ -16,8 +16,6 @@ import java.util.UUID;
 public class User implements Principal {
 
     @Id
-    @ColumnTransformer(read = "uuid_from_bin(id)", write = "uuid_to_bin(?)")
-    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     private String name;
     @Column(unique = true)
