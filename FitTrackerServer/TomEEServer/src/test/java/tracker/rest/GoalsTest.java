@@ -1,6 +1,6 @@
 //package tracker.rest;
 //
-//import com.tracker.shared.Entities.GoalWeb;
+//import com.tracker.shared.entities.GoalWeb;
 //import org.apache.openejb.junit.ApplicationComposer;
 //import org.apache.openejb.testing.Classes;
 //import org.json.JSONObject;
@@ -11,9 +11,9 @@
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations;
-//import tracker.DAO.DaoServices.GoalService;
-//import tracker.Entities.GenericUser;
-//import tracker.Entities.Goal;
+//import tracker.interceptors.GoalService;
+//import tracker.authenticate.GenericUser;
+//import tracker.interceptors.Goal;
 //
 //import javax.naming.NamingException;
 //import javax.ws.rs.core.Response;
@@ -29,9 +29,9 @@
 //public class GoalsTest {
 //
 //    @InjectMocks
-//    public Goals goals;
+//    public GoalRest goals;
 //
-//    private Goal goal;
+//    private Goal interceptors;
 //    private GenericUser user;
 //
 //    @Mock
@@ -47,7 +47,7 @@
 //    @Before
 //    public void setUp() throws SQLException, NamingException {
 //        this.user = new GenericUser(UUID.randomUUID().toString(), "didone7@abv.bg");
-//        this.goal = new Goal(
+//        this.interceptors = new Goal(
 //                UUID.randomUUID().toString(),
 //                user.getId(),
 //                3,
@@ -62,17 +62,17 @@
 //
 //        MockitoAnnotations.initMocks(this);
 //        when(context.getUserPrincipal()).thenReturn(new GenericUser(UUID.randomUUID().toString(), "asd@asd.com"));
-//        when(this.service.insertGoal(goal)).thenReturn(goal);
+//        when(this.service.insertGoal(interceptors)).thenReturn(interceptors);
 //    }
 //
 //    @Test
 //    public void insertGoal(){
 //
-//        Response response  = goals.insertGoal(goal);
+//        Response response  = goals.insertGoal(interceptors);
 //
 //        JSONObject jsonObject = new JSONObject();
 //        jsonObject.put("data", GoalWeb.class.getSimpleName());
-//        jsonObject.put("id", goal.getGoalKey().getId());
+//        jsonObject.put("id", interceptors.getGoalKey().getId());
 //
 //        Assert.assertEquals(response.getStatus(), 200);
 //        Assert.assertEquals(jsonObject.toString(), response.getEntity().toString());
@@ -80,12 +80,12 @@
 //
 //    @Test
 //    public void insertGoalFail(){
-////        goal = null;
-////        Response response  = goals.insertGoal(goal);
+////        interceptors = null;
+////        Response response  = goals.insertGoal(interceptors);
 ////
 ////        JSONObject jsonObject = new JSONObject();
 ////        jsonObject.put("data", GoalWeb.class.getSimpleName());
-////        jsonObject.put("id", goal.getGoalKey().getId());
+////        jsonObject.put("id", interceptors.getGoalKey().getId());
 ////
 ////        Assert.assertEquals(response.getStatus(), 200);
 ////        Assert.assertEquals(jsonObject.toString(), response.getEntity().toString());

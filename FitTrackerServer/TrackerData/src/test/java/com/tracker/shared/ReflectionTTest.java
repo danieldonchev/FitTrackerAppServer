@@ -1,6 +1,6 @@
 package com.tracker.shared;
 
-import com.tracker.shared.Entities.*;
+import com.tracker.shared.entities.*;
 import com.tracker.shared.reflection.FlatbufSerializer;
 import com.tracker.shared.reflection.ReflectionT;
 import org.reflections.Reflections;

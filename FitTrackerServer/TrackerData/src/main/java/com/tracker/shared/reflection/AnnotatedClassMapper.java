@@ -1,9 +1,8 @@
 package com.tracker.shared.reflection;
 
-import com.tracker.shared.Entities.FlatBufferSerializable;
+import com.tracker.shared.entities.FlatBufferSerializable;
 import org.reflections.Reflections;
 
-import java.util.HashMap;
 import java.util.Set;
 
 import static com.tracker.shared.reflection.FlatbufSerializer.mappedClasses;
@@ -22,8 +21,8 @@ public class AnnotatedClassMapper {
 
         }
 
-//        GoalFlat goal = new GoalFlat();
-//        Class clazz = goal.getClass();
+//        GoalFlat interceptors = new GoalFlat();
+//        Class clazz = interceptors.getClass();
 //        int goalNumber = mappedClasses.get(clazz);
         int b = 5;
 

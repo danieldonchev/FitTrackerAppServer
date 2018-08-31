@@ -3,9 +3,9 @@ package tracker.IntegrationTests;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import tracker.Utils.Https.API;
-import tracker.Utils.Https.HttpsClient;
-import tracker.Utils.Https.HttpsConnection;
+import tracker.utils.Https.API;
+import tracker.utils.Https.HttpsClient;
+import tracker.utils.Https.HttpsConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedInputStream;
@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import static tracker.Utils.TestUtils.readStream;
-import static tracker.Utils.TestUtils.writeTokens;
+import static tracker.utils.TestUtils.readStream;
+import static tracker.utils.TestUtils.writeTokens;
 
 public class UserAuthIntegrationTest {
 

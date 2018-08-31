@@ -1,24 +1,24 @@
 package tracker.IntegrationTests;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.tracker.shared.Entities.GoalWeb;
-import com.tracker.shared.flatbuf.GoalFlat;
+import com.tracker.shared.entities.GoalWeb;
+import com.tracker.shared.serializers.GoalSerializer;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
-import tracker.Utils.Https.API;
-import tracker.Utils.Https.HttpsConnection;
+import tracker.utils.Https.API;
+import tracker.utils.Https.HttpsConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import java.io.*;
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.UUID;
 
-import static tracker.Utils.Https.HttpsConnection.*;
-import static tracker.Utils.TestUtils.readStream;
+import static tracker.utils.Https.HttpsConnection.*;
+import static tracker.utils.TestUtils.readStream;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GoalWebServiceIntegrationTest {
@@ -98,5 +98,21 @@ public class GoalWebServiceIntegrationTest {
         Assert.assertEquals(connection.getResponseCode(), 200);
         Assert.assertEquals(object.getString("id"), id);
         Assert.assertEquals(object.getString("data"), GoalWeb.class.getSimpleName());
+    }
+
+    @Test
+    public void test4_getAllGoals() throws IOException{
+        HttpsConnection httpsConnection = new HttpsConnection();
+        HttpsURLConnection connection = httpsConnection.getConnection(HTTP_GET, API.goal + "all");
+        connection.setRequestProperty("Content-Type", "application/json");
+
+        GoalSerializer serializer = new GoalSerializer();
+        InputStream is = connection.getInputStream();
+        ArrayList<GoalWeb> goals = serializer.deserializeArray(IOUtils.toByteArray(is));
+
+
+        Assert.assertNotNull(connection);
+        Assert.assertEquals(connection.getResponseCode(), 200);
+
     }
 }

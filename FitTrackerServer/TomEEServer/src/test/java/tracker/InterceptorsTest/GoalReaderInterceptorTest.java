@@ -1,6 +1,6 @@
 //package tracker.InterceptorsTest;
 //
-//import com.tracker.shared.Entities.GoalWeb;
+//import com.tracker.shared.entities.GoalWeb;
 //import org.apache.cxf.jaxrs.impl.ReaderInterceptorContextImpl;
 //import org.apache.cxf.message.MessageImpl;
 //import org.apache.openejb.junit.ApplicationComposer;
@@ -12,8 +12,8 @@
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations;
-//import tracker.Entities.Goal;
-//import tracker.Interceptor.GoalReaderInterceptor;
+//import tracker.interceptors.Goal;
+//import tracker.interceptors.interceptors.GoalReader;
 //
 //import javax.ws.rs.core.SecurityContext;
 //import javax.ws.rs.ext.ReaderInterceptorContext;
@@ -23,12 +23,12 @@
 //import java.util.ArrayList;
 //import java.util.UUID;
 //
-//@Classes(cdi = true, value = {GoalReaderInterceptor.class})
+//@Classes(cdi = true, value = {GoalReader.class})
 //@RunWith(ApplicationComposer.class)
 //public class GoalReaderInterceptorTest {
 //
 //    @InjectMocks
-//    private GoalReaderInterceptor interceptor;
+//    private GoalReader interceptor;
 //    private ReaderInterceptorContext interceptorContext;
 //    private GoalWeb goalWeb;
 //
@@ -52,7 +52,7 @@
 ////    @Test
 ////    public void interceptorResult(){
 //////        try {
-//////            Goal goal = new Goal(goalWeb.getId(),
+//////            Goal interceptors = new Goal(goalWeb.getId(),
 //////                    "",
 //////                    goalWeb.getType(),
 //////                    goalWeb.getDistance(),
@@ -63,7 +63,7 @@
 //////                    goalWeb.getToDate(),
 //////                    goalWeb.getLastModified(),
 //////                    goalWeb.getLastSync());
-//////            Assert.assertEquals(interceptor.aroundReadFrom(interceptorContext), goal);
+//////            Assert.assertEquals(interceptor.aroundReadFrom(interceptorContext), interceptors);
 //////
 //////        } catch (IOException e) {
 //////            e.printStackTrace();

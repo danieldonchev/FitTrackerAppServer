@@ -1,6 +1,6 @@
 package tracker.rest;
 
-import com.tracker.shared.Entities.GoalWeb;
+import com.tracker.shared.entities.GoalWeb;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
