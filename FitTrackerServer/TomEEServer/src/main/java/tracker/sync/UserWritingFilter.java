@@ -1,8 +1,8 @@
 package tracker.sync;
 
-import tracker.authenticate.GenericUser;
-import tracker.sync.UserWriting;
+import tracker.authentication.users.UserPrincipal;
 
+import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
@@ -14,13 +14,17 @@ import java.io.IOException;
 @UserWriting
 public class UserWritingFilter implements ContainerRequestFilter {
 
-    @Context
-    private SecurityContext securityContext;
+    private UserPrincipal user;
+
+    public UserWritingFilter() { }
+
+    @Inject
+    public UserWritingFilter(UserPrincipal user) {
+        this.user = user;
+    }
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        user.setWriting(true);
-
+        this.user.setWriting(true);
     }
 }

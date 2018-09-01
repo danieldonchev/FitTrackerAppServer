@@ -1,4 +1,4 @@
-package tracker.authenticate;
+package tracker.authentication;
 
 import tracker.utils.DBConstants;
 

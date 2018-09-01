@@ -3,7 +3,7 @@ package tracker.sync;
 import com.tracker.shared.entities.SportActivityWeb;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.goal.Goal;
 import tracker.goal.interceptors.GoalListReaderInterceptor;
 import tracker.goal.interceptors.GoalListWriterInterceptor;
@@ -36,13 +36,16 @@ public class SynchronizationRest {
 
     private SynchronizationService service;
     private UserSettignsService settingsService;
+    private UserPrincipal user;
 
     public SynchronizationRest() { }
 
     @Inject
-    public SynchronizationRest(SynchronizationService service, UserSettignsService settingsService) {
+    public SynchronizationRest(SynchronizationService service,
+                               UserSettignsService settingsService, UserPrincipal user) {
         this.service = service;
         this.settingsService = settingsService;
+        this.user = user;
     }
 
     @GET
@@ -59,10 +62,9 @@ public class SynchronizationRest {
     @Path(API.missingSportActivities)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @SportActivityListWriterInterceptor
-    public Response getSportActivities(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
+    public Response getSportActivities(@Context HttpServletResponse response) {
 
-        List<Object> missingEntities = this.service.getMissingEntities(user, "user_sport_activity", SportActivity.class);
+        List<Object> missingEntities = this.service.getMissingEntities(this.user, "user_sport_activity", SportActivity.class);
 
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().entity(missingEntities).build();
@@ -74,7 +76,7 @@ public class SynchronizationRest {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     @SportActivityListReaderInterceptor
-    public Response insertSportActivities(List<SportActivity> sportActivities, @Context SecurityContext securityContext) {
+    public Response insertSportActivities(List<SportActivity> sportActivities) {
 
         this.service.insertEntities(sportActivities);
 
@@ -84,9 +86,8 @@ public class SynchronizationRest {
     @GET
     @Path(API.deletedSportActivities)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDeletedActivities(@Context SecurityContext securityContext) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        List<String> sportActivities = this.service.getDeletedEntitiesId(user, "user_sport_activity");
+    public Response getDeletedActivities() {
+        List<String> sportActivities = this.service.getDeletedEntitiesId(this.user, "user_sport_activity");
 
         JSONArray jsonArray = new JSONArray();
         for(String id : sportActivities){
@@ -100,15 +101,14 @@ public class SynchronizationRest {
     @Path(API.deletedSportActivities)
     @Consumes(MediaType.APPLICATION_JSON)
     @UserWriting
-    public Response deleteActivities(String data, @Context SecurityContext securityContext) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
+    public Response deleteActivities(String data) {
 
         JSONArray jsonArray = new JSONArray(data);
         ArrayList<String> ids = new ArrayList<>();
         for(int i = 0; i < jsonArray.length(); i++){
             ids.add(jsonArray.get(i).toString());
         }
-        this.service.deleteEntities(user, "user_sport_activity", ids);
+        this.service.deleteEntities(this.user, "user_sport_activity", ids);
 
         return Response.ok().build();
     }
@@ -117,10 +117,9 @@ public class SynchronizationRest {
     @Path(API.missingGoals)
     @Produces(MediaType.APPLICATION_JSON)
     @GoalListWriterInterceptor
-    public Response getGoals(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
+    public Response getGoals(@Context HttpServletResponse response) {
 
-        List<Object> missingEntities = this.service.getMissingEntities(user, "user_sport_activity", SportActivity.class);
+        List<Object> missingEntities = this.service.getMissingEntities(this.user, "user_sport_activity", SportActivity.class);
 
         return Response.ok().entity(missingEntities).build();
     }
@@ -131,7 +130,7 @@ public class SynchronizationRest {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     @GoalListReaderInterceptor
-    public Response insertGoals(List<Goal> goals, @Context SecurityContext securityContext) {
+    public Response insertGoals(List<Goal> goals) {
 
         this.service.insertEntities(goals);
         return Response.ok().build();
@@ -141,9 +140,8 @@ public class SynchronizationRest {
     @Path(API.deletedGoals)
     @Produces(MediaType.APPLICATION_JSON)
     @GoalListWriterInterceptor
-    public Response getDeletedGoals(@Context SecurityContext securityContext) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        List<Object> missingEntities = this.service.getMissingEntities(user, "goals", Goal.class);
+    public Response getDeletedGoals() {
+        List<Object> missingEntities = this.service.getMissingEntities(this.user, "goals", Goal.class);
         return Response.ok().entity(missingEntities).build();
     }
 
@@ -151,15 +149,14 @@ public class SynchronizationRest {
     @Path(API.deletedGoals)
     @Consumes(MediaType.APPLICATION_JSON)
     @UserWriting
-    public Response deleteGoals(String data, @Context SecurityContext securityContext) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
+    public Response deleteGoals(String data) {
 
         JSONArray jsonArray = new JSONArray(data);
         ArrayList<String> ids = new ArrayList<>();
         for(int i = 0; i < jsonArray.length(); i++){
             ids.add(jsonArray.get(i).toString());
         }
-        this.service.deleteEntities(user, "goals", ids);
+        this.service.deleteEntities(this.user, "goals", ids);
 
         return Response.ok().build();
     }
@@ -170,10 +167,9 @@ public class SynchronizationRest {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     @WeightListReaderInterceptor
-    public Response insertWeights(List<Weight> weights, @Context SecurityContext securityContext) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        this.service.insertEntities(weights);
+    public Response insertWeights(List<Weight> weights) {
 
+        this.service.insertEntities(weights);
         return Response.ok().build();
     }
 
@@ -181,9 +177,8 @@ public class SynchronizationRest {
     @Path(API.weights)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @WeightListWriterInterceptor
-    public Response getWeights(@Context SecurityContext securityContext, @Context HttpServletResponse response) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        List<Object> missingEntities = this.service.getMissingEntities(user, "weights", Weight.class);
+    public Response getWeights(@Context HttpServletResponse response) {
+        List<Object> missingEntities = this.service.getMissingEntities(this.user, "weights", Weight.class);
 
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().entity(missingEntities).build();
@@ -192,9 +187,8 @@ public class SynchronizationRest {
     @GET
     @Path(API.settings)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getSettings(String data, @Context SecurityContext securityContext, @Context HttpServletResponse response) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        Details details = this.settingsService.get(user);
+    public Response getSettings(String data, @Context HttpServletResponse response) {
+        Details details = this.settingsService.get(this.user);
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         if(details == null){
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -207,9 +201,8 @@ public class SynchronizationRest {
     @Path(API.settings)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
-    public Response updateSettings(Details details, @Context SecurityContext securityContext, @Context HttpServletResponse response) {
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        this.settingsService.update(details, user);
+    public Response updateSettings(Details details, @Context HttpServletResponse response) {
+        this.settingsService.update(details, this.user);
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
         return Response.ok().build();
     }
@@ -217,10 +210,9 @@ public class SynchronizationRest {
     @GET
     @Path(API.syncTimes)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getLastModifiedTimes(@Context SecurityContext securityContext) {
+    public Response getLastModifiedTimes() {
 
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        ModifiedTimes times = this.service.getTimes(user);
+        ModifiedTimes times = this.service.getTimes(this.user);
         JSONObject timesJSON = new JSONObject();
         timesJSON.put("last_modified_activities", times.getLastModifiedActivities());
         timesJSON.put("last_modified_settings", times.getLastModifiedSettings());

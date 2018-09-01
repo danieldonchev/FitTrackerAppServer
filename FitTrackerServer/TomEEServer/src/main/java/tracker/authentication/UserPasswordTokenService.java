@@ -1,4 +1,4 @@
-package tracker.authenticate;
+package tracker.authentication;
 
 public interface UserPasswordTokenService {
     UserPasswordToken create(UserPasswordToken token);

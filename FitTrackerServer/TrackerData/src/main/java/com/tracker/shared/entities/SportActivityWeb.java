@@ -10,27 +10,27 @@ public class SportActivityWeb extends AbstractWorkout
     private long steps;
     private long startTimestamp;
     private long endTimestamp;
-    private ArrayList<SplitWeb> splitWebs;
-    private SportActivityMap sportActivityMap;
+    private ArrayList<com.tracker.shared.entities.SplitWeb> splitWebs;
+    private com.tracker.shared.entities.SportActivityMap sportActivityMap;
     private long lastModified;
 
     public SportActivityWeb()
     {
         splitWebs = new ArrayList<>();
-        sportActivityMap = new SportActivityMap();
+        sportActivityMap = new com.tracker.shared.entities.SportActivityMap();
     }
 
     public SportActivityWeb(String id)
     {
         this.id = UUID.fromString(id);
         splitWebs = new ArrayList<>();
-        sportActivityMap = new SportActivityMap();
+        sportActivityMap = new com.tracker.shared.entities.SportActivityMap();
     }
 
     private SportActivityWeb(String workout, long duration, int calories)
     {
         super(workout, duration, calories);
-        sportActivityMap = new SportActivityMap();
+        sportActivityMap = new com.tracker.shared.entities.SportActivityMap();
         splitWebs = new ArrayList<>();
     }
 

@@ -1,4 +1,6 @@
-package tracker.authenticate;
+package tracker.authentication;
+
+import tracker.authentication.users.User;
 
 import java.util.Optional;
 

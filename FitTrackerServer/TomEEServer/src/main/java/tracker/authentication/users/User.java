@@ -1,4 +1,4 @@
-package tracker.authenticate;
+package tracker.authentication.users;
 
 import tracker.utils.DBConstants;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 @XmlRootElement
 @Entity
 @Table(name = DBConstants.TABLE_USERS)
-public class User implements Principal {
+public class User {
 
     @Id
     private UUID id;
@@ -43,7 +43,6 @@ public class User implements Principal {
     }
 
     @XmlElement
-    @Override
     public String getName() {
         return null;
     }

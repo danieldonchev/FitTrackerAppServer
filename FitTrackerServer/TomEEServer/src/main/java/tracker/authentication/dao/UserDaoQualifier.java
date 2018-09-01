@@ -1,4 +1,4 @@
-package tracker.authenticate.dao;
+package tracker.authentication.dao;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;

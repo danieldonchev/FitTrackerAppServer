@@ -4,20 +4,17 @@ import com.tracker.shared.entities.GoalWeb;
 import org.json.JSONObject;
 import tracker.goal.interceptors.GoalListWriterInterceptor;
 import tracker.goal.interceptors.GoalReaderInterceptor;
-import tracker.goal.interceptors.GoalWriterInterceptor;
 import tracker.security.Secured;
 import tracker.sync.Sync;
 import tracker.sync.UserWriting;
 import tracker.utils.API;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,14 +24,15 @@ import java.util.UUID;
 @Path(API.goal)
 public class GoalRest {
 
-    private GenericUser user;
+    private UserPrincipal user;
     private GoalService goalService;
 
     public GoalRest() { }
 
     @Inject
-    public GoalRest(GoalService goalService, GenericUser user) {
-       this.goalService = goalService;
+    public GoalRest(GoalService goalService, UserPrincipal user) {
+        this.user =  user;
+        this.goalService = goalService;
     }
 
     @POST
@@ -55,10 +53,8 @@ public class GoalRest {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    @GoalWriterInterceptor
-    public Response getGoal(@PathParam("id") String id, @Context SecurityContext context) {
-        GenericUser user = (GenericUser) context.getUserPrincipal();
-        Goal goal = this.goalService.getGoal(UUID.fromString(id), user.getId());
+    public Response getGoal(@PathParam("id") String id) {
+        Goal goal = this.goalService.getGoal(UUID.fromString(id), this.user.getId());
 
         return Response.ok().entity(goal).build();
     }
@@ -66,10 +62,9 @@ public class GoalRest {
     @DELETE
     @Path("{id}")
     @UserWriting
-    public Response deleteGoal(@PathParam("id") String id, @Context SecurityContext context) {
+    public Response deleteGoal(@PathParam("id") String id) {
 
-        goalService.deleteGoal(UUID.fromString(id), ((GenericUser) context.getUserPrincipal()).getId());
-
+        goalService.deleteGoal(UUID.fromString(id), this.user.getId());
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", GoalWeb.class.getSimpleName());
         jsonObject.put("id", id);
@@ -97,9 +92,9 @@ public class GoalRest {
     @Path("all")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @GoalListWriterInterceptor
-    public Response getGoals(@Context SecurityContext context) {
-        UUID id = ((GenericUser) context.getUserPrincipal()).getId();
-        List<Goal> goals = this.goalService.getGoals(id);
+    public Response getGoals() {
+
+        List<Goal> goals = this.goalService.getGoals(this.user.getId());
 
         return Response.ok().entity(goals).build();
     }

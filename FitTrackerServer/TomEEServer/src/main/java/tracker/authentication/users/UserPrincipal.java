@@ -1,13 +1,19 @@
-package tracker.authenticate;
+package tracker.authentication.users;
 
-
+import javax.ejb.Stateful;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.UUID;
 
 @Named
-public class GenericUser extends User implements Principal {
+@SessionScoped
+public class UserPrincipal implements Serializable{
 
+    private UUID id;
+    private String name;
+    private String email;
     private long clientSyncTimestamp;
     private long oldServerSyncTimestamp;
     private long newServerTimestamp;
@@ -15,13 +21,14 @@ public class GenericUser extends User implements Principal {
     private boolean isNew;
     private boolean isMobile;
 
-    public GenericUser(){}
+    public UserPrincipal(){}
 
-    public GenericUser(String id, String email) {
-        super(UUID.fromString(id), email);
+    public UserPrincipal(String id, String email) {
+        this.id = UUID.fromString(id);
+        this.email = email;
     }
 
-    public GenericUser(String id, String email, long syncVersion) {
+    public UserPrincipal(String id, String email, long syncVersion) {
         this(id, email);
         this.clientSyncTimestamp = syncVersion;
     }
@@ -72,5 +79,30 @@ public class GenericUser extends User implements Principal {
 
     public void setMobile(boolean mobile) {
         isMobile = mobile;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

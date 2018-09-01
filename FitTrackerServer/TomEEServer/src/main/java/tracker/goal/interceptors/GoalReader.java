@@ -2,7 +2,7 @@ package tracker.goal.interceptors;
 
 import com.tracker.shared.entities.GoalWeb;
 import com.tracker.shared.serializers.FlatbufferSerializer;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.goal.Goal;
 import tracker.utils.serializers.SerializerQualifier;
 import tracker.utils.serializers.SerializerType;
@@ -24,12 +24,15 @@ public class GoalReader implements ReaderInterceptor {
     @Context
     private SecurityContext securityContext;
     private FlatbufferSerializer<GoalWeb> serializer;
+    private UserPrincipal user;
 
     public GoalReader(){}
 
     @Inject
-    public GoalReader(@SerializerQualifier(SerializerType.Goal) FlatbufferSerializer<GoalWeb> serializer){
+    public GoalReader(@SerializerQualifier(SerializerType.Goal) FlatbufferSerializer<GoalWeb> serializer,
+                      UserPrincipal user){
         this.serializer = serializer;
+        this.user = user;
     }
 
     @Override
@@ -37,12 +40,11 @@ public class GoalReader implements ReaderInterceptor {
 
         InputStream inputStream = context.getInputStream();
         GoalWeb goalWeb = serializer.deserialize(org.apache.commons.io.IOUtils.toByteArray(inputStream));
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
 
         long timestamp = user.getNewServerTimestamp();
         Goal goal = new Goal(
                 goalWeb.getId(),
-                user.getId(),
+                this.user.getId(),
                 goalWeb.getType(),
                 goalWeb.getDistance(),
                 goalWeb.getDuration(),

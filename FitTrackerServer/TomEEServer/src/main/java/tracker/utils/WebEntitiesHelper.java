@@ -5,13 +5,14 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPoint;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.goal.Goal;
 import tracker.sportactivity.Split;
 import tracker.sportactivity.SportActivity;
 import tracker.weight.Weight;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class WebEntitiesHelper {
 
@@ -19,13 +20,13 @@ public class WebEntitiesHelper {
 
     }
 
-    public SportActivity toSportActivity(SportActivityWeb sportActivityWeb, GenericUser user, long timestamp){
+    public SportActivity toSportActivity(SportActivityWeb sportActivityWeb, UUID userID, long timestamp){
 
         ArrayList<Split> splits = new ArrayList<>();
         for(SplitWeb splitWeb : sportActivityWeb.getSplitWebs()){
             Split split = new Split(splitWeb.getId(),
                     sportActivityWeb.getId(),
-                    user.getId(),
+                    userID,
                     splitWeb.getDuration(),
                     splitWeb.getDistance());
             splits.add(split);
@@ -50,7 +51,7 @@ public class WebEntitiesHelper {
 
         SportActivity sportActivity = new SportActivity(
                 sportActivityWeb.getId(),
-                user.getId(),
+                userID,
                 sportActivityWeb.getWorkout(),
                 sportActivityWeb.getDistance(),
                 sportActivityWeb.getSteps(),
@@ -121,7 +122,7 @@ public class WebEntitiesHelper {
         return goalWeb;
     }
 
-    public Goal toGoal(GoalWeb goalWeb, GenericUser user){
+    public Goal toGoal(GoalWeb goalWeb, UserPrincipal user){
         Goal goal = new Goal(
                 goalWeb.getId(),
                 user.getId(),
@@ -138,7 +139,7 @@ public class WebEntitiesHelper {
         return goal;
     }
 
-    public Weight toWeight(WeightWeb weightWeb, GenericUser user){
+    public Weight toWeight(WeightWeb weightWeb, UserPrincipal user){
         Weight weight = new Weight(user.getId(),
                 weightWeb.getDate(),
                 weightWeb.getWeight(),

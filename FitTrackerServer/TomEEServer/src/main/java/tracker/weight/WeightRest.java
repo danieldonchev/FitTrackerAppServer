@@ -35,7 +35,7 @@ public class WeightRest {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     @WeightReaderInterceptor
-    public Response insertWeight(Weight weight, @Context SecurityContext context) {
+    public Response insertWeight(Weight weight) {
 
         this.service.create(weight);
 

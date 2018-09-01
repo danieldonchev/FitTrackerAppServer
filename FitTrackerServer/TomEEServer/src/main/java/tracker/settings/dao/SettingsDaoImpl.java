@@ -3,7 +3,7 @@ package tracker.settings.dao;
 import org.json.JSONObject;
 import tracker.utils.dao.GenericDAOImpl;
 import tracker.settings.Details;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 
 import javax.persistence.Query;
 import java.util.Iterator;
@@ -14,7 +14,7 @@ public class SettingsDaoImpl extends GenericDAOImpl<Details, UUID> implements Se
 
     public SettingsDaoImpl(){}
 
-    public Details update(Details details, GenericUser user){
+    public Details update(Details details, UserPrincipal user){
         JSONObject data = new JSONObject(details.getSettings());
         Iterator<String> iterator = data.keys();
         StringBuilder builder = new StringBuilder();
@@ -42,7 +42,7 @@ public class SettingsDaoImpl extends GenericDAOImpl<Details, UUID> implements Se
         return details;
     }
 
-    public Details read(GenericUser user){
+    public Details read(UserPrincipal user){
         Query query = getEntityManager().createNativeQuery("Select * from user_settings WHERE last_sync > :arg1" +
                 "id = :arg2");
         query.setParameter("arg1", user.getClientSyncTimestamp());

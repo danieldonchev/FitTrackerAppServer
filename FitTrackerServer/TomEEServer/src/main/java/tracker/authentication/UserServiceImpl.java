@@ -1,13 +1,14 @@
-package tracker.authenticate;
+package tracker.authentication;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import tracker.authenticate.dao.UserDao;
-import tracker.authenticate.dao.UserDaoQualifier;
-import tracker.authenticate.utils.PasswordGenerator;
-import tracker.authenticate.utils.PasswordValidator;
-import tracker.authenticate.utils.TokenAuthenticator;
-import tracker.authenticate.utils.TokenFactory;
+import tracker.authentication.dao.UserDao;
+import tracker.authentication.dao.UserDaoQualifier;
+import tracker.authentication.users.User;
+import tracker.authentication.utils.PasswordGenerator;
+import tracker.authentication.utils.PasswordValidator;
+import tracker.authentication.utils.TokenAuthenticator;
+import tracker.authentication.utils.TokenFactory;
 import tracker.utils.MailSender;
 
 

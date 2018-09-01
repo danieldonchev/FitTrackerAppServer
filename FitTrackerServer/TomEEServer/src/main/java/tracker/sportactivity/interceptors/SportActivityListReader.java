@@ -3,7 +3,7 @@ package tracker.sportactivity.interceptors;
 import com.tracker.shared.entities.SportActivityWeb;
 import com.tracker.shared.serializers.FlatbufferSerializer;
 import org.apache.commons.io.IOUtils;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.sportactivity.SportActivity;
 import tracker.utils.WebEntitiesHelper;
 import tracker.utils.serializers.SerializerQualifier;
@@ -24,28 +24,28 @@ import java.util.ArrayList;
 @SportActivityListReaderInterceptor
 public class SportActivityListReader implements ReaderInterceptor {
 
-    @Context
-    private SecurityContext securityContext;
     private FlatbufferSerializer<SportActivityWeb> serializer;
+    private UserPrincipal user;
 
     public SportActivityListReader() {
     }
 
     @Inject
-    public SportActivityListReader(@SerializerQualifier(SerializerType.SportActivity) FlatbufferSerializer<SportActivityWeb> serializer) {
+    public SportActivityListReader(@SerializerQualifier(SerializerType.SportActivity) FlatbufferSerializer<SportActivityWeb> serializer,
+                                   UserPrincipal user) {
         this.serializer = serializer;
+        this.user = user;
     }
 
     @Override
     public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
         InputStream inputStream = context.getInputStream();
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
         long timestamp = user.getNewServerTimestamp();
         ArrayList<SportActivityWeb> sportActivitiesWeb = serializer.deserializeArray(IOUtils.toByteArray(inputStream));
         ArrayList<SportActivity> sportActivities = new ArrayList<>();
         WebEntitiesHelper helper = new WebEntitiesHelper();
         for(SportActivityWeb sportActivityWeb : sportActivitiesWeb){
-            sportActivities.add(helper.toSportActivity(sportActivityWeb, user, timestamp));
+            sportActivities.add(helper.toSportActivity(sportActivityWeb, this.user.getId(), timestamp));
         }
 
         return sportActivities;

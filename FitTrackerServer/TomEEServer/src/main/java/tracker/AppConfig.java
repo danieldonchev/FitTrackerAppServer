@@ -1,6 +1,6 @@
 package tracker;
 
-import tracker.authenticate.AuthenticationRest;
+import tracker.authentication.AuthenticationRest;
 import tracker.goal.GoalRest;
 import tracker.goal.interceptors.GoalListReader;
 import tracker.goal.interceptors.GoalListWriter;

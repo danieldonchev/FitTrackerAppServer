@@ -1,8 +1,8 @@
 package tracker.sync;
 
-import tracker.authenticate.GenericUser;
-import tracker.sync.Sync;
+import tracker.authentication.users.UserPrincipal;
 
+import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -13,16 +13,25 @@ import java.io.IOException;
 @Sync
 public class SyncFilter implements ContainerResponseFilter {
 
+    private UserPrincipal user;
+
+    public SyncFilter() {
+    }
+
+    @Inject
+    public SyncFilter(UserPrincipal user) {
+        this.user = user;
+    }
+
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
-        GenericUser user = (GenericUser) containerRequestContext.getSecurityContext().getUserPrincipal();
-        if (user.getClientSyncTimestamp() < user.getOldServerSyncTimestamp()) {
+        if (this.user.getClientSyncTimestamp() < this.user.getOldServerSyncTimestamp()) {
             containerResponseContext.getHeaders().add("Should-Sync", true);
         }
-        if (user.isWriting()) {
-            containerResponseContext.getHeaders().add("Sync-Time", user.getNewServerTimestamp());
+        if (this.user.isWriting()) {
+            containerResponseContext.getHeaders().add("Sync-Time", this.user.getNewServerTimestamp());
         } else {
-            containerResponseContext.getHeaders().add("Sync-Time", user.getOldServerSyncTimestamp());
+            containerResponseContext.getHeaders().add("Sync-Time", this.user.getOldServerSyncTimestamp());
         }
     }
 }

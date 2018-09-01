@@ -1,11 +1,10 @@
 package tracker.settings;
 
-import tracker.authenticate.GenericUser;
-import tracker.settings.Details;
+import tracker.authentication.users.UserPrincipal;
 
 public interface UserSettignsService {
 
     Details create(Details holder);
-    Details update(Details holder, GenericUser user);
-    Details get(GenericUser user);
+    Details update(Details holder, UserPrincipal user);
+    Details get(UserPrincipal user);
 }

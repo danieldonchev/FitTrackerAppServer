@@ -1,12 +1,10 @@
-package tracker.authenticate;
+package tracker.authentication;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.json.JSONObject;
 import tracker.utils.API;
-import tracker.authenticate.utils.OauthVerifier;
-import tracker.authenticate.UserService;
-import tracker.authenticate.User;
-import tracker.authenticate.UserTokens;
+import tracker.authentication.utils.OauthVerifier;
+import tracker.authentication.users.User;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

@@ -1,4 +1,4 @@
-package tracker.authenticate.utils;
+package tracker.authentication.utils;
 
 import io.jsonwebtoken.*;
 

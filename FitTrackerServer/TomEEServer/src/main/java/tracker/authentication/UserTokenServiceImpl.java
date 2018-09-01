@@ -1,4 +1,4 @@
-package tracker.authenticate;
+package tracker.authentication;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -12,7 +12,7 @@ import javax.ws.rs.NotAuthorizedException;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-import static tracker.authenticate.utils.TokenAuthenticator.refreshTokenSecret;
+import static tracker.authentication.utils.TokenAuthenticator.refreshTokenSecret;
 
 @Stateless
 public class UserTokenServiceImpl implements UserTokenService{

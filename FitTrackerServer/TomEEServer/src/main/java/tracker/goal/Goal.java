@@ -4,12 +4,13 @@ import com.tracker.shared.entities.GoalWeb;
 import tracker.utils.DBConstants;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 //@DynamicUpdate
 @Table(name = DBConstants.TABLE_GOALS)
-public class Goal {
+public class Goal extends GoalWeb {
 
     @Id
     private UUID id;

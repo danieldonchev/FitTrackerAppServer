@@ -8,7 +8,7 @@ import tracker.sportactivity.interceptors.SportActivityWriterInterceptor;
 import tracker.sync.Sync;
 import tracker.sync.UserWriting;
 import tracker.utils.API;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -28,19 +28,21 @@ import java.util.UUID;
 public class SportActivityRest {
 
     private SportActivityService service;
+    private UserPrincipal user;
 
     public SportActivityRest(){}
 
     @Inject
-    public SportActivityRest(SportActivityService service){
+    public SportActivityRest(SportActivityService service, UserPrincipal user){
         this.service = service;
+        this.user = user;
     }
 
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @POST
     @UserWriting
     @SportActivityReaderInterceptor
-    public Response insertSportActivity(SportActivity sportActivity, @Context SecurityContext context, @Context HttpHeaders headers) {
+    public Response insertSportActivity(SportActivity sportActivity, @Context HttpHeaders headers) {
 
         this.service.create(sportActivity);
 
@@ -55,8 +57,7 @@ public class SportActivityRest {
     @Path("{id}/{userID}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @SportActivityWriterInterceptor
-    public Response getSportActivity(@PathParam("id") String id, @PathParam("userID") String userID, @Context SecurityContext context) {
-        GenericUser user = (GenericUser) context.getUserPrincipal();
+    public Response getSportActivity(@PathParam("id") String id, @PathParam("userID") String userID) {
 
         if (userID.equals(user.getId().toString())) {
             SportActivity sportActivity = this.service.read(UUID.fromString(id),
@@ -74,11 +75,10 @@ public class SportActivityRest {
     @DELETE
     @Path("{id}")
     @UserWriting
-    public Response deleteSportActivity(@PathParam("id") String id, @Context SecurityContext context, @Context HttpServletResponse response) {
-        GenericUser user = (GenericUser) context.getUserPrincipal();
+    public Response deleteSportActivity(@PathParam("id") String id, @Context HttpServletResponse response) {
 
         response.addHeader("Data-Type", SportActivityWeb.class.getSimpleName());
-        this.service.delete(UUID.fromString(id), user.getId());
+        this.service.delete(UUID.fromString(id), this.user.getId());
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", id);
@@ -90,7 +90,7 @@ public class SportActivityRest {
     @Produces(MediaType.APPLICATION_JSON)
     @UserWriting
     @SportActivityReaderInterceptor
-    public Response editSportActivity(SportActivity sportActivity, @Context SecurityContext context) {
+    public Response editSportActivity(SportActivity sportActivity) {
 
         this.service.update(sportActivity);
         JSONObject jsonObject = new JSONObject();
@@ -103,11 +103,10 @@ public class SportActivityRest {
     @POST
     @Path("profile-pic")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public Response postProfilePic(InputStream inputStream, @Context SecurityContext context) {
+    public Response postProfilePic(InputStream inputStream) {
 
-        GenericUser user = (GenericUser) context.getUserPrincipal();
         try {
-            File outputFile = new File("D:/server_pics/" + user.getId()+ ".png");
+            File outputFile = new File("D:/server_pics/" + this.user.getId()+ ".png");
             BufferedImage image = ImageIO.read(inputStream);
             BufferedImage dimg = new BufferedImage(120, 120, image.getType());
             Graphics2D g = dimg.createGraphics();

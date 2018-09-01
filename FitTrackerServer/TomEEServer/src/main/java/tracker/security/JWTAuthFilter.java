@@ -2,9 +2,9 @@ package tracker.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import tracker.authenticate.utils.TokenAuthenticator;
+import tracker.authentication.utils.TokenAuthenticator;
 import tracker.sync.SynchronizationService;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.sync.ModifiedTimes;
 
 import javax.annotation.Priority;
@@ -19,6 +19,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.security.Principal;
 import java.time.Instant;
+import java.util.UUID;
 
 @Provider
 @Secured
@@ -26,18 +27,21 @@ import java.time.Instant;
 public class JWTAuthFilter implements ContainerRequestFilter {
 
     private SynchronizationService service;
+    private UserPrincipal user;
 
     public JWTAuthFilter() {
     }
 
     @Inject
-    public JWTAuthFilter(SynchronizationService service) {
+    public JWTAuthFilter(SynchronizationService service, UserPrincipal user) {
         this.service = service;
+        this.user = user;
     }
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
         // Get the HTTP Authorization header from the request
+        long timestamp = Instant.now().toEpochMilli();
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         boolean isMobile = false;
         if(requestContext.getHeaderString("User-Agent").contains("Mobile")) {
@@ -58,44 +62,21 @@ public class JWTAuthFilter implements ContainerRequestFilter {
             // Validate token
             TokenAuthenticator authenticator = new TokenAuthenticator();
             Jws<Claims> tokenClaims = authenticator.validateJwt(token);
-            String username = (String) tokenClaims.getBody().get("email");
+            String email = (String) tokenClaims.getBody().get("email");
             String id = (String) tokenClaims.getBody().get("userID");
 
-            GenericUser user = new GenericUser(id, username, syncVersion != null ? Long.parseLong(syncVersion) : 0);
-            user.setMobile(isMobile);
+            this.user.setId(UUID.fromString(id));
+            String testId = this.user.getId().toString();
+            this.user.setEmail(email);
+            this.user.setClientSyncTimestamp(syncVersion != null ? Long.parseLong(syncVersion) : 0);
+            this.user.setMobile(isMobile);
 
             // Get server last sync time
             ModifiedTimes times = this.service.getTimes(user);
             long serverVersion = times.getLastModified();
 
-            // Create GenericUser from access token information and server information
-
             user.setOldServerSyncTimestamp(serverVersion);
-            long timestamp = Instant.now().toEpochMilli();
             user.setNewServerTimestamp(timestamp);
-
-            // Overwrite the context principal with GenericUser
-            requestContext.setSecurityContext(new SecurityContext() {
-                @Override
-                public Principal getUserPrincipal() {
-                    return user;
-                }
-
-                @Override
-                public boolean isUserInRole(String role) {
-                    return true;
-                }
-
-                @Override
-                public boolean isSecure() {
-                    return false;
-                }
-
-                @Override
-                public String getAuthenticationScheme() {
-                    return null;
-                }
-            });
 
         } catch (NotAuthorizedException e) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());

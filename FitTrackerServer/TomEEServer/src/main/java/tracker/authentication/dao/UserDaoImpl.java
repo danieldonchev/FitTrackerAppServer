@@ -1,9 +1,9 @@
-package tracker.authenticate.dao;
+package tracker.authentication.dao;
 
 
-import tracker.authenticate.utils.PasswordGenerator;
+import tracker.authentication.utils.PasswordGenerator;
 import tracker.utils.dao.GenericDAOImpl;
-import tracker.authenticate.User;
+import tracker.authentication.users.User;
 
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;

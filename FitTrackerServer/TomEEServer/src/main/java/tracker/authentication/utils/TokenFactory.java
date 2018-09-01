@@ -1,12 +1,12 @@
-package tracker.authenticate.utils;
+package tracker.authentication.utils;
 
 import io.jsonwebtoken.*;
 
 import javax.ws.rs.NotAuthorizedException;
 import java.util.Date;
 
-import static tracker.authenticate.utils.TokenAuthenticator.accessTokenSecret;
-import static tracker.authenticate.utils.TokenAuthenticator.refreshTokenSecret;
+import static tracker.authentication.utils.TokenAuthenticator.accessTokenSecret;
+import static tracker.authentication.utils.TokenAuthenticator.refreshTokenSecret;
 
 public class TokenFactory {
 

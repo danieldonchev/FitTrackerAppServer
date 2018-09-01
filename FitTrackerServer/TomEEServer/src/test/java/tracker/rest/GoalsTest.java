@@ -12,7 +12,7 @@
 //import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations;
 //import tracker.interceptors.GoalService;
-//import tracker.authenticate.GenericUser;
+//import tracker.authentication.GenericUser;
 //import tracker.interceptors.Goal;
 //
 //import javax.naming.NamingException;

@@ -3,6 +3,7 @@ package tracker.goal.interceptors;
 import com.tracker.shared.entities.GoalWeb;
 import com.tracker.shared.serializers.FlatbufferSerializer;
 import tracker.goal.Goal;
+import tracker.utils.InterceptorType;
 import tracker.utils.serializers.SerializerQualifier;
 import tracker.utils.WebEntitiesHelper;
 import tracker.utils.serializers.SerializerType;

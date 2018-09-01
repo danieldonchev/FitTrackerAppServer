@@ -3,7 +3,7 @@ package tracker.weight.interceptors;
 import com.tracker.shared.entities.WeightWeb;
 import com.tracker.shared.serializers.FlatbufferSerializer;
 import org.apache.commons.io.IOUtils;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.utils.WebEntitiesHelper;
 import tracker.utils.serializers.SerializerQualifier;
 import tracker.utils.serializers.SerializerType;
@@ -24,27 +24,27 @@ import java.util.ArrayList;
 @WeightListReaderInterceptor
 public class WeightListReader implements ReaderInterceptor {
 
-    @Context
-    private SecurityContext securityContext;
     private FlatbufferSerializer<WeightWeb> serializer;
+    private UserPrincipal user;
 
     public WeightListReader() {
     }
 
     @Inject
-    public WeightListReader(@SerializerQualifier(SerializerType.Weight) FlatbufferSerializer<WeightWeb> serializer) {
+    public WeightListReader(@SerializerQualifier(SerializerType.Weight) FlatbufferSerializer<WeightWeb> serializer,
+                            UserPrincipal user) {
         this.serializer = serializer;
+        this.user = user;
     }
 
     @Override
     public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
-        GenericUser user = (GenericUser)  securityContext.getUserPrincipal();
         InputStream is = context.getInputStream();
         ArrayList<Weight> weights = new ArrayList<>();
         ArrayList<WeightWeb> weightWebs = serializer.deserializeArray(IOUtils.toByteArray(is));
         WebEntitiesHelper helper = new WebEntitiesHelper();
         for(WeightWeb weightWeb : weightWebs){
-            weights.add(helper.toWeight(weightWeb, user));
+            weights.add(helper.toWeight(weightWeb, this.user));
         }
 
         return weights;

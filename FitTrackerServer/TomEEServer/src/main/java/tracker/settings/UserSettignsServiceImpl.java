@@ -1,6 +1,6 @@
 package tracker.settings;
 
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.settings.dao.SettingsDao;
 import tracker.settings.dao.SettingsDaoQualifier;
 
@@ -21,11 +21,11 @@ public class UserSettignsServiceImpl implements UserSettignsService {
         return dao.create(holder);
     }
 
-    public Details update(Details holder, GenericUser user){
+    public Details update(Details holder, UserPrincipal user){
         return dao.update(holder, user);
     }
 
-    public Details get(GenericUser user){
+    public Details get(UserPrincipal user){
         return dao.read(user);
     }
 }

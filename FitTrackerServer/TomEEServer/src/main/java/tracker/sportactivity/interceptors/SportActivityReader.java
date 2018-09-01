@@ -3,7 +3,7 @@ package tracker.sportactivity.interceptors;
 import com.tracker.shared.entities.SportActivityWeb;
 import com.tracker.shared.serializers.FlatbufferSerializer;
 import org.apache.commons.io.IOUtils;
-import tracker.authenticate.GenericUser;
+import tracker.authentication.users.UserPrincipal;
 import tracker.sportactivity.SportActivity;
 import tracker.utils.WebEntitiesHelper;
 import tracker.utils.serializers.SerializerQualifier;
@@ -23,27 +23,28 @@ import java.io.InputStream;
 @SportActivityReaderInterceptor
 public class SportActivityReader implements ReaderInterceptor {
 
-    @Context
-    private SecurityContext securityContext;
     private FlatbufferSerializer<SportActivityWeb> serializer;
+    private UserPrincipal user;
 
     public SportActivityReader() {
     }
 
     @Inject
-    public SportActivityReader(@SerializerQualifier(value = SerializerType.SportActivity) FlatbufferSerializer<SportActivityWeb> serializer) {
+    public SportActivityReader(@SerializerQualifier(value = SerializerType.SportActivity) FlatbufferSerializer<SportActivityWeb> serializer,
+                               UserPrincipal user) {
         this.serializer = serializer;
+        this.user = user;
     }
 
     @Override
     public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
         InputStream inputStream = context.getInputStream();
         SportActivityWeb sportActivityWeb =  serializer.deserialize(IOUtils.toByteArray(inputStream));
-        GenericUser user = (GenericUser) securityContext.getUserPrincipal();
-        long timestamp = user.getNewServerTimestamp();
+
+        long timestamp = this.user.getNewServerTimestamp();
 
         WebEntitiesHelper helper = new WebEntitiesHelper();
-        SportActivity sportActivity = helper.toSportActivity(sportActivityWeb, user, timestamp);
+        SportActivity sportActivity = helper.toSportActivity(sportActivityWeb, user.getId(), timestamp);
         return sportActivity;
     }
 }

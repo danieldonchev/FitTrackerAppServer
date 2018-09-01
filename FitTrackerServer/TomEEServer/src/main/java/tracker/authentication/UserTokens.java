@@ -1,4 +1,4 @@
-package tracker.authenticate;
+package tracker.authentication;
 
 import java.util.Objects;
 import java.util.UUID;
