@@ -1,16 +1,23 @@
 package tracker.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.tracker.shared.entities.*;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPoint;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import tracker.authentication.users.UserPrincipal;
 import tracker.goal.Goal;
-import tracker.sportactivity.Split;
 import tracker.sportactivity.SportActivity;
 import tracker.weight.Weight;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -22,87 +29,50 @@ public class WebEntitiesHelper {
 
     public SportActivity toSportActivity(SportActivityWeb sportActivityWeb, UUID userID, long timestamp){
 
-        ArrayList<Split> splits = new ArrayList<>();
-        for(SplitWeb splitWeb : sportActivityWeb.getSplitWebs()){
-            Split split = new Split(splitWeb.getId(),
-                    sportActivityWeb.getId(),
-                    userID,
-                    splitWeb.getDuration(),
-                    splitWeb.getDistance());
-            splits.add(split);
-        }
-        GeometryFactory factory = new GeometryFactory();
-        ArrayList<Coordinate> polylineCoordinates = new ArrayList<>();
-        for(LatLng latLng : sportActivityWeb.getSportActivityMap().getPolyline()){
-            Coordinate coordinate = new Coordinate();
-            coordinate.x = latLng.latitude;
-            coordinate.y = latLng.longitude;
-            polylineCoordinates.add(coordinate);
-        }
-        ArrayList<Coordinate> markerCoordinates = new ArrayList<>();
-        for(LatLng latLng : sportActivityWeb.getSportActivityMap().getMarkers()){
-            Coordinate coordinate = new Coordinate();
-            coordinate.x = latLng.latitude;
-            coordinate.y = latLng.longitude;
-            markerCoordinates.add(coordinate);
-        }
-        LineString lineString = factory.createLineString(polylineCoordinates.toArray(new Coordinate[polylineCoordinates.size()]));
-        MultiPoint multiPoint = factory.createMultiPoint(markerCoordinates.toArray(new Coordinate[markerCoordinates.size()]));
-
         SportActivity sportActivity = new SportActivity(
                 sportActivityWeb.getId(),
                 userID,
-                sportActivityWeb.getWorkout(),
+                sportActivityWeb.getActivity(),
                 sportActivityWeb.getDistance(),
                 sportActivityWeb.getSteps(),
                 sportActivityWeb.getStartTimestamp(),
                 sportActivityWeb.getEndTimestamp(),
-                splits,
-                lineString,
-                multiPoint,
                 sportActivityWeb.getLastModified(),
                 timestamp);
+
+        JsonObject object = new JsonObject();
+        Gson gson = new Gson();
+
+        object.add("datas" ,gson.toJsonTree(sportActivityWeb.getDatas()));
+        object.add("points", gson.toJsonTree(sportActivityWeb.getPoints()));
+        object.add("splits", gson.toJsonTree(sportActivityWeb.getSplits()));
+
+        sportActivity.setData(object.toString());
 
         return sportActivity;
     }
 
     public SportActivityWeb toSportActivityWeb(SportActivity sportActivity){
-        SportActivityWeb sportActivityWeb = new SportActivityWeb(sportActivity.getId().toString());
+        SportActivityWeb sportActivityWeb = new SportActivityWeb();
 
-        ArrayList<LatLng> polyline = new ArrayList<>();
-        if(sportActivity.getPolyline() != null){
-            for(Coordinate coordinate : sportActivity.getPolyline().getCoordinates()){
-                polyline.add(new LatLng(coordinate.x, coordinate.y));
-            }
-        }
-        ArrayList<LatLng> markers = new ArrayList<>();
-        if(sportActivity.getMarkers() != null){
-            for(Coordinate coordinate : sportActivity.getMarkers().getCoordinates()){
-                markers.add(new LatLng(coordinate.x, coordinate.y));
-            }
-        }
-        ArrayList<SplitWeb> splitWebs = new ArrayList<>();
-        if(sportActivity.getSplits() != null){
-            for(Split split : sportActivity.getSplits()){
-                splitWebs.add(new SplitWeb(split.getSplitKey().getId(), split.getDuration(), split.getDistance()));
-            }
-        }
-
-
-        SportActivityMap sportActivityMap = new SportActivityMap();
-        sportActivityMap.setMarkers(markers);
-        sportActivityMap.setPolyline(polyline);
-
-        sportActivityWeb.setSportActivityMap(sportActivityMap);
-        sportActivityWeb.setSplitWebs(splitWebs);
-        sportActivityWeb.setDistance(sportActivity.getDistance());
-        sportActivityWeb.setDuration(sportActivity.getDuration());
+        sportActivityWeb.setId(sportActivity.getId());
         sportActivityWeb.setCalories(sportActivity.getCalories());
-        sportActivityWeb.setSteps(sportActivity.getSteps());
         sportActivityWeb.setStartTimestamp(sportActivity.getStartTimestamp());
         sportActivityWeb.setEndTimestamp(sportActivity.getEndTimestamp());
         sportActivityWeb.setLastModified(sportActivity.getLastModified());
-        sportActivityWeb.setWorkout(sportActivity.getActivity());
+        sportActivityWeb.setActivity(sportActivity.getActivity());
+
+
+        JsonObject object = new JsonParser().parse(sportActivity.getData()).getAsJsonObject();
+
+
+        ArrayList<Data> datas = new Gson().fromJson(object.get("datas"), new TypeToken<ArrayList<Data>>() {}.getType());
+        ArrayList<Point> points = new Gson().fromJson(object.get("points"), new TypeToken<ArrayList<Point>>() {}.getType());
+        ArrayList<Split> splits = new Gson().fromJson(object.get("splits"), new TypeToken<ArrayList<Split>>() {}.getType());
+
+        sportActivityWeb.setDatas(datas);
+        sportActivityWeb.setPoints(points);
+        sportActivityWeb.setSplits(splits);
 
         return sportActivityWeb;
     }

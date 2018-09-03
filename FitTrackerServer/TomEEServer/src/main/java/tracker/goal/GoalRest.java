@@ -7,8 +7,8 @@ import tracker.goal.interceptors.GoalReaderInterceptor;
 import tracker.security.Secured;
 import tracker.sync.Sync;
 import tracker.sync.UserWriting;
-import tracker.utils.API;
 import tracker.authentication.users.UserPrincipal;
+import tracker.utils.ApiConstants;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Stateless
 @Secured
 @Sync
-@Path(API.goal)
+@Path(ApiConstants.goal)
 public class GoalRest {
 
     private UserPrincipal user;

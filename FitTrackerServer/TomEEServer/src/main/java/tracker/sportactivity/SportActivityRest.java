@@ -7,8 +7,8 @@ import tracker.sportactivity.interceptors.SportActivityReaderInterceptor;
 import tracker.sportactivity.interceptors.SportActivityWriterInterceptor;
 import tracker.sync.Sync;
 import tracker.sync.UserWriting;
-import tracker.utils.API;
 import tracker.authentication.users.UserPrincipal;
+import tracker.utils.ApiConstants;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -22,9 +22,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+
 @Secured
 @Sync
-@Path(API.sportActivity)
+@Path(ApiConstants.sportActivity)
 public class SportActivityRest {
 
     private SportActivityService service;

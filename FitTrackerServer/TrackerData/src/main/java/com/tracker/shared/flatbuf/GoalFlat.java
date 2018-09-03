@@ -16,7 +16,6 @@ public final class GoalFlat extends Table {
 
   public String id() { int o = __offset(4); return o != 0 ? __string(o + bb_pos) : null; }
   public ByteBuffer idAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
-  public ByteBuffer idInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
   public int type() { int o = __offset(6); return o != 0 ? bb.getInt(o + bb_pos) : 0; }
   public double distance() { int o = __offset(8); return o != 0 ? bb.getDouble(o + bb_pos) : 0.0; }
   public long duration() { int o = __offset(10); return o != 0 ? bb.getLong(o + bb_pos) : 0L; }

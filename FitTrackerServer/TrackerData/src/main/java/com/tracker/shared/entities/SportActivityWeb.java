@@ -1,94 +1,69 @@
 package com.tracker.shared.entities;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
-public class SportActivityWeb extends AbstractWorkout
-{
+public class SportActivityWeb {
+
     private UUID id;
-    private double distance = 0;
-    private long steps;
+    private String activity;
+    private int type;
+    private int calories;
+    private int totalElevation;
+    private int totalDenivelation;
     private long startTimestamp;
     private long endTimestamp;
-    private ArrayList<com.tracker.shared.entities.SplitWeb> splitWebs;
-    private com.tracker.shared.entities.SportActivityMap sportActivityMap;
+    private ArrayList<Point> points;
+    private ArrayList<Data> datas;
+    private ArrayList<Split> splits;
     private long lastModified;
 
-    public SportActivityWeb()
-    {
-        splitWebs = new ArrayList<>();
-        sportActivityMap = new com.tracker.shared.entities.SportActivityMap();
+    public SportActivityWeb() {
     }
 
-    public SportActivityWeb(String id)
-    {
-        this.id = UUID.fromString(id);
-        splitWebs = new ArrayList<>();
-        sportActivityMap = new com.tracker.shared.entities.SportActivityMap();
+    public double getDistance(){
+        return datas.get(datas.size() - 1).getDistance();
     }
 
-    private SportActivityWeb(String workout, long duration, int calories)
-    {
-        super(workout, duration, calories);
-        sportActivityMap = new com.tracker.shared.entities.SportActivityMap();
-        splitWebs = new ArrayList<>();
+    public int getDurationSeconds(){
+        return (int)(endTimestamp - startTimestamp) / 1000;
     }
 
-    public SportActivityWeb(String id, String workout, long duration, double distance, long steps, int calories, long startTimestamp, long endTimestamp, long lastModified)
-    {
-        this(workout, duration, calories);
-        this.id = UUID.fromString(id);
-        this.distance = distance;
-        this.steps = steps;
-        this.startTimestamp = startTimestamp;
-        this.endTimestamp = endTimestamp;
-        this.lastModified = lastModified;
+    public int getCadence(){
+        return getSteps() * 60 / getDurationSeconds();
     }
 
-    public SportActivityWeb(String id, String workout, long duration, double distance, long steps, int calories, SportActivityMap sportActivityMap, long startTimestamp,
-                            long endTimestamp, long lastModified, ArrayList<SplitWeb> splitWebs)
-    {
-        this(workout, duration, calories);
-        this.id = UUID.fromString(id);
-        this.distance = distance;
-        this.steps = steps;
-        this.sportActivityMap = sportActivityMap;
-        this.startTimestamp = startTimestamp;
-        this.endTimestamp = endTimestamp;
-        this.lastModified = lastModified;
-        this.splitWebs = splitWebs;
+    public int getSteps(){
+        return datas.get(datas.size() - 1).getSteps();
     }
 
-    public String getWorkout() {
-        return workout;
+    public double getAvgSpeed(){
+        return getDistance() / getDurationSeconds();
     }
 
-    public void setWorkout(String workout) {
-        this.workout = workout;
+    public UUID getId() {
+        return id;
     }
 
-    public long getDuration() {
-        return duration;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public String getActivity() {
+        return activity;
     }
 
-    public double getDistance() {
-        return distance;
+    public void setActivity(String activity) {
+        this.activity = activity;
     }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
+    public int getType() {
+        return type;
     }
 
-    public long getSteps() {
-        return steps;
-    }
-
-    public void setSteps(long steps) {
-        this.steps = steps;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getCalories() {
@@ -97,6 +72,22 @@ public class SportActivityWeb extends AbstractWorkout
 
     public void setCalories(int calories) {
         this.calories = calories;
+    }
+
+    public int getTotalElevation() {
+        return totalElevation;
+    }
+
+    public void setTotalElevation(int totalElevation) {
+        this.totalElevation = totalElevation;
+    }
+
+    public int getTotalDenivelation() {
+        return totalDenivelation;
+    }
+
+    public void setTotalDenivelation(int totalDenivelation) {
+        this.totalDenivelation = totalDenivelation;
     }
 
     public long getStartTimestamp() {
@@ -115,24 +106,28 @@ public class SportActivityWeb extends AbstractWorkout
         this.endTimestamp = endTimestamp;
     }
 
-    public ArrayList<SplitWeb> getSplitWebs() {
-        return splitWebs;
+    public ArrayList<Point> getPoints() {
+        return points;
     }
 
-    public void setSplitWebs(ArrayList<SplitWeb> splitWebs) {
-        this.splitWebs = splitWebs;
+    public void setPoints(ArrayList<Point> points) {
+        this.points = points;
     }
 
-    public SportActivityMap getSportActivityMap() {
-        return sportActivityMap;
+    public ArrayList<Data> getDatas() {
+        return datas;
     }
 
-    public void setSportActivityMap(SportActivityMap sportActivityMap) {
-        this.sportActivityMap = sportActivityMap;
+    public void setDatas(ArrayList<Data> datas) {
+        this.datas = datas;
     }
 
-    public UUID getId() {
-        return id;
+    public ArrayList<Split> getSplits() {
+        return splits;
+    }
+
+    public void setSplits(ArrayList<Split> splits) {
+        this.splits = splits;
     }
 
     public long getLastModified() {
@@ -141,5 +136,46 @@ public class SportActivityWeb extends AbstractWorkout
 
     public void setLastModified(long lastModified) {
         this.lastModified = lastModified;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SportActivityWeb that = (SportActivityWeb) o;
+        return type == that.type &&
+                calories == that.calories &&
+                totalElevation == that.totalElevation &&
+                totalDenivelation == that.totalDenivelation &&
+                startTimestamp == that.startTimestamp &&
+                endTimestamp == that.endTimestamp &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(activity, that.activity) &&
+                Objects.equals(points, that.points) &&
+                Objects.equals(datas, that.datas) &&
+                Objects.equals(splits, that.splits);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, activity, type, calories, totalElevation, totalDenivelation, startTimestamp, endTimestamp, points, datas, splits);
+    }
+
+    @Override
+    public String toString() {
+        return "SportActivityWeb{" +
+                "id=" + id +
+                ", activity='" + activity + '\'' +
+                ", type=" + type +
+                ", calories=" + calories +
+                ", totalElevation=" + totalElevation +
+                ", totalDenivelation=" + totalDenivelation +
+                ", startTimestamp=" + startTimestamp +
+                ", endTimestamp=" + endTimestamp +
+                ", points=" + points +
+                ", datas=" + datas +
+                ", splits=" + splits +
+                '}';
     }
 }

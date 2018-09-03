@@ -1,228 +1,179 @@
 package com.tracker.shared.serializers;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import com.tracker.shared.entities.LatLng;
-import com.tracker.shared.entities.SplitWeb;
-import com.tracker.shared.entities.SportActivityMap;
+import com.tracker.shared.entities.Data;
+import com.tracker.shared.entities.Point;
+import com.tracker.shared.entities.Split;
 import com.tracker.shared.entities.SportActivityWeb;
 import com.tracker.shared.flatbuf.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.ListIterator;
+import java.util.UUID;
 
 public class SportActivitySerializer implements FlatbufferSerializer<SportActivityWeb> {
 
+
     @Override
-    public byte[] serialize(SportActivityWeb sportActivityWeb) {
+    public SportActivityWeb deserialize(byte[] bytes){
+
+        ByteBuffer buf = ByteBuffer.wrap(bytes);
+        SportActivityFlat bufferer =  SportActivityFlat.getRootAsSportActivityFlat(buf);
+
+        return deserializeSportActivity(bufferer);
+    }
+
+    @Override
+    public ArrayList<SportActivityWeb> deserializeArray(byte[] bytes){
+        ArrayList<SportActivityWeb> sportActivityWebs = new ArrayList<>();
+        ByteBuffer buf = ByteBuffer.wrap(bytes);
+        SportActivitiesFlat bufferer = SportActivitiesFlat.getRootAsSportActivitiesFlat(buf);
+        for(int i = 0; i < bufferer.sportActivitiesLength(); i++){
+            SportActivityFlat sportActivityFlat = bufferer.sportActivities(i);
+            sportActivityWebs.add(deserializeSportActivity(sportActivityFlat));
+        }
+        return sportActivityWebs;
+    }
+
+    @Override
+    public byte[] serialize(SportActivityWeb sportActivityWeb){
         FlatBufferBuilder builder = new FlatBufferBuilder(0);
 
         int finish = getSportActivityInt(builder, sportActivityWeb);
 
         builder.finish(finish);
+
         return builder.sizedByteArray();
     }
 
     @Override
-    public SportActivityWeb deserialize(byte[] bytes) {
-
-        ByteBuffer buf = ByteBuffer.wrap(bytes);
-        SportActivityFlat sportActivityFlatBufferer = SportActivityFlat.getRootAsSportActivityFlat(buf);
-
-        SportActivityWeb sportActivityWeb = new SportActivityWeb(
-                sportActivityFlatBufferer.id(),
-                sportActivityFlatBufferer.activity(),
-                sportActivityFlatBufferer.duration(),
-                sportActivityFlatBufferer.distance(),
-                sportActivityFlatBufferer.steps(),
-                sportActivityFlatBufferer.calories(),
-                sportActivityFlatBufferer.startTimestamp(),
-                sportActivityFlatBufferer.endTimestamp(),
-                sportActivityFlatBufferer.lastModified()
-        );
-
-        ArrayList<LatLng> polyline = new ArrayList<>();
-        ArrayList<LatLng> markers = new ArrayList<>();
-        ArrayList<SplitWeb> splitWebs = new ArrayList<>();
-
-        if(sportActivityFlatBufferer.sportActivityMap() != null){
-            for(int i = 0; i < sportActivityFlatBufferer.sportActivityMap().markersLength(); i++)
-            {
-                MarkersFlat marker = sportActivityFlatBufferer.sportActivityMap().markers(i);
-                markers.add(new LatLng(marker.lat(), marker.lon()));
-            }
-            for(int i = 0; i < sportActivityFlatBufferer.sportActivityMap().polylineLength(); i++)
-            {
-                PolylineFlat polylineFlat = sportActivityFlatBufferer.sportActivityMap().polyline(i);
-                polyline.add(new LatLng(polylineFlat.lat(), polylineFlat.lon()));
-            }
-        }
-        if(sportActivityFlatBufferer.splits() != null){
-            for(int i = 0; i < sportActivityFlatBufferer.splits().splitsLength(); i++)
-            {
-                SplitFlat splitFlat = sportActivityFlatBufferer.splits().splits(i);
-                splitWebs.add(new SplitWeb(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
-            }
-        }
-
-        sportActivityWeb.getSportActivityMap().setPolyline(polyline);
-        sportActivityWeb.getSportActivityMap().setMarkers(markers);
-        sportActivityWeb.setSplitWebs(splitWebs);
-
-        return sportActivityWeb;
-    }
-
-    @Override
-    public byte[] serializeArray(ArrayList<SportActivityWeb> list) {
+    public byte[] serializeArray(ArrayList<SportActivityWeb> list){
         FlatBufferBuilder builder = new FlatBufferBuilder(0);
-        ListIterator<SportActivityWeb> iterator = list.listIterator(list.size());
-        int[] sportActivityOffsets = new int[list.size()];
-        int i = 0;
-        while(iterator.hasPrevious()){
-            SportActivityWeb sportActivityWeb = iterator.previous();
-            sportActivityOffsets[i] = getSportActivityInt(builder, sportActivityWeb);
-            i++;
-        }
 
-        int vector = SportActivitiesFlat.createSportActivitiesVector(builder, sportActivityOffsets);
+        int [] offset = new int[list.size()];
+        for(int i = list.size() - 1; i >= 0; i--){
+            offset[i] = getSportActivityInt(builder, list.get(i));
+        }
+        int vector = SportActivitiesFlat.createSportActivitiesVector(builder, offset);
+
         SportActivitiesFlat.startSportActivitiesFlat(builder);
         SportActivitiesFlat.addSportActivities(builder, vector);
-        int activities = SportActivitiesFlat.endSportActivitiesFlat(builder);
+        int finish = SportActivitiesFlat.endSportActivitiesFlat(builder);
 
-        builder.finish(activities);
+        builder.finish(finish);
+
         return builder.sizedByteArray();
     }
 
-    @Override
-    public ArrayList<SportActivityWeb> deserializeArray(byte[] bytes) {
-        ArrayList<SportActivityWeb> sportActivities = new ArrayList<>();
-        ByteBuffer buf = ByteBuffer.wrap(bytes);
-        SportActivitiesFlat sportActivitiesFlatBufferer = SportActivitiesFlat.getRootAsSportActivitiesFlat(buf);
-
-        for(int i = 0; i < sportActivitiesFlatBufferer.sportActivitiesLength(); i++){
-            SportActivityFlat sportActivityFlat = sportActivitiesFlatBufferer.sportActivities(i);
-
-            SportActivityMapFlat sportActivityMapFlat = sportActivityFlat.sportActivityMap();
-            SportActivityMap map = new SportActivityMap();
-            if(sportActivityMapFlat != null){
-                map.deserializeFromFlatBuffMap(sportActivityMapFlat);
-            }
-
-            SportActivityWeb activity = new SportActivityWeb(sportActivityFlat.id(),
-                    sportActivityFlat.activity(),
-                    sportActivityFlat.duration(),
-                    sportActivityFlat.distance(),
-                    sportActivityFlat.steps(),
-                    sportActivityFlat.calories(),
-                    sportActivityFlat.startTimestamp(),
-                    sportActivityFlat.endTimestamp(),
-                    sportActivityFlat.lastModified());
-
-            activity.setSportActivityMap(map);
-
-            SplitsFlat splitsFlat = sportActivityFlat.splits();
-            if(splitsFlat != null){
-                getSplitsFromFlatBuffSplits(sportActivityFlat.splits());
-            }
-
-
-            sportActivities.add(activity);
-        }
-
-        return sportActivities;
-    }
-
-    public int getSportActivityInt(FlatBufferBuilder builder, SportActivityWeb sportActivity){
-        int idString = builder.createString(sportActivity.getId().toString());
-        int activityString = builder.createString(sportActivity.getWorkout());
-
-        int cardioMapInt = 0;
-        if(sportActivity.getSportActivityMap() != null){
-            cardioMapInt = sportActivity.getSportActivityMap().getBufferInt(builder);
-        }
-        int splits = getSplitsBufferInt(builder, sportActivity.getSplitWebs());
+    public int getSportActivityInt(FlatBufferBuilder builder, SportActivityWeb sportActivityWeb){
+        int idString = builder.createString(sportActivityWeb.getId().toString());
+        int activityString = builder.createString(sportActivityWeb.getActivity());
+        int splitsInt = getSplitsInt(builder, sportActivityWeb.getSplits());
+        int datasInt = getDatasInt(builder, sportActivityWeb.getDatas());
+        int pointsInt = getPointsInt(builder, sportActivityWeb.getPoints());
 
         SportActivityFlat.startSportActivityFlat(builder);
         SportActivityFlat.addId(builder, idString);
         SportActivityFlat.addActivity(builder, activityString);
-        SportActivityFlat.addSplits(builder, splits);
-        SportActivityFlat.addSportActivityMap(builder, cardioMapInt);
-        SportActivityFlat.addStartTimestamp(builder, sportActivity.getStartTimestamp());
-        SportActivityFlat.addEndTimestamp(builder, sportActivity.getEndTimestamp());
-        SportActivityFlat.addDuration(builder, sportActivity.getDuration());
-        SportActivityFlat.addDistance(builder, sportActivity.getDistance());
-        SportActivityFlat.addSteps(builder, sportActivity.getSteps());
-        SportActivityFlat.addCalories(builder, sportActivity.getCalories());
-        SportActivityFlat.addLastModified(builder, sportActivity.getLastModified());
+        SportActivityFlat.addStartTimestamp(builder, sportActivityWeb.getStartTimestamp());
+        SportActivityFlat.addEndTimestamp(builder, sportActivityWeb.getEndTimestamp());
+        SportActivityFlat.addType(builder, sportActivityWeb.getType());
+        SportActivityFlat.addTotalElevation(builder, sportActivityWeb.getTotalElevation());
+        SportActivityFlat.addTotalDenivelation(builder, sportActivityWeb.getTotalDenivelation());
+        SportActivityFlat.addLastModified(builder, sportActivityWeb.getLastModified());
+        SportActivityFlat.addDataList(builder, datasInt);
+        SportActivityFlat.addPoints(builder, pointsInt);
+        SportActivityFlat.addSplits(builder, splitsInt);
 
         return SportActivityFlat.endSportActivityFlat(builder);
     }
 
-    public int getSplitsBufferInt(FlatBufferBuilder builder, ArrayList<SplitWeb> splitWebs)
-    {
-        if(splitWebs != null){
-            ListIterator<SplitWeb> splitListIterator = splitWebs.listIterator(splitWebs.size());
-
-            SplitsFlat.startSplitsVector(builder, splitWebs.size());
-
-            while(splitListIterator.hasPrevious())
-            {
-                SplitWeb splitWeb = splitListIterator.previous();
-                SplitFlat.createSplitFlat(builder, splitWeb.getId(), splitWeb.getDistance(), splitWeb.getDuration());
-            }
-
-            int splits = builder.endVector();
-
-            SplitsFlat.startSplitsFlat(builder);
-            SplitsFlat.addSplits(builder, splits);
-            return SplitsFlat.endSplitsFlat(builder);
+    public int getSplitsInt(FlatBufferBuilder builder, ArrayList<Split> splits){
+//        SportActivityFlat.create()
+//        SportActivityFlat.startSplitsVector(builder, splits.size());
+        int[] offsets = new int[splits.size()];
+        for(int i = splits.size() - 1; i >= 0; i--){
+            offsets[i] = SplitFlat.createSplitFlat(builder,
+                                                    splits.get(i).getStartIndex(),
+                                                    splits.get(i).getEndIndex());
         }
-
-
-        return 0;
+        return SportActivityFlat.createSplitsVector(builder, offsets);
     }
 
-    public ArrayList<SplitWeb> getSplitsFromFlatBuffSplits(SplitsFlat flatBuffSplitsFlat){
-        ArrayList<SplitWeb> splitWebs = new ArrayList<>();
-        if(flatBuffSplitsFlat != null){
-            for(int i = 0; i < flatBuffSplitsFlat.splitsLength(); i++)
-            {
-                SplitFlat splitFlat = flatBuffSplitsFlat.splits(i);
-                splitWebs.add(new SplitWeb(splitFlat.id(), splitFlat.duration(), splitFlat.distance()));
-            }
+    public int getDatasInt(FlatBufferBuilder builder, ArrayList<Data> datas){
+        int[] offsets = new int[datas.size()];
+        //SportActivityFlat.startDataListVector(builder, datas.size());
+        for(int i = datas.size() - 1; i >= 0; i--){
+            offsets[i] = DataFlat.createDataFlat(builder,
+                    datas.get(i).getDistance(),
+                    datas.get(i).getDuration(),
+                    datas.get(i).getSteps(),
+                    datas.get(i).getSteps(),
+                    datas.get(i).getAvgSpeed(),
+                    datas.get(i).getCurrentSpeed());
         }
-        return splitWebs;
+
+        return SportActivityFlat.createDataListVector(builder, offsets);
     }
 
-    public int getMapBufferInt(FlatBufferBuilder builder, SportActivityMap map)
-    {
-        ListIterator<LatLng> polyLineIterator = map.getPolyline().listIterator(map.getPolyline().size());
-        ListIterator<LatLng> markerIterator = map.getMarkers().listIterator(map.getMarkers().size());
+    public int getPointsInt(FlatBufferBuilder builder, ArrayList<Point> points){
+        //int[] offsets = new int[points.size()];
+        SportActivityFlat.startPointsVector(builder, points.size());
+        for(int i = points.size() - 1; i >= 0; i--){
+             PointFlat.createPointFlat(builder,
+                    points.get(i).getLat(),
+                    points.get(i).getLon(),
+                    points.get(i).getElevation(),
+                    points.get(i).getGpsAccuracy());
 
-        SportActivityMapFlat.startMarkersVector(builder, map.getMarkers().size());
+        }
+        int vector = builder.endVector();
 
-        while(markerIterator.hasPrevious())
-        {
-            LatLng latLng = markerIterator.previous();
-            MarkersFlat.createMarkersFlat(builder, latLng.latitude, latLng.longitude, 0);
+        return vector;
+    }
+
+    public SportActivityWeb deserializeSportActivity(SportActivityFlat bufferer){
+        SportActivityWeb sportActivityWeb = new SportActivityWeb();
+        sportActivityWeb.setId(UUID.fromString(bufferer.id()));
+        sportActivityWeb.setActivity(bufferer.activity());
+        sportActivityWeb.setType(bufferer.type());
+        sportActivityWeb.setCalories(bufferer.calories());
+        sportActivityWeb.setTotalElevation(bufferer.totalElevation());
+        sportActivityWeb.setTotalDenivelation(bufferer.totalDenivelation());
+        sportActivityWeb.setStartTimestamp(bufferer.startTimestamp());
+        sportActivityWeb.setEndTimestamp(bufferer.endTimestamp());
+        sportActivityWeb.setLastModified(bufferer.lastModified());
+
+        ArrayList<Point> points = new ArrayList<>();
+        for (int i = 0; i < bufferer.pointsLength(); i++){
+            PointFlat pointFlat = bufferer.points(i);
+            points.add(new Point(pointFlat.lat(),
+                    pointFlat.lon(),
+                    pointFlat.elevation(),
+                    pointFlat.gpsAccuracy()));
         }
 
-        int markers = builder.endVector();
-
-        SportActivityMapFlat.startPolylineVector(builder, map.getPolyline().size());
-
-        while(polyLineIterator.hasPrevious())
-        {
-            LatLng latLng = polyLineIterator.previous();
-            PolylineFlat.createPolylineFlat(builder, latLng.latitude, latLng.longitude);
+        ArrayList<Data> datas = new ArrayList<Data>();
+        for(int i = 0; i < bufferer.dataListLength(); i++){
+            DataFlat dataFlat = bufferer.dataList(i);
+            datas.add(new Data(dataFlat.distance(),
+                    dataFlat.duration(),
+                    dataFlat.steps(),
+                    dataFlat.cadence(),
+                    dataFlat.avgSpeed(),
+                    dataFlat.currentSpeed()));
         }
 
-        int polyline = builder.endVector();
+        ArrayList<Split> splits = new ArrayList<>();
+        for(int i = 0; i < bufferer.splitsLength(); i++){
+            SplitFlat splitFlat = bufferer.splits(i);
+            splits.add(new Split(splitFlat.startIndex(), splitFlat.endIndex()));
+        }
 
-        SportActivityMapFlat.startSportActivityMapFlat(builder);
-        SportActivityMapFlat.addMarkers(builder, markers);
-        SportActivityMapFlat.addPolyline(builder, polyline);
+        sportActivityWeb.setPoints(points);
+        sportActivityWeb.setDatas(datas);
+        sportActivityWeb.setSplits(splits);
 
-        return SportActivityMapFlat.endSportActivityMapFlat(builder);
+        return sportActivityWeb;
     }
 }

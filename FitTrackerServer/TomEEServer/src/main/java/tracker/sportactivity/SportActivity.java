@@ -1,12 +1,8 @@
 package tracker.sportactivity;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiPoint;
 import tracker.utils.DBConstants;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,14 +20,7 @@ public class SportActivity {
     private long steps = 0;
     private long startTimestamp = 0;
     private long endTimestamp = 0;
-    @OneToMany(mappedBy = "splitKey.sportActivity", cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.EAGER)
-//    @JoinColumns({
-//            @JoinColumn(name = DBConstants.splits_sport_activity_id, referencedColumnName = DBConstants.id)
-//    })
-
-    private List<Split> splits;
-    @Column(columnDefinition = "LINESTRING") private LineString polyline;
-    @Column(columnDefinition = "MULTIPOINT") private MultiPoint markers;
+    private String data;
     @Column(name = DBConstants.last_modified) private long lastModified;
     @Column(name = DBConstants.last_sync) private long lastSync;
     private int deleted = 0;
@@ -39,7 +28,7 @@ public class SportActivity {
     public SportActivity() {
     }
 
-    public SportActivity(UUID id, UUID userID, String activity, double distance, long steps, long startTimestamp, long endTimestamp, ArrayList<Split> splits, LineString polyline, MultiPoint markers, long lastModified, long lastSync) {
+    public SportActivity(UUID id, UUID userID, String activity, double distance, long steps, long startTimestamp, long endTimestamp, long lastModified, long lastSync) {
         this.id = id;
         this.userID = userID;
         this.activity = activity;
@@ -47,19 +36,8 @@ public class SportActivity {
         this.steps = steps;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;
-        this.polyline = polyline;
-        this.markers = markers;
         this.lastModified = lastModified;
         this.lastSync = lastSync;
-        this.splits = splits;
-        for(Split split: splits){
-            split.getSplitKey().setSportActivity(this);
-        }
-    }
-
-    public void addSplit(Split split){
-        split.getSplitKey().setSportActivity(this);
-        this.splits.add(split);
     }
 
     public double getDistance() {
@@ -92,30 +70,6 @@ public class SportActivity {
 
     public void setEndTimestamp(long endTimestamp) {
         this.endTimestamp = endTimestamp;
-    }
-
-    public List<Split> getSplits() {
-        return splits;
-    }
-
-    public void setSplits(ArrayList<Split> splits) {
-        this.splits = splits;
-    }
-
-    public LineString getPolyline() {
-        return polyline;
-    }
-
-    public void setPolyline(LineString polyline) {
-        this.polyline = polyline;
-    }
-
-    public MultiPoint getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(MultiPoint markers) {
-        this.markers = markers;
     }
 
     public long getLastModified() {
@@ -182,6 +136,14 @@ public class SportActivity {
         this.userID = userID;
     }
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -198,15 +160,12 @@ public class SportActivity {
                 deleted == that.deleted &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(userID, that.userID) &&
-                Objects.equals(activity, that.activity) &&
-                Objects.equals(splits, that.splits) &&
-                Objects.equals(polyline, that.polyline) &&
-                Objects.equals(markers, that.markers);
+                Objects.equals(activity, that.activity);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, userID, activity, distance, duration, calories, steps, startTimestamp, endTimestamp, splits, polyline, markers, lastModified, lastSync, deleted);
+        return Objects.hash(id, userID, activity, distance, duration, calories, steps, startTimestamp, endTimestamp, lastModified, lastSync, deleted);
     }
 }

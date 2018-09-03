@@ -12,8 +12,8 @@ import tracker.settings.Details;
 import tracker.sportactivity.interceptors.SportActivityListReaderInterceptor;
 import tracker.sportactivity.interceptors.SportActivityListWriterInterceptor;
 import tracker.sportactivity.SportActivity;
-import tracker.utils.API;
 import tracker.settings.UserSettignsService;
+import tracker.utils.ApiConstants;
 import tracker.weight.Weight;
 import tracker.weight.interceptors.WeightListReaderInterceptor;
 import tracker.weight.interceptors.WeightListWriterInterceptor;
@@ -25,13 +25,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.List;
 
 @Secured
 @Sync
-@Path(API.sync)
+@Path(ApiConstants.sync)
 public class SynchronizationRest {
 
     private SynchronizationService service;
@@ -49,7 +48,7 @@ public class SynchronizationRest {
     }
 
     @GET
-    @Path(API.syncCheck)
+    @Path(ApiConstants.syncCheck)
     @Produces(MediaType.APPLICATION_JSON)
     public Response shouldSync(@Context HttpServletRequest req) {
         return Response.ok().build();
@@ -59,7 +58,7 @@ public class SynchronizationRest {
     Gets missing activities
      */
     @GET
-    @Path(API.missingSportActivities)
+    @Path(ApiConstants.missingActivities)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @SportActivityListWriterInterceptor
     public Response getSportActivities(@Context HttpServletResponse response) {
@@ -71,7 +70,7 @@ public class SynchronizationRest {
     }
 
     @POST
-    @Path(API.missingSportActivities)
+    @Path(ApiConstants.missingActivities)
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
@@ -84,7 +83,7 @@ public class SynchronizationRest {
     }
 
     @GET
-    @Path(API.deletedSportActivities)
+    @Path(ApiConstants.deletedActivities)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDeletedActivities() {
         List<String> sportActivities = this.service.getDeletedEntitiesId(this.user, "user_sport_activity");
@@ -98,7 +97,7 @@ public class SynchronizationRest {
     }
 
     @POST
-    @Path(API.deletedSportActivities)
+    @Path(ApiConstants.deletedActivities)
     @Consumes(MediaType.APPLICATION_JSON)
     @UserWriting
     public Response deleteActivities(String data) {
@@ -114,7 +113,7 @@ public class SynchronizationRest {
     }
 
     @GET
-    @Path(API.missingGoals)
+    @Path(ApiConstants.missingGoals)
     @Produces(MediaType.APPLICATION_JSON)
     @GoalListWriterInterceptor
     public Response getGoals(@Context HttpServletResponse response) {
@@ -125,7 +124,7 @@ public class SynchronizationRest {
     }
 
     @POST
-    @Path(API.missingGoals)
+    @Path(ApiConstants.missingGoals)
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
@@ -137,7 +136,7 @@ public class SynchronizationRest {
     }
 
     @GET
-    @Path(API.deletedGoals)
+    @Path(ApiConstants.deletedGoals)
     @Produces(MediaType.APPLICATION_JSON)
     @GoalListWriterInterceptor
     public Response getDeletedGoals() {
@@ -146,7 +145,7 @@ public class SynchronizationRest {
     }
 
     @POST
-    @Path(API.deletedGoals)
+    @Path(ApiConstants.deletedGoals)
     @Consumes(MediaType.APPLICATION_JSON)
     @UserWriting
     public Response deleteGoals(String data) {
@@ -162,7 +161,7 @@ public class SynchronizationRest {
     }
 
     @POST
-    @Path(API.weights)
+    @Path(ApiConstants.weights)
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
@@ -174,7 +173,7 @@ public class SynchronizationRest {
     }
 
     @GET
-    @Path(API.weights)
+    @Path(ApiConstants.weights)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @WeightListWriterInterceptor
     public Response getWeights(@Context HttpServletResponse response) {
@@ -185,7 +184,7 @@ public class SynchronizationRest {
     }
 
     @GET
-    @Path(API.settings)
+    @Path(ApiConstants.settings)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getSettings(String data, @Context HttpServletResponse response) {
         Details details = this.settingsService.get(this.user);
@@ -198,7 +197,7 @@ public class SynchronizationRest {
     }
 
     @POST
-    @Path(API.settings)
+    @Path(ApiConstants.settings)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @UserWriting
     public Response updateSettings(Details details, @Context HttpServletResponse response) {
@@ -208,7 +207,7 @@ public class SynchronizationRest {
     }
 
     @GET
-    @Path(API.syncTimes)
+    @Path(ApiConstants.getSyncTimes)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLastModifiedTimes() {
 

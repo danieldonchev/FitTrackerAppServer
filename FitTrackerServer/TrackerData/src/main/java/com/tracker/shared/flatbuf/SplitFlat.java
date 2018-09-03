@@ -8,21 +8,30 @@ import java.util.*;
 import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")
-public final class SplitFlat extends Struct {
+public final class SplitFlat extends Table {
+  public static SplitFlat getRootAsSplitFlat(ByteBuffer _bb) { return getRootAsSplitFlat(_bb, new SplitFlat()); }
+  public static SplitFlat getRootAsSplitFlat(ByteBuffer _bb, SplitFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
   public void __init(int _i, ByteBuffer _bb) { bb_pos = _i; bb = _bb; }
   public SplitFlat __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public int id() { return bb.getInt(bb_pos + 0); }
-  public double distance() { return bb.getDouble(bb_pos + 8); }
-  public long duration() { return bb.getLong(bb_pos + 16); }
+  public int startIndex() { int o = __offset(4); return o != 0 ? bb.getInt(o + bb_pos) : 0; }
+  public int endIndex() { int o = __offset(6); return o != 0 ? bb.getInt(o + bb_pos) : 0; }
 
-  public static int createSplitFlat(FlatBufferBuilder builder, int id, double distance, long duration) {
-    builder.prep(8, 24);
-    builder.putLong(duration);
-    builder.putDouble(distance);
-    builder.pad(4);
-    builder.putInt(id);
-    return builder.offset();
+  public static int createSplitFlat(FlatBufferBuilder builder,
+      int startIndex,
+      int endIndex) {
+    builder.startObject(2);
+    SplitFlat.addEndIndex(builder, endIndex);
+    SplitFlat.addStartIndex(builder, startIndex);
+    return SplitFlat.endSplitFlat(builder);
+  }
+
+  public static void startSplitFlat(FlatBufferBuilder builder) { builder.startObject(2); }
+  public static void addStartIndex(FlatBufferBuilder builder, int startIndex) { builder.addInt(0, startIndex, 0); }
+  public static void addEndIndex(FlatBufferBuilder builder, int endIndex) { builder.addInt(1, endIndex, 0); }
+  public static int endSplitFlat(FlatBufferBuilder builder) {
+    int o = builder.endObject();
+    return o;
   }
 }
 

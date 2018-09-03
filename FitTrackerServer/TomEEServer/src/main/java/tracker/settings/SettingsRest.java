@@ -1,11 +1,11 @@
 package tracker.settings;
 
 import org.json.JSONObject;
-import tracker.utils.API;
 import tracker.authentication.users.UserPrincipal;
 import tracker.security.Secured;
 import tracker.sync.Sync;
 import tracker.sync.UserWriting;
+import tracker.utils.ApiConstants;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +17,7 @@ import javax.ws.rs.core.SecurityContext;
 
 @Secured
 @Sync
-@Path(API.settings)
+@Path(ApiConstants.settings)
 public class SettingsRest {
 
     private UserSettignsService service;
@@ -38,7 +38,7 @@ public class SettingsRest {
     public Response updateSettings(Details userSettings) {
 
         userSettings.setId(user.getId());
-        this.service.update(userSettings, this.user);
+        this.service.update(userSettings, user);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("data", "userSettings");
 
@@ -49,7 +49,7 @@ public class SettingsRest {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSettings(@Context HttpServletResponse response) {
 
-        Details userSettings = this.service.get(this.user);
+        Details userSettings = this.service.get(user);
         JSONObject settingsJson = new JSONObject(userSettings.getSettings());
 
         response.addHeader("Data-Type", "userSettings");

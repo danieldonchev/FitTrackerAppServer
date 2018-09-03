@@ -1,9 +1,8 @@
 package com.tracker.shared.serializers;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public interface FlatbufferSerializer<T> extends Serializable {
+public interface FlatbufferSerializer<T> {
 
     byte[] serialize(T t);
     T deserialize(byte[] bytes);

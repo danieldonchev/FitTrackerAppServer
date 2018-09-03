@@ -31,8 +31,11 @@ public class GenericDAOImpl<T, PK extends Serializable> implements GenericDao<T,
 
     @Override
     public T readWithUserId(Class<T> type, PK id, UUID userID) {
-        TypedQuery<T> query = this.entityManager.createQuery("Select t from" + type.getSimpleName() + " t where " + DBConstants.userID + "=:arg1", type);
-        query.setParameter("arg1", userID);
+        TypedQuery<T> query = this.entityManager.createQuery("Select t from " + type.getSimpleName() + " t where " +
+                DBConstants.id + "=:arg1 and " +
+                DBConstants.userID + "=:arg2", type);
+        query.setParameter("arg1", id);
+        query.setParameter("arg2", userID);
         return query.getSingleResult();
     }
 
