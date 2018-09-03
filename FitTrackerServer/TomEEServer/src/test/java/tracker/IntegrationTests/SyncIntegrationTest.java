@@ -1,14 +1,15 @@
 package tracker.IntegrationTests;
 
-import com.tracker.shared.Entities.GoalWeb;
-import com.tracker.shared.Entities.SerializeHelper;
-import com.tracker.shared.Entities.SportActivityWeb;
+import com.tracker.shared.entities.GoalWeb;
+import com.tracker.shared.entities.SportActivityWeb;
+import com.tracker.shared.serializers.GoalSerializer;
+import com.tracker.shared.serializers.SportActivitySerializer;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import sun.misc.IOUtils;
-import tracker.Utils.Https.API;
-import tracker.Utils.Https.HttpsConnection;
+import tracker.utils.Https.API;
+import tracker.utils.Https.HttpsConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -16,21 +17,21 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static tracker.Utils.Https.HttpsConnection.HTTP_GET;
-import static tracker.Utils.Https.HttpsConnection.HTTP_POST;
-import static tracker.Utils.TestUtils.readStream;
+import static tracker.utils.Https.HttpsConnection.HTTP_GET;
+import static tracker.utils.Https.HttpsConnection.HTTP_POST;
 
 public class SyncIntegrationTest {
 
     @Test
     public void getMissingActivitiesTest(){
         try {
+            SportActivitySerializer serializer = new SportActivitySerializer();
             HttpsConnection httpsConnection = new HttpsConnection();
             HttpsURLConnection connection = httpsConnection.getConnection(HTTP_GET, API.syncActivities);
             connection.setRequestProperty("Content-Type", "application/octet-stream");
 
             InputStream is = connection.getInputStream();
-            ArrayList<SportActivityWeb> sportActivityWebs = SerializeHelper.deserializeSportActivities(IOUtils.readFully(is, -1, true));
+            ArrayList<SportActivityWeb> sportActivityWebs = serializer.deserializeArray(IOUtils.toByteArray(is));
 
             Assert.assertEquals(connection.getResponseCode(), 200);
             Assert.assertNotNull(sportActivityWebs);
@@ -67,18 +68,18 @@ public class SyncIntegrationTest {
 
             sportActivityWebs.add(sportActivityWeb1);
             sportActivityWebs.add(sportActivityWeb2);
-
+            SportActivitySerializer serializer = new SportActivitySerializer();
         HttpsConnection httpsConnection = new HttpsConnection();
         HttpsURLConnection connection = httpsConnection.getConnection(HTTP_POST, API.syncActivities);
         connection.setRequestProperty("Content-Type", "application/octet-stream");
-        connection.getOutputStream().write(SerializeHelper.serializeSportActivities(sportActivityWebs));
+        connection.getOutputStream().write(serializer.serializeArray(sportActivityWebs));
 
         InputStream is = connection.getInputStream();
         Assert.assertEquals(connection.getResponseCode(), 200);
 
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -109,6 +110,49 @@ public class SyncIntegrationTest {
             HttpsURLConnection connection = httpsConnection.getConnection(HTTP_GET, API.deletedActivities);
 
             InputStream is = connection.getInputStream();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void insertMissingGoals(){
+        try{
+            ArrayList<GoalWeb> goalWebs = new ArrayList<>();
+            GoalWeb goal = new GoalWeb(UUID.fromString("dc9e60b2-5f0d-4a94-9226-c76817bfd611"),
+                    1,
+                    555.42d,
+                    180L,
+                    50L,
+                    300L,
+                    1L,
+                    2L,
+                    1L);
+
+
+            GoalWeb goal2 = new GoalWeb(UUID.fromString("dc9e60b2-5f0d-4a94-9226-c76817bfd612"),
+                    1,
+                    555.42d,
+                    180L,
+                    50L,
+                    300L,
+                    1L,
+                    2L,
+                    1L);
+
+
+            goalWebs.add(goal);
+            goalWebs.add(goal2);
+
+            GoalSerializer serializer = new GoalSerializer();
+            HttpsConnection httpsConnection = new HttpsConnection();
+            HttpsURLConnection connection = httpsConnection.getConnection(HTTP_POST, API.missingGoals);
+            connection.setRequestProperty("Content-Type", "application/octet-stream");
+            connection.getOutputStream().write(serializer.serializeArray(goalWebs));
+
+            InputStream is = connection.getInputStream();
+            Assert.assertEquals(connection.getResponseCode(), 200);
 
         } catch (IOException e) {
             e.printStackTrace();

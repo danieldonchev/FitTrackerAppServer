@@ -11,10 +11,12 @@
         <property name="tomee.jpa.factory.lazy" value="true" />
 
         <property name="hibernate.archive.autodetection" value="class"/>
-        <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.mysql.MySQL5SpatialDialect"/>
+        <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect"/>
         <property name="connection_pool_size" value="250"/>
-        <property name="hibernate.hbm2ddl.auto" value="update" />
-        <property name="hibernate.show_sql" value="true" />
+        <!--<property name="hibernate.hbm2ddl.auto" value="update" />-->
+        <!--<property name="hibernate.show_sql" value="true"/>-->
+        <!--<property name="hibernate.format_sql" value="true"/>-->
+        <!--<property name="hibernate.use_sql_comments" value="true"/>-->
     </properties>
 </persistence-unit>
 </persistence>

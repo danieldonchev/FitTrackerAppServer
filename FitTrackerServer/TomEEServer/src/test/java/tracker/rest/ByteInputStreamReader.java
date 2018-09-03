@@ -1,7 +1,7 @@
 package tracker.rest;
 
-import com.tracker.shared.Entities.GoalWeb;
-import sun.misc.IOUtils;
+import com.tracker.shared.entities.GoalWeb;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ public class ByteInputStreamReader{
 
         public GoalWeb Read(InputStream inputStream) throws IOException
         {
-            return new GoalWeb().deserialize(IOUtils.readFully(inputStream, -1, true));
+            return new GoalWeb().deserialize(IOUtils.toByteArray(inputStream));
         }
 
     }

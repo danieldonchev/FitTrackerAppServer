@@ -1,6 +1,6 @@
 package com.tracker.shared;
 
-import com.tracker.shared.Entities.*;
+import com.tracker.shared.entities.*;
 import com.tracker.shared.reflection.FlatbufSerializer;
 import com.tracker.shared.reflection.ReflectionT;
 import org.reflections.Reflections;
@@ -21,7 +21,7 @@ public class ReflectionTTest {
 
         SplitWeb splitWeb = new SplitWeb(1, 50, 50);
 
-        GoalWeb goalWeb = new GoalWeb(UUID.randomUUID().toString(),
+        GoalWeb goalWeb = new GoalWeb(UUID.randomUUID(),
                             1,
                             554.42d,
                             180l,

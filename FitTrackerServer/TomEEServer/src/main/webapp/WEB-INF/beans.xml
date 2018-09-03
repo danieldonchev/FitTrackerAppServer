@@ -6,9 +6,4 @@
                         http://java.sun.com/xml/ns/javaee
                         http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
-    <alternatives>
-        <class>tracker.DAO.Daos.UserDaoImpl</class>
-        <class>tracker.DAO.Daos.SyncDao</class>
-        <class>tracker.DAO.Daos.SettingsDao</class>
-    </alternatives>
 </beans>

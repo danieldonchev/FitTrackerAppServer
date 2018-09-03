@@ -2,16 +2,15 @@
 
 package com.tracker.shared.flatbuf;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.google.flatbuffers.Table;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.nio.*;
+import java.lang.*;
+import java.util.*;
+import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")
 public final class SportActivityMapFlat extends Table {
-  public static SportActivityMapFlat getRootAsSportActivityMap(ByteBuffer _bb) { return getRootAsSportActivityMap(_bb, new SportActivityMapFlat()); }
-  public static SportActivityMapFlat getRootAsSportActivityMap(ByteBuffer _bb, SportActivityMapFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
+  public static SportActivityMapFlat getRootAsSportActivityMapFlat(ByteBuffer _bb) { return getRootAsSportActivityMapFlat(_bb, new SportActivityMapFlat()); }
+  public static SportActivityMapFlat getRootAsSportActivityMapFlat(ByteBuffer _bb, SportActivityMapFlat obj) { _bb.order(ByteOrder.LITTLE_ENDIAN); return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb)); }
   public void __init(int _i, ByteBuffer _bb) { bb_pos = _i; bb = _bb; }
   public SportActivityMapFlat __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
@@ -22,21 +21,21 @@ public final class SportActivityMapFlat extends Table {
   public MarkersFlat markers(MarkersFlat obj, int j) { int o = __offset(6); return o != 0 ? obj.__assign(__vector(o) + j * 24, bb) : null; }
   public int markersLength() { int o = __offset(6); return o != 0 ? __vector_len(o) : 0; }
 
-  public static int createSportActivityMap(FlatBufferBuilder builder,
+  public static int createSportActivityMapFlat(FlatBufferBuilder builder,
       int polylineOffset,
       int markersOffset) {
     builder.startObject(2);
     SportActivityMapFlat.addMarkers(builder, markersOffset);
     SportActivityMapFlat.addPolyline(builder, polylineOffset);
-    return SportActivityMapFlat.endSportActivityMap(builder);
+    return SportActivityMapFlat.endSportActivityMapFlat(builder);
   }
 
-  public static void startSportActivityMap(FlatBufferBuilder builder) { builder.startObject(2); }
+  public static void startSportActivityMapFlat(FlatBufferBuilder builder) { builder.startObject(2); }
   public static void addPolyline(FlatBufferBuilder builder, int polylineOffset) { builder.addOffset(0, polylineOffset, 0); }
   public static void startPolylineVector(FlatBufferBuilder builder, int numElems) { builder.startVector(16, numElems, 8); }
   public static void addMarkers(FlatBufferBuilder builder, int markersOffset) { builder.addOffset(1, markersOffset, 0); }
   public static void startMarkersVector(FlatBufferBuilder builder, int numElems) { builder.startVector(24, numElems, 8); }
-  public static int endSportActivityMap(FlatBufferBuilder builder) {
+  public static int endSportActivityMapFlat(FlatBufferBuilder builder) {
     int o = builder.endObject();
     return o;
   }

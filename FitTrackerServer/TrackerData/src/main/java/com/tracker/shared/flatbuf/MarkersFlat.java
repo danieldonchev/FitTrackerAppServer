@@ -2,10 +2,10 @@
 
 package com.tracker.shared.flatbuf;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.google.flatbuffers.Struct;
-
-import java.nio.ByteBuffer;
+import java.nio.*;
+import java.lang.*;
+import java.util.*;
+import com.google.flatbuffers.*;
 
 @SuppressWarnings("unused")
 public final class MarkersFlat extends Struct {
@@ -16,7 +16,7 @@ public final class MarkersFlat extends Struct {
   public double lon() { return bb.getDouble(bb_pos + 8); }
   public int colour() { return bb.getInt(bb_pos + 16); }
 
-  public static int createMarkers(FlatBufferBuilder builder, double lat, double lon, int colour) {
+  public static int createMarkersFlat(FlatBufferBuilder builder, double lat, double lon, int colour) {
     builder.prep(8, 24);
     builder.pad(4);
     builder.putInt(colour);
