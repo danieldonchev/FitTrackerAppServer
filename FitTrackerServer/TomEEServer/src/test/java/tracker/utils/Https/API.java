@@ -13,7 +13,7 @@ public final class API {
     //base resources
     private static final String baseAuth = baseURLHttps + "auth/";
     private static final String baseSync = baseURLHttps + "sync/";
-    private static final String baseGoal = baseURLHttps + "interceptors/";
+    private static final String baseGoal = baseURLHttps + "goal/";
     private static final String basePeopleActivites = baseURLHttp + "people-activities/";
     private static final String baseWeight = baseURLHttps + "weights/";
 

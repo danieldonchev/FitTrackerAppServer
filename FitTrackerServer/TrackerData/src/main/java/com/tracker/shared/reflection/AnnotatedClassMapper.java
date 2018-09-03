@@ -1,6 +1,5 @@
 package com.tracker.shared.reflection;
 
-import com.tracker.shared.entities.FlatBufferSerializable;
 import org.reflections.Reflections;
 
 import java.util.Set;

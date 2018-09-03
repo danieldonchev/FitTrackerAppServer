@@ -1,7 +1,5 @@
 package tracker.sharedsportactivities.interceptors;
 
-import com.tracker.shared.entities.SerializeHelper;
-import com.tracker.shared.entities.SportActivityWithOwner;
 import tracker.sportactivity.SportActivity;
 
 import javax.ws.rs.WebApplicationException;
@@ -19,15 +17,15 @@ public class SharedActivityInterceptorWriter implements WriterInterceptor {
     @Override
     public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
 
-        Object sharedActivities = context.getEntity();
-
-        ArrayList<SportActivityWithOwner> sportActivities = new ArrayList<>();
-        for(SportActivity sportActivity : (List<SportActivity>) sharedActivities){
-            SportActivityWithOwner activity = new SportActivityWithOwner();
-            activity.setActivityID(sportActivity.getId().toString());
-            activity.setUserID(sportActivity.getUserID().toString());
-        }
-
-        context.getOutputStream().write(SerializeHelper.serializeSportActivitiesWithOwners(sportActivities));
+//        Object sharedActivities = context.getEntity();
+//
+//        ArrayList<SportActivityWithOwner> sportActivities = new ArrayList<>();
+//        for(SportActivity sportActivity : (List<SportActivity>) sharedActivities){
+//            SportActivityWithOwner activity = new SportActivityWithOwner();
+//            activity.setActivityID(sportActivity.getId().toString());
+//            activity.setUserID(sportActivity.getUserID().toString());
+//        }
+//
+//        context.getOutputStream().write(SerializeHelper.serializeSportActivitiesWithOwners(sportActivities));
     }
 }

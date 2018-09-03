@@ -1,4 +1,4 @@
-package com.tracker.shared.entities;
+package com.tracker.shared.reflection;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

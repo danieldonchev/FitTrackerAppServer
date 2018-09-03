@@ -1,6 +1,5 @@
 package tracker.sharedsportactivities;
 
-import com.tracker.shared.entities.SportActivityMap;
 import org.json.JSONObject;
 import tracker.sharedsportactivities.dao.SharedActivitiesDao;
 import tracker.sharedsportactivities.dao.SharedActivitiesDaoQualifier;
@@ -28,7 +27,7 @@ public class SharedActivitiesServiceImpl implements SharedActivitiesService {
         return dao.getSharedSportActivities(bounds);
     }
 
-    public SportActivityMap getSportActivityMap(UUID activityID, UUID userID){
-        return dao.getSharedSportActivityMap(activityID, userID);
-    }
+//    public SportActivityMap getSportActivityMap(UUID activityID, UUID userID){
+//        return dao.getSharedSportActivityMap(activityID, userID);
+//    }
 }

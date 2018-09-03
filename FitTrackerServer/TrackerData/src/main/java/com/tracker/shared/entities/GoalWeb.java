@@ -3,6 +3,7 @@ package com.tracker.shared.entities;
 
 import com.google.flatbuffers.FlatBufferBuilder;
 import com.tracker.shared.flatbuf.GoalFlat;
+import com.tracker.shared.reflection.FlatBufferSerializable;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
