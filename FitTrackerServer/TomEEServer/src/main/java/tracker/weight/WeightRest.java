@@ -1,10 +1,10 @@
 package tracker.weight;
 
 import org.json.JSONObject;
-import tracker.utils.API;
 import tracker.security.Secured;
 import tracker.sync.Sync;
 import tracker.sync.UserWriting;
+import tracker.utils.ApiConstants;
 import tracker.weight.interceptors.WeightReaderInterceptor;
 
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import javax.ws.rs.core.SecurityContext;
 
 @Secured
 @Sync
-@Path(API.weight)
+@Path(ApiConstants.weight)
 public class WeightRest {
 
     private WeightService service;

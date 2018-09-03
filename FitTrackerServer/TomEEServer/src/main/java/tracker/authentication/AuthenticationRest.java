@@ -2,9 +2,9 @@ package tracker.authentication;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.json.JSONObject;
-import tracker.utils.API;
 import tracker.authentication.utils.OauthVerifier;
 import tracker.authentication.users.User;
+import tracker.utils.ApiConstants;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Optional;
 
-@Path(API.authentication)
+@Path(ApiConstants.auth)
 public class AuthenticationRest {
 
     private UserService service;
@@ -38,7 +38,7 @@ public class AuthenticationRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path(API.register)
+    @Path(ApiConstants.register)
     public Response register(User user) {
 
         JSONObject response = new JSONObject();
@@ -65,7 +65,7 @@ public class AuthenticationRest {
     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path(API.login)
+    @Path(ApiConstants.login)
     public Response login(User user) {
         JSONObject responseMsg = new JSONObject();
         Optional<UserTokens> userTokens = this.service.loginUser(user);
@@ -95,7 +95,7 @@ public class AuthenticationRest {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path(API.googleLogin)
+    @Path(ApiConstants.googleLogin)
     public Response googlelogin(User user) throws IOException, GeneralSecurityException {
         OauthVerifier verifier = new OauthVerifier();
         GoogleIdToken idToken = verifier.verifyGoogleIdToken(user.getAccessToken());
@@ -129,7 +129,7 @@ public class AuthenticationRest {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path(API.facebookLogin)
+    @Path(ApiConstants.fbLogin)
     public Response fblogin(User user) throws IOException {
         OauthVerifier verifier = new OauthVerifier();
         JSONObject response = new JSONObject();
@@ -155,7 +155,7 @@ public class AuthenticationRest {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path(API.forgottenPassword)
+    @Path(ApiConstants.forgottenPassword)
     public Response forgottenPassword(String email) {
         boolean userExists = this.service.sendPasswordCodeToUser(email);
         if(userExists){
@@ -172,7 +172,7 @@ public class AuthenticationRest {
      */
     @POST
     @Produces(MediaType.TEXT_PLAIN)
-    @Path(API.accessToken)
+    @Path(ApiConstants.accessToken)
     public Response getAccessToken(String jsonObject) {
 
         JSONObject object = new JSONObject(jsonObject);
@@ -189,7 +189,7 @@ public class AuthenticationRest {
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path(API.changePassword)
+    @Path(ApiConstants.changePassword)
     public Response changePassword(String data) {
         JSONObject jsonObject = new JSONObject(data);
         String email = jsonObject.getString("email");

@@ -1,8 +1,8 @@
 package tracker.sharedsportactivities;
 
 import org.json.JSONObject;
-import tracker.utils.API;
 import tracker.sportactivity.SportActivity;
+import tracker.utils.ApiConstants;
 
 import javax.inject.Inject;
 import javax.ws.rs.PathParam;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 
-@Path(API.sharedSportActivities)
+@Path(ApiConstants.sharedSportActivities)
 public class SharedSportActivitiesRest {
 
     private SharedActivitiesService service;
@@ -26,7 +26,7 @@ public class SharedSportActivitiesRest {
         this.service = service;
     }
 
-    @Path(API.sportActivities)
+
     @POST
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getActivites(String data) {

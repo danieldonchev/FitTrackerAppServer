@@ -18,19 +18,23 @@ public final class API {
     private static final String baseWeight = baseURLHttps + "weights/";
 
     //user authentication
-    public static final String googleLogin = baseAuth + "googlelogin/";
-    public static final String fbLogin = baseAuth + "fblogin/";
+    public static final String googleLogin = baseAuth + "google-login/";
+    public static final String fbLogin = baseAuth + "fb-login/";
     public static final String localLogin = baseAuth + "login/";
     public static final String register = baseAuth + "register/";
     public static final String captcha = baseURLHttp + "auth/" + "captcha/";
     public static final String passwordToken = baseAuth + "forgotten-password/";
-    public static final String changePassword = baseAuth + "password/";
+    public static final String changePassword = baseAuth + "change-password/";
     public static final String accessToken = baseAuth + "access-token/";
 
-    //user activity resources
+    //sport activity resources
     public static final String sportActivity = baseURLHttps + "sport-activity/";
-    public static final String userSettings = baseURLHttps + "settings/";
+
    // public static final String profilePic = baseUser + "profile-pic";
+
+
+    // settings
+
 
     //goals
     public static final String goal = baseGoal;
@@ -46,16 +50,14 @@ public final class API {
     public static final String settings = baseURLHttps + "settings/" + "setting/";
 
     //synchronization
-    public static final String checkSync = baseSync + "should-sync/";
-    public static final String syncActivities = baseSync + "sport-activities";
-    public static final String deletedActivities = baseSync + "deleted-activities";
-    public static final String insertActivities = baseSync + "insert-sport-activities";
-    public static final String missingGoals = baseSync + "goals";
-    public static final String deletedGoals = baseSync + "deleted-goals";
-    public static final String goals = baseSync + "goals";
-    public static final String weights = baseSync + "weights";
-    public static final String syncSettings = baseSync + "settings";
-    public static final String syncTimes = baseSync + "sync-times";
+    public static final String syncCheck = "should-sync";
+    public static final String missingActivities = baseSync +"missing-sport-activities"; // GET METHOD
+    public static final String deletedActivities = baseSync +"deleted-activities";
+    public static final String missingGoals = baseSync +"missing-goals";
+    public static final String deletedGoals = baseSync +"deleted-goals";
+    public static final String weights = baseSync +"weights";
+    public static final String syncSettings = baseSync +"settings";
+    public static final String getSyncTimes = baseSync +"sync-times";
 
 }
 
